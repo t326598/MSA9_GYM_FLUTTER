@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gym_app/screens/ticket_screen.dart';
+import 'package:gym_app/screens/trainer_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,14 +18,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      // home: HomeScreen(),
-      initialRoute: '/main',
+      initialRoute: '/ticket',
       routes: {
-        // '/main': (context) => MainScreen(),
-        // '/home': (context) => HomeScreen(),
-        // '/user': (context) => UserScreen(),
-        // '/join': (context) => JoinScreen(),
-        // '/login': (context) => LoginScreen()
+        '/ticket': (context) => TicketScreen(),
+        '/trainer': (context) => TrainerScreen(),
       },
     );
   }

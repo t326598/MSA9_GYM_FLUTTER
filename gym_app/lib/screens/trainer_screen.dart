@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:gym_app/screens/trainer_screen.dart';
+import 'package:gym_app/screens/ticket_screen.dart';
 
-class TicketScreen extends StatefulWidget {
-  const TicketScreen({super.key});
+class TrainerScreen extends StatefulWidget {
+  const TrainerScreen({super.key});
 
   @override
-  State<TicketScreen> createState() => _TicketScreenState();
+  State<TrainerScreen> createState() => _TrainerScreenState();
 }
 
-class _TicketScreenState extends State<TicketScreen> {
-  bool isGeneralActive = true;
-  bool isPtActive = false;
+class _TrainerScreenState extends State<TrainerScreen> {
+  bool isGeneralActive = false;
+  bool isPtActive = true;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +43,18 @@ class _TicketScreenState extends State<TicketScreen> {
                         isGeneralActive = true;
                         isPtActive = false;
                       });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TicketScreen(),
+                        ),
+                      ).then((_) {
+                        // TicketScreen에서 돌아올 때 상태 업데이트
+                        setState(() {
+                          isGeneralActive = false;
+                          isPtActive = true;
+                        });
+                      });
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: isGeneralActive
@@ -71,18 +83,6 @@ class _TicketScreenState extends State<TicketScreen> {
                         isGeneralActive = false;
                         isPtActive = true;
                       });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const TrainerScreen(),
-                        ),
-                      ).then((_) {
-                        // PtTicketScreen에서 돌아올 때 상태 업데이트
-                        setState(() {
-                          isGeneralActive = true;
-                          isPtActive = false;
-                        });
-                      });
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: isPtActive
@@ -99,7 +99,6 @@ class _TicketScreenState extends State<TicketScreen> {
               ),
             ],
           ),
-          Expanded(child: TextCardSample())
         ],
       ),
       bottomSheet: SizedBox(
@@ -114,53 +113,6 @@ class _TicketScreenState extends State<TicketScreen> {
           child: const Text(
             '구매하기',
             style: TextStyle(fontSize: 18),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TextCardSample extends StatefulWidget {
-  const TextCardSample({super.key});
-
-  @override
-  State<TextCardSample> createState() => _TextCardSampleState();
-}
-
-class _TextCardSampleState extends State<TextCardSample> {
-  bool isChecked = false; // 체크 상태 변수
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 49, 47, 47),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 3, // 카드 그림자 효과
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // 카드 둥글기 설정
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Checkbox(
-                  value: isChecked,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isChecked = value ?? false;
-                    });
-                  },
-                ),
-                const SizedBox(width: 10), // 체크박스와 텍스트 사이 간격
-                const Text(
-                  '1개월 이용권',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
           ),
         ),
       ),
