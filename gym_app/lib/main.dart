@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_app/screens/ptList_screen.dart';
 import 'package:gym_app/screens/reservation_insert_screen.dart';
 import 'package:gym_app/screens/ticket_screen.dart';
 import 'package:gym_app/screens/trainer_screen.dart';
@@ -19,11 +20,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/reservationInsert',
+      initialRoute: '/ptList',
       routes: {
         '/ticket': (context) => TicketScreen(),
         '/trainer': (context) => TrainerScreen(),
         '/reservationInsert' : (context) => ReservationInsertScreen(),
+        '/ptList' : (context) => PtlistScreen(),
       },
     );
   }

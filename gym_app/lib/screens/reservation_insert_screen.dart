@@ -82,7 +82,7 @@ class _ReservationInsertScreenState extends State<ReservationInsertScreen> {
           Expanded(
             child: BookingCalendar(
               bookingService: BookingService(
-                serviceName: 'Meeting Room',
+                serviceName: 'PT Reservation',
                 serviceDuration: 60,
                 bookingStart: DateTime(now.year, now.month, now.day, 10, 0),
                 bookingEnd: DateTime(now.year, now.month, now.day, 22, 0),
@@ -94,6 +94,7 @@ class _ReservationInsertScreenState extends State<ReservationInsertScreen> {
               selectedSlotText: '선택한 시간',
               bookedSlotText: '예약 마감',
               bookingGridChildAspectRatio: 1.8,
+              bookingButtonText: '예약하기',
             ),
           ),
         ],
