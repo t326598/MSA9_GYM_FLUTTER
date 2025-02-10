@@ -38,6 +38,7 @@ dependencies:
   flutter_neat_and_clean_calendar: ^0.4.16
   modal_bottom_sheet: ^3.0.0
   flutter_slidable: ^4.0.0
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:
