@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:gym_app/widgets/bottom_sheet.dart';
+import 'package:gym_app/service/home_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+import '../widgets/bottom_sheet.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
@@ -15,7 +17,8 @@ class _HomeContentState extends State<HomeContent> {
   final Uuid uuid = Uuid();
   String qrCodeData = '';
   int _currentIndex = 0;
-
+  int gymUserCount = 0;
+  final HomeService homeService = HomeService();
   final List<String> routes = [
     '/home',
     '/ticket',
@@ -29,11 +32,23 @@ class _HomeContentState extends State<HomeContent> {
   void initState() {
     super.initState();
     qrCodeData = generateQRCodeData();
+    fetchGymUserCount();
   }
 
   String generateQRCodeData() {
     String uniqueId = uuid.v4();
     return 'https://example.com/?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
+  }
+
+  Future<void> fetchGymUserCount() async {
+    try {
+      final count = await homeService.getUserCount();
+      setState(() {
+        gymUserCount = count;
+      });
+    } catch (e) {
+      print('Error fetching user count: $e');
+    }
   }
 
   void _showQRCodeModal(BuildContext context) {
@@ -47,15 +62,15 @@ class _HomeContentState extends State<HomeContent> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            // 모달이 열리면서 타이머 시작
             if (_timer == null) {
               _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
                 if (_counter > 0) {
                   setModalState(() {
-                    _counter--; // UI 갱신
+                    _counter--;
                   });
                 } else {
                   _timer?.cancel();
+                  Navigator.pop(context);
                 }
               });
             }
@@ -77,7 +92,6 @@ class _HomeContentState extends State<HomeContent> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // 60초 이후 QR 코드 숨기기
                     if (_counter > 0)
                       QrImageView(
                         data: qrCodeData,
@@ -85,14 +99,15 @@ class _HomeContentState extends State<HomeContent> {
                         size: 300.0,
                       ),
                     const SizedBox(height: 10),
-                    Text(
-                      '유효시간 : $_counter초',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
+                    if (_counter > 0)
+                      Text(
+                        '유효시간 : $_counter초',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -101,12 +116,27 @@ class _HomeContentState extends State<HomeContent> {
         );
       },
     ).whenComplete(() {
-      _timer?.cancel(); // 모달이 닫히면 타이머 정리
+      _timer?.cancel();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    String statusMessage = '';
+    Color statusColor = Colors.transparent;
+
+   
+    if (gymUserCount < 10) {
+      statusMessage = '여유';
+      statusColor = Colors.green; 
+    } else if (gymUserCount >= 10 && gymUserCount < 20) {
+      statusMessage = '혼잡';
+      statusColor = Colors.yellow; 
+    } else {
+      statusMessage = '포화';
+      statusColor = Colors.red; 
+    }
+
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -124,9 +154,9 @@ class _HomeContentState extends State<HomeContent> {
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                SizedBox(height: 0),
-                Text(
+              children: [
+                const SizedBox(height: 0),
+                const Text(
                   '실시간 헬스장 이용자 수',
                   style: TextStyle(
                     fontSize: 23,
@@ -135,17 +165,46 @@ class _HomeContentState extends State<HomeContent> {
                     height: 0,
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  '10명',
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    height: 0,
-                  ),
+                const SizedBox(height: 10),
+              
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '$gymUserCount명  /',
+                      style: const TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 10), 
+                   
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: statusColor, 
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        statusMessage, 
+                        style: const TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white, 
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 150),
+                const SizedBox(height: 20),
+               
+                Image.asset(
+                  'images/logo.png', 
+                  height: 100, 
+                ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
@@ -169,7 +228,8 @@ class _HomeContentState extends State<HomeContent> {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 175, 159, 179),
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   textStyle: const TextStyle(fontSize: 18),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
