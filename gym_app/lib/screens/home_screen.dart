@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:gym_app/widgets/bottom_sheet.dart';
 import 'package:uuid/uuid.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -14,42 +14,95 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   final Uuid uuid = Uuid();
   String qrCodeData = '';
-  int _counter = 60; // 유효시간을 60초
-  late Timer _timer;
+  int _currentIndex = 0;
+
+  final List<String> routes = [
+    '/home',
+    '/ticket',
+    '/trainer',
+    '/reservationInsert',
+    '/ptList',
+    '/calendar',
+  ];
 
   @override
   void initState() {
     super.initState();
-    qrCodeData = generateQRCodeData(); // 초기 QR 코드 데이터 생성
+    qrCodeData = generateQRCodeData();
   }
 
   String generateQRCodeData() {
-    String uniqueId = uuid.v4();  // 고유한 UUID 생성
+    String uniqueId = uuid.v4();
     return 'https://example.com/?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
   }
 
-  void _startTimer() {
-    setState(() {
-      _counter = 60; // 카운트다운 초기화
-    });
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_counter > 0) {
-        setState(() {
-          _counter--; // 카운트다운
-        });
-      } else {
-        _timer.cancel(); // 타이머 종료
-      }
-    });
-  }
+  void _showQRCodeModal(BuildContext context) {
+    int _counter = 60;
+    Timer? _timer;
 
-  @override
-  void dispose() {
-    // 페이지를 떠날 때 타이머 취소
-    if (_timer.isActive) {
-      _timer.cancel();
-    }
-    super.dispose();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            // 모달이 열리면서 타이머 시작
+            if (_timer == null) {
+              _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+                if (_counter > 0) {
+                  setModalState(() {
+                    _counter--; // UI 갱신
+                  });
+                } else {
+                  _timer?.cancel();
+                }
+              });
+            }
+
+            return WillPopScope(
+              onWillPop: () async {
+                _timer?.cancel();
+                return true;
+              },
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0),
+                  ),
+                ),
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 60초 이후 QR 코드 숨기기
+                    if (_counter > 0)
+                      QrImageView(
+                        data: qrCodeData,
+                        version: QrVersions.auto,
+                        size: 300.0,
+                      ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '유효시간 : $_counter초',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    ).whenComplete(() {
+      _timer?.cancel(); // 모달이 닫히면 타이머 정리
+    });
   }
 
   @override
@@ -64,16 +117,16 @@ class _HomeContentState extends State<HomeContent> {
               BlendMode.darken,
             ),
             child: Image.asset(
-              'img/main.png',
+              'images/main.png',
               fit: BoxFit.cover,
             ),
           ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 0),
-                const Text(
+              children: const [
+                SizedBox(height: 0),
+                Text(
                   '실시간 헬스장 이용자 수',
                   style: TextStyle(
                     fontSize: 23,
@@ -82,8 +135,8 @@ class _HomeContentState extends State<HomeContent> {
                     height: 0,
                   ),
                 ),
-                const SizedBox(height: 10),
-                const Text(
+                SizedBox(height: 10),
+                Text(
                   '10명',
                   style: TextStyle(
                     fontSize: 23,
@@ -92,7 +145,7 @@ class _HomeContentState extends State<HomeContent> {
                     height: 0,
                   ),
                 ),
-                const SizedBox(height: 150),
+                SizedBox(height: 150),
               ],
             ),
           ),
@@ -100,7 +153,7 @@ class _HomeContentState extends State<HomeContent> {
             top: 50,
             left: 125,
             child: Image.asset(
-              'img/icon.png',
+              'images/icon.png',
               height: 190,
             ),
           ),
@@ -109,49 +162,7 @@ class _HomeContentState extends State<HomeContent> {
             child: Padding(
               padding: const EdgeInsets.all(80.0),
               child: ElevatedButton(
-                onPressed: () {
-                  _startTimer(); // 버튼을 눌렀을 때 타이머 시작
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (BuildContext context) {
-                      return StatefulBuilder(
-                        builder: (context, setModalState) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20.0),
-                                topRight: Radius.circular(20.0),
-                              ),
-                            ),
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                QrImageView(
-                                  data: qrCodeData,
-                                  version: QrVersions.auto,
-                                  size: 300.0,
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  '유효시간 : $_counter초',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
+                onPressed: () => _showQRCodeModal(context),
                 child: const Text(
                   '헬스장 입장 (QR)',
                   style: TextStyle(color: Colors.black),
@@ -168,6 +179,18 @@ class _HomeContentState extends State<HomeContent> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          if (index >= 0 && index < routes.length) {
+            Navigator.pushNamed(context, routes[index]);
+          }
+        },
       ),
     );
   }

@@ -164,6 +164,7 @@ class _TextCardSampleState extends State<TextCardSample> {
           ),
         ),
       ),
+      
     );
   }
 }
