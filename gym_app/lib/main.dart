@@ -22,7 +22,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
+
       initialRoute: '/home',
+
+      initialRoute: '/ticket',
+
       routes: {
         '/home': (context) => HomeContent(),
         '/ticket': (context) => TicketScreen(),
