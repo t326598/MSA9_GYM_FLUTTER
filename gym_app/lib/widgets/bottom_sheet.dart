@@ -25,14 +25,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
           selectedColor: Colors.blue,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.card_membership),
+          icon: const Icon(Icons.confirmation_number_outlined),
           title: const Text("티켓"),
           selectedColor: Colors.pink,
-        ),
-        SalomonBottomBarItem(
-          icon: const Icon(Icons.fitness_center),
-          title: const Text("트레이너"),
-          selectedColor: Colors.orange,
         ),
         SalomonBottomBarItem(
           icon: const Icon(Icons.event_available),
