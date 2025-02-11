@@ -1,40 +1,82 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
-void showCalendarBottomSheet(BuildContext context) {
+void showCalendarBottomSheet(BuildContext context, DateTime selectedDate) {
   showMaterialModalBottomSheet(
     backgroundColor: const Color.fromARGB(255, 49, 47, 47),
     context: context,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(18.0)),
     ),
-    builder: (context) => const CalendarBottomSheet(),
+    builder: (context) =>
+        CalendarBottomSheet(selectedDate: selectedDate), // selectedDate 전달
   );
 }
 
 class CalendarBottomSheet extends StatefulWidget {
-  const CalendarBottomSheet({super.key});
+  final DateTime selectedDate; // selectedDate를 받아옴
+
+  const CalendarBottomSheet(
+      {super.key, required this.selectedDate}); // 생성자에서 selectedDate 받기
 
   @override
   State<CalendarBottomSheet> createState() => _CalendarBottomSheetState();
 }
 
 class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
-  String? _startTime;
-  String? _endTime;
+  DateTime? startTime;
+  DateTime? endTime;
+
+  void pickStartTime() async {
+    DateTime? selectedStartTime = await showCupertinoModalPopup<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoDatePicker(
+          initialDateTime: startTime ?? DateTime.now(),
+          mode: CupertinoDatePickerMode.time,
+          onDateTimeChanged: (DateTime newDateTime) {},
+        );
+      },
+    );
+
+    if (selectedStartTime != null) {
+      setState(() {
+        startTime = selectedStartTime;
+      });
+    }
+  }
+
+  void pickEndTime() async {
+    DateTime? selectedEndTime = await showCupertinoModalPopup<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoDatePicker(
+          initialDateTime: endTime ?? DateTime.now(),
+          mode: CupertinoDatePickerMode.time,
+          onDateTimeChanged: (DateTime newDateTime) {},
+        );
+      },
+    );
+
+    if (selectedEndTime != null) {
+      setState(() {
+        endTime = selectedEndTime;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
+      height: MediaQuery.of(context).size.height * 0.95,
       padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Stack(
-            alignment: Alignment.center, // 🔥 전체 Row의 중앙에 텍스트 배치
+            alignment: Alignment.center,
             children: [
               Row(
                 children: [
@@ -44,13 +86,15 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: const Color.fromARGB(255, 192, 191, 191)),
                     ),
                   ),
                 ],
               ),
               Text(
-                "2025년 2월 5일",
+                "${widget.selectedDate.year}년 ${widget.selectedDate.month}월 ${widget.selectedDate.day}일",
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w800,
@@ -62,43 +106,30 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
           TextField(
             decoration: InputDecoration(
               labelText: '일정 제목',
-              // border: OutlineInputBorder(),
             ),
           ),
           SizedBox(height: 16.0),
           Row(
             children: <Widget>[
               Expanded(
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: '시작 시간',
-                    border: OutlineInputBorder(),
+                child: ElevatedButton(
+                  onPressed: pickStartTime,
+                  child: Text(
+                    startTime != null
+                        ? "${startTime!.hour}:${startTime!.minute.toString().padLeft(2, '0')}"
+                        : '시작 시간 선택',
                   ),
-                  items: <String>['09:00', '10:00', '11:00', '12:00']
-                      .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {},
                 ),
               ),
               SizedBox(width: 16.0),
               Expanded(
-                child: DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    labelText: '끝 시간',
-                    border: OutlineInputBorder(),
+                child: ElevatedButton(
+                  onPressed: pickEndTime,
+                  child: Text(
+                    endTime != null
+                        ? "${endTime!.hour}:${endTime!.minute.toString().padLeft(2, '0')}"
+                        : '끝 시간 선택',
                   ),
-                  items: <String>['13:00', '14:00', '15:00', '16:00']
-                      .map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {},
                 ),
               ),
             ],
@@ -123,11 +154,4 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
       ),
     );
   }
-
-  // @override
-  // void dispose() {
-  //   _titleController.dispose();
-  //   _contentController.dispose();
-  //   super.dispose();
-  // }
 }
