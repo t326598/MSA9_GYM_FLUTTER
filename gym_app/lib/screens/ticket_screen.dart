@@ -102,20 +102,21 @@ class _TicketScreenState extends State<TicketScreen> {
           Expanded(child: TextCardSample())
         ],
       ),
-      bottomSheet: SizedBox(
-        width: double.infinity,
-        child: TextButton(
-          onPressed: () {},
-          style: TextButton.styleFrom(
-            shape:
-                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            padding: const EdgeInsets.symmetric(vertical: 16), // 버튼 높이 조절
-          ),
-          child: const Text(
-            '구매하기',
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
+      bottomSheet: Container(
+        child: ListTile(
+            title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.shopping_bag_outlined,
+                color: Colors.black,
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              Text('구매하기'),
+            ]),
+            tileColor: Colors.blueAccent,
+            textColor: Colors.white,
+            onTap: () {}),
       ),
     );
   }
@@ -164,6 +165,7 @@ class _TextCardSampleState extends State<TextCardSample> {
           ),
         ),
       ),
+      
     );
   }
 }
