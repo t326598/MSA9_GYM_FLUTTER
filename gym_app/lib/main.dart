@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/screens/calendar_screen.dart';
 import 'package:gym_app/screens/ptList_screen.dart';
+import 'package:gym_app/screens/ptTicket_screen.dart';
 import 'package:gym_app/screens/reservation_insert_screen.dart';
 import 'package:gym_app/screens/ticket_screen.dart';
 import 'package:gym_app/screens/trainer_screen.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/reservationInsert': (context) => ReservationInsertScreen(),
         '/ptList': (context) => PtlistScreen(),
         '/calendar': (context) => CalendarScreen(),
+        '/ptTicket': (context) => PtTicketScreen(),
       },
     );
   }
