@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
 
       initialRoute: '/home',
 
-      initialRoute: '/ticket',
 
       routes: {
         '/home': (context) => HomeContent(),
