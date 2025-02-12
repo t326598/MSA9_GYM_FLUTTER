@@ -21,10 +21,9 @@ class _HomeContentState extends State<HomeContent> {
   final List<String> routes = [
     '/home',
     '/ticket',
-    '/trainer',
     '/reservationInsert',
-    '/ptList',
     '/calendar',
+    '/myPage'
   ];
 
   @override
