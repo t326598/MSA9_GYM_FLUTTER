@@ -114,7 +114,7 @@ class _TicketScreenState extends State<TicketScreen> {
               ),
             ],
           ),
-          Expanded(child: TicketCard()),
+          Expanded(child: TicketCard(type: '일반')),
           SizedBox(
             height: 42,
           ),
@@ -144,7 +144,7 @@ class _TicketScreenState extends State<TicketScreen> {
           });
 
           if (index >= 0 && index < routes.length) {
-            Navigator.pushNamed(context, routes[index]);
+            Navigator.pushReplacementNamed(context, routes[index]);
           }
         },
       ),
