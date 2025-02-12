@@ -33,10 +33,12 @@ class _HomeContentState extends State<HomeContent> {
     qrCodeData = generateQRCodeData();
   }
 
-  String generateQRCodeData() {
-    String uniqueId = uuid.v4();
-    return 'https://example.com/?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
-  }
+String generateQRCodeData() {
+  String uniqueId = uuid.v4();
+  return 'http://10.0.2.2:8080/checkAttendance?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
+}
+
+
 
   Future<int> fetchGymUserCount() async {
     try {
