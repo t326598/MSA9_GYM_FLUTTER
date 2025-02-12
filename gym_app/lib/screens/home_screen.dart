@@ -17,7 +17,6 @@ class _HomeContentState extends State<HomeContent> {
   final Uuid uuid = Uuid();
   String qrCodeData = '';
   int _currentIndex = 0;
-  int gymUserCount = 0;
   final HomeService homeService = HomeService();
   final List<String> routes = [
     '/home',
@@ -32,7 +31,6 @@ class _HomeContentState extends State<HomeContent> {
   void initState() {
     super.initState();
     qrCodeData = generateQRCodeData();
-    fetchGymUserCount();
   }
 
   String generateQRCodeData() {
@@ -40,14 +38,13 @@ class _HomeContentState extends State<HomeContent> {
     return 'https://example.com/?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
   }
 
-  Future<void> fetchGymUserCount() async {
+  Future<int> fetchGymUserCount() async {
     try {
       final count = await homeService.getUserCount();
-      setState(() {
-        gymUserCount = count;
-      });
+      return count;
     } catch (e) {
       print('Error fetching user count: $e');
+      return 0;  // 에러 시 0명으로 반환
     }
   }
 
@@ -122,21 +119,6 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    String statusMessage = '';
-    Color statusColor = Colors.transparent;
-
-   
-    if (gymUserCount < 10) {
-      statusMessage = '여유';
-      statusColor = Colors.green; 
-    } else if (gymUserCount >= 10 && gymUserCount < 20) {
-      statusMessage = '혼잡';
-      statusColor = Colors.yellow; 
-    } else {
-      statusMessage = '포화';
-      statusColor = Colors.red; 
-    }
-
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -166,43 +148,75 @@ class _HomeContentState extends State<HomeContent> {
                   ),
                 ),
                 const SizedBox(height: 10),
-              
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '$gymUserCount명  /',
-                      style: const TextStyle(
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 10), 
-                   
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: statusColor, 
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        statusMessage, 
-                        style: const TextStyle(
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white, 
-                        ),
-                      ),
-                    ),
-                  ],
+
+                // FutureBuilder를 사용하여 gymUserCount 비동기적으로 가져오기
+                FutureBuilder<int>(
+                  future: fetchGymUserCount(),  // gymUserCount를 가져오는 비동기 함수 호출
+                  builder: (context, snapshot) {
+                    String statusMessage = '';
+                    Color statusColor = Colors.transparent;
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // 데이터가 로딩 중일 때 로딩 표시
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      // 에러 발생 시 에러 메시지 표시
+                      return Text('Error: ${snapshot.error}');
+                    } else if (snapshot.hasData) {
+                      // 데이터가 정상적으로 로딩되었을 때 표시
+                      int gymUserCount = snapshot.data!;
+
+                      // 상태 메시지 설정
+                      if (gymUserCount < 10) {
+                        statusMessage = '여유';
+                        statusColor = Colors.green;
+                      } else if (gymUserCount >= 10 && gymUserCount < 20) {
+                        statusMessage = '혼잡';
+                        statusColor = Colors.yellow;
+                      } else {
+                        statusMessage = '포화';
+                        statusColor = Colors.red;
+                      }
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '$gymUserCount명  /',  // 서버에서 가져온 이용자 수 표시
+                            style: const TextStyle(
+                              fontSize: 23,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: statusColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              statusMessage, 
+                              style: const TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Text('No data available');
+                    }
+                  },
                 ),
                 const SizedBox(height: 20),
-               
                 Image.asset(
-                  'images/logo.png', 
-                  height: 100, 
+                  'images/logo.png',
+                  height: 100,
                 ),
                 const SizedBox(height: 10),
               ],
