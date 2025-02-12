@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 목록 관리</title>
+    <link rel="stylesheet" href="/css/reservation/adminRVstyle.css">
+    <script th:if="${message != null}" th:inline="javascript">
+        alert(/*[[${message}]]*/);
+    </script>
+</head>
+
+<body>
+    <th:block th:replace="~{fragment/adminHeader::adminHeader}"></th:block>
+
+    <div class="container">
+
+        <th:block th:replace="~{fragment/adminSidebar::adminSidebar}"></th:block>
+
+        <div class="main">
+            <div class="inner">
+                <div class="title">
+                    <h2>PT 예약 및 완료 목록</h2>
+                </div>
+                <div class="search-container">
+                    <form class="search" action="/admin/reservation/list" method="get" id="form">
+                        <div class="left-align">
+                            <select name="orderCode" id="order-code" th:value="${option.orderCode}">
+                                <option value="0" th:selected="${option.orderCode == 0}">신청순</option>
+                                <option value="1" th:selected="${option.orderCode == 1}">예약일순</option>
+                            </select>
+                            <select name="code" id="code" th:value="${option.code}">
+                                <option value="0" th:selected="${option.code == 0}">전체</option>
+                                <option value="1" th:selected="${option.code == 1}">완료건</option>
+                                <option value="2" th:selected="${option.code == 2}">예약중</option>
+                                <option value="3" th:selected="${option.code == 3}">취소건</option>
+                            </select>
+                        </div>
+                        <input type="text" name="keyword" placeholder="검색어를 입력해주세요" th:value="${option.keyword}" />
+                        <button type="submit">검색</button>
+                    </form>
+                </div>
+                <div class="list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>회원명(ID)</th>
+                                <th>트레이너</th>
+                                <th>예약 시간</th>
+                                <th>신청 일시</th>
+                                <th>완료/취소 일시</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="reservation : ${reservationList}">
+                                <td th:text="${reservation.no}"></td>
+                                <td th:text="${reservation.userName} + '(' + ${reservation.userId} + ')'"></td>
+                                <td th:text="${reservation.trainerName}"></td>
+                                <td th:text="${#dates.format( reservation.rvDate, 'yyyy-MM-dd HH:mm')}"></td>
+                                <td th:text="${#dates.format( reservation.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <th:block th:if="${reservation.enabled == 2}">
+                                    <td th:text="${#dates.format( reservation.canceledAt, 'yyyy-MM-dd HH:mm:ss')}" style="color: #2a9c1b;"></td>
+                                </th:block>
+                                <th:block th:if="${reservation.enabled == 1}">
+                                    <td th:text="${#dates.format( reservation.canceledAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                </th:block>
+                                <th:block th:if="${reservation.enabled == 0}">
+                                    <td th:text="${#dates.format( reservation.canceledAt, 'yyyy-MM-dd HH:mm:ss')}" style="color: #dc3545;"></td>
+                                </th:block>
+                                <td>
+                                    <span th:if="${reservation.enabled == 1}">
+                                        <button type="button" class="complete" th:data-no="${reservation.no}" onclick="showCompleteModal(this)">
+                                            완료
+                                        </button>
+                                        <button type="button" class="cancel" th:data-no="${reservation.no}" onclick="showCancelModal(this)">
+                                            취소
+                                        </button>
+                                    </span>
+                                    <span th:if="${reservation.enabled == 2}" class="ptComplete">
+                                        완료
+                                    </span>
+                                    <span th:if="${reservation.enabled == 0}" class="cancel-text">취소</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <a th:href="@{${pageUrl} + '&page=' + ${page.first}}" class="first">처음</a>
+                    <th:block th:if="${page.page != page.first}">
+                        <a th:href="@{${pageUrl} + '&page=' + ${page.prev}}" class="prev">이전</a>
+                    </th:block>
+                    <th:block th:each="no : ${#numbers.sequence(page.start, page.end)}">
+                        <th:block th:if="${page.page == no}">
+                            <a class="active" th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                        <th:block th:if="${page.page != no}">
+                            <a th:href="@{${pageUrl} + '&page=' + ${no}}" th:text="${no}"></a>
+                        </th:block>
+                    </th:block>
+                    <th:block th:if="${page.page != page.last}">
+                        <a th:href="@{${pageUrl} + '&page=' + ${page.next}}" class="next">다음</a>
+                    </th:block>
+                    <a th:href="@{${pageUrl} + '&page=' + ${page.last}}" class="last">마지막</a>
+                </div>
+                <div id="completeModal" class="modal">
+                    <div class="modal-content">
+                        <h3>예약을 완료 처리하시겠습니까?</h3>
+                        <div class="modal-action">
+                            <form id="completeForm" action="/admin/reservation/list" method="post">
+                                <input type="hidden" name="no" id="reservationNo">
+                                <input type="hidden" name="action" value="complete">
+                                <input type="hidden" name="page" th:value="${page.page}">
+                                <input type="hidden" name="keyword" th:value="${option.keyword}">
+                                <input type="hidden" name="orderCode" th:value="${option.orderCode}">
+                                <input type="hidden" name="rows" th:value="${page.rows}">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                                <button type="submit" id="completeYesBtn">예</button>
+                                <button type="button" onclick="closeCompleteModal()">아니오</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="cancelModal" class="modal">
+                    <div class="modal-content">
+                        <h3>예약을 취소하시겠습니까?</h3>
+                        <div class="modal-action">
+                            <form id="cancelForm" action="/admin/reservation/list" method="post">
+                                <input type="hidden" name="no" id="reservationNo2">
+                                <input type="hidden" name="action" value="cancel">
+                                <input type="hidden" name="page" th:value="${page.page}">
+                                <input type="hidden" name="keyword" th:value="${option.keyword}">
+                                <input type="hidden" name="orderCode" th:value="${option.orderCode}">
+                                <input type="hidden" name="rows" th:value="${page.rows}">
+                                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                                <button type="submit" id="cancelYesBtn">예</button>
+                                <button type="button" onclick="closeCancelModal()">아니오</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        function showCompleteModal(button) {
+            var reservationNo = button.getAttribute("data-no");
+            document.getElementById("reservationNo").value = reservationNo;
+            
+            var modal = document.getElementById("completeModal");
+            modal.style.display = "block";
+        }
+
+        function showCancelModal(button) {
+            var reservationNo = button.getAttribute("data-no");
+            document.getElementById("reservationNo2").value = reservationNo;
+            
+            var modal = document.getElementById("cancelModal");
+            modal.style.display = "block";
+        }
+
+        function closeCompleteModal() {
+            var modal = document.getElementById("completeModal");
+            modal.style.display = "none";
+        }
+
+        function closeCancelModal() {
+            var modal = document.getElementById("cancelModal");
+            modal.style.display = "none";
+        }
+
+        document.getElementById("completeYesBtn").addEventListener("click", function() {
+            var form = document.getElementById("completeForm");
+            form.submit();
+        });
+
+        document.getElementById("cancelYesBtn").addEventListener("click", function() {
+            var form = document.getElementById("cancelForm");
+            form.submit();
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+        const $orderCode = document.getElementById('order-code');
+        const $code = document.getElementById('code');
+        const $form = document.getElementById('form');
+        
+        $orderCode.addEventListener('change', function() {
+            $form.submit(); // 폼 자동 제출
+        });
+
+        $code.addEventListener('change', function() {
+            $form.submit();
+        })
+
+
+    });
+    </script>
+</body>
+
+</html>

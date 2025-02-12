@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gym.gym.mapper.RankingMapper">
+
+    <resultMap id="RankingMap" type="Ranking">
+        <id property="userId" column="userId" />
+        <result property="attendanceCount" column="attendanceCount" />
+    </resultMap>
+
+    <!-- 출석 랭킹 조회 -->
+    <select id="getAttendanceRanking" resultMap="RankingMap">
+        SELECT 
+            u.id AS userId, 
+            COUNT(*) AS attendanceCount,
+            MAX(a.check_time) AS attendanceDate
+        FROM attendance a
+        JOIN users u ON a.user_no = u.no
+        <where>
+            <!-- 같은 달의 출석만 조회 -->
+            DATE_FORMAT(a.check_time, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')
+                <if test="option.keyword != null and option.keyword != ''">
+                    AND u.id LIKE CONCAT('%', #{option.keyword}, '%')
+                </if>
+        </where>
+        GROUP BY a.user_no
+        ORDER BY attendanceCount DESC, attendanceDate ASC;
+    </select>
+
+
+    <!-- 출석 랭킹 총 개수 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*) FROM (
+            SELECT COUNT(*) AS attendanceCount
+            FROM attendance a
+            JOIN users u ON a.user_no = u.no
+            GROUP BY a.user_no
+        ) AS subquery;
+    </select>
+</mapper>

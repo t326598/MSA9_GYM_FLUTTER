@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구매 내역</title>
+    <!-- css -->
+    <link rel="stylesheet" href="/css/trainer/adminList.css">
+</head>
+
+<body>
+    <th:block th:replace="~{fragment/adminHeader::adminHeader}"></th:block>
+    <div class="container">
+        <th:block th:replace="~{fragment/adminSidebar::adminSidebar}"></th:block>
+
+        <div class="main">
+            <div class="inner">
+                <div class="title">
+                    <h2>구매내역 조회</h2>
+                </div>
+
+                <div class="search-container">
+                    <form class="search" action="/admin/sales/buyList" method="get" id="form">
+                        <input type="text" name="keyword" placeholder="고객명으로 검색" th:value="${param.keyword}" />
+                        <button type="submit">검색</button>
+                    </form>
+                </div>
+
+                <div class="list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>고객명</th>
+                                <th>상품명</th>
+                                <th>상품가격</th>
+                                <th>담당 트레이너</th>
+                                <th>구매일자</th>
+                                <th>환불/만료 일자</th>
+                                <th>상태</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="buyList : ${buyList}">
+                                <td th:text="${buyList.no}"></td>
+                                <td th:text="${buyList.userName}"></td>
+                                <td th:text="${buyList.ticketName}"></td>
+                                <td th:text="${buyList.ticketPrice}"></td>
+                                <td th:text="${buyList.trainerName ?: '-'}"></td>
+                                <td th:text="${#dates.format( buyList.buyDate, 'yyyy-MM-dd HH:mm:ss' )}"></td>
+                                <td 
+                                    th:text="${buyList.canceledAt != null ? #dates.format(buyList.canceledAt, 'yyyy-MM-dd HH:mm:ss') : #dates.format(buyList.endDate, 'yyyy-MM-dd HH:mm:ss')}"
+                                    th:classappend="${buyList.status == '환불' ? 'text-red' : buyList.status == '정상' ? 'text-green' : buyList.status == '만료' ? 'text-blue' : ''}">
+                                </td>
+                                <td 
+                                    th:text="${buyList.status}" style="font-weight: bold;"
+                                    th:classappend="${buyList.status == '환불' ? 'text-red' : buyList.status == '정상' ? 'text-green' : buyList.status == '만료' ? 'text-blue' : ''}">
+                                </td>
+                                <td>
+                                    <form th:if="${buyList.status != '환불' and buyList.status != '만료'}" action="/admin/sales/buyList/cancel" method="post" style="display: inline;" onsubmit="return confirm('정말 환불하시겠습니까?');">
+                                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                                        <input type="hidden" name="no" th:value="${buyList.no}" />
+                                        <button type="submit" class="deleteBtn">환불</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <a th:href="@{${pageUrl}(page=${page.first})}" class="first">≪</a>
+                    <th:block th:if="${page.page != page.first}">
+                        <a th:href="@{${pageUrl}(page=${page.prev})}" class="prev">＜</a>
+                    </th:block>
+                    <th:block th:each="no : ${#numbers.sequence(page.start, page.end)}">
+                        <th:block th:if="${page.page == no}">
+                            <a class="active" th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                        <th:block th:if="${page.page != no}">
+                            <a th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                    </th:block>
+                    <th:block th:if="${page.page != page.last}">
+                        <a th:href="@{${pageUrl}(page=${page.next})}" class="next">＞</a>
+                    </th:block>
+                    <a th:href="@{${pageUrl}(page=${page.last})}" class="first">≫</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

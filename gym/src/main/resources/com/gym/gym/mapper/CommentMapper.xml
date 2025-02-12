@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.gym.gym.mapper.CommentMapper">
+    <!-- 해당 날짜 조회 -->
+   <select id="selectByDate">
+        SELECT *
+        FROM comment
+        WHERE comment_date = #{commentDate}
+        AND user_no = #{userNo}
+   </select>
+
+    <!-- 코멘트 번호로 조회 -->
+    <select id="selectByNo">
+        SELECT *
+        FROM comment
+        WHERE no = #{no}
+    </select>
+
+    <!-- 트레이너 번호로 조회 -->
+    <select id="selectByTrainer">
+        SELECT *
+        FROM comment
+        WHERE trainer_no = #{trainerNo}
+    </select>
+
+    <!-- 사용자 당 조회 -->
+    <select id="selectByUser">
+        SELECT *
+        FROM comment
+        WHERE user_no = #{userNo}
+    </select>
+    <!-- 사용자 시간 범위로 조회 -->
+    <select id="selectByPeriod">
+        SELECT *
+        FROM comment
+        WHERE user_no = #{userNo}
+        AND comment_date BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!-- 코멘트 추가 -->
+    <insert id="insert" >
+        INSERT INTO comment (comment_date, user_no, trainer_no, c_content, f_content)
+        VALUES (#{commentDate}, #{userNo}, #{trainerNo}, #{cContent}, #{fContent})
+    </insert>
+
+    <!-- 코멘트 수정 -->
+    <update id="update">
+        UPDATE comment
+        SET trainer_no = #{trainerNo}
+        , c_content = #{cContent}
+        , f_content = #{fContent}
+        WHERE user_no = #{userNo}
+        AND comment_date = #{commentDate}
+    </update>
+    <!-- 코멘트 no로 수정 -->
+    <update id="updateByNo">
+        UPDATE comment
+        SET trainer_no = #{trainerNo}
+        , c_content = #{cContent}
+        , f_content = #{fContent}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 코멘트 삭제 -->
+    <delete id="delete">
+        DELETE FROM comment
+        WHERE no = #{no}
+    </delete>
+</mapper>

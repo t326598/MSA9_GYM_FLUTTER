@@ -1,0 +1,82 @@
+label{
+    font-size: 30px;
+
+}
+
+.container-form{
+    display: flex;
+align-items: center;
+flex-direction: column;
+position: relative;
+left: 23%;
+bottom: 8%;
+width: 600px;
+height: 520px;
+background-color: #ffffff;
+border-radius: 2%;
+box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.table {
+    display: table;
+    width: 100%;
+}
+.row {
+    display: table-row;
+    margin-top: 20px; /* 각 행 간격 */
+}
+.cell {
+    display: table-cell;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+input{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+    height: 30px;
+    width: 200px;    
+  padding: 10px;
+}
+
+select{
+height: 40px;
+width: 140px;
+border-radius: 5px;
+font-size: 15px;
+padding: 10px;
+cursor: pointer;
+
+}
+
+td{
+    font-size: 15px;
+}
+
+th{
+    width: 200px;
+    font-size: 15px;
+}
+
+tr {
+    display: block; /* 행을 블록 요소로 강제 변경 */
+    margin-top: 40px; /* 간격 부여 */
+}
+
+
+.btn-box{
+    margin-top: 50px;
+}
+
+button{
+    padding: 5px 20px 5px 20px;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    
+    margin-left: 20px;
+}
+button:hover{
+    filter: brightness(90%);
+}

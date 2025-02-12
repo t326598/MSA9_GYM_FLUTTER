@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gym.gym.mapper.BuyListMapper">
+
+    <select id="list" resultType="BuyList">
+        SELECT 
+            b.*, 
+            user.name AS userName, 
+            trainer.name AS trainerName, 
+            t.name AS ticketName,
+            t.price AS ticketPrice
+        FROM 
+            buy_list b
+        JOIN 
+            users user 
+        ON 
+            b.user_no = user.no
+        LEFT JOIN
+            trainer_profile trainer
+        ON
+            b.trainer_no = trainer.trainer_no
+        JOIN 
+            Ticket t 
+        ON 
+            b.ticket_no = t.no
+        WHERE 
+        user.name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY 
+            b.buy_date DESC -- 최신순 정렬
+        LIMIT #{page.index}, #{page.rows}
+    </select>
+
+    <!-- 페이징 데이터 -->
+    <select id="count" resultType="int">
+        SELECT 
+            COUNT(*)
+        FROM 
+            buy_list b
+        JOIN 
+            users user 
+        ON 
+            b.user_no = user.no
+        LEFT JOIN
+            users trainer
+        ON
+            b.trainer_no = trainer.no
+        JOIN 
+            Ticket t 
+        ON 
+            b.ticket_no = t.no
+        WHERE 
+            user.name LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+     <select id="countByUser" parameterType="Long" resultType="int">
+        SELECT 
+            COUNT(*)
+        FROM 
+            buy_list b
+        JOIN 
+            users user 
+        ON 
+            b.user_no = user.no
+        LEFT JOIN
+            users trainer
+        ON
+            b.trainer_no = trainer.no
+        JOIN 
+            Ticket t 
+        ON 
+            b.ticket_no = t.no
+        WHERE 
+            user.no = #{no};
+    </select>
+
+
+
+    <select id="listByUser"  resultType="BuyList">
+        SELECT 
+            b.*, 
+            user.name AS userName, 
+            t.name AS ticketName, 
+            t.price AS ticketPrice
+        FROM 
+            buy_list b
+        JOIN 
+            users user 
+        ON 
+            b.user_no = user.no
+        JOIN 
+            Ticket t 
+        ON 
+            b.ticket_no = t.no
+        WHERE 
+            b.user_no = #{userNo}
+            LIMIT #{page.index}, 5
+    </select>
+
+    <select id="ticketByUser"  resultType="BuyList">
+        SELECT 
+            b.*, 
+            user.name AS userName, 
+            t.name AS ticketName, 
+            t.price AS ticketPrice
+        FROM 
+            buy_list b
+        JOIN 
+            users user 
+        ON 
+            b.user_no = user.no
+        JOIN 
+            Ticket t 
+        ON 
+            b.ticket_no = t.no
+        WHERE 
+            b.status = '정상'
+        AND b.user_no = #{userNo}
+    </select>
+
+    <update id="cancel" parameterType="int">
+        UPDATE buy_list
+        SET status = '환불',
+            canceled_at = NOW(),
+            end_date = NOW()
+        WHERE no = #{no}
+    </update>
+
+    <update id="statusUpdate">
+        UPDATE buy_list 
+        SET status = '만료' 
+        WHERE end_date &lt; NOW()
+          AND status != '환불'
+    </update>
+
+    <insert id="insert">
+        INSERT INTO buy_list (ticket_no, user_no, trainer_no, start_date, end_date)
+        VALUES (#{ticketNo}, #{userNo}, #{trainerNo}, #{startDate}, #{endDate})
+    </insert>
+    
+    <!-- 담당 트레이너 업데이트 -->
+    <update id="updateTrainer">
+        UPDATE users
+        SET trainer_no = #{trainerNo}
+        WHERE no = #{userNo}
+    </update>
+
+    <!-- 가장 최근 구매내역 -->
+    <select id="lastBuyList" resultType="BuyList">
+        SELECT * 
+        FROM buy_list 
+        WHERE user_no = #{userNo} 
+        ORDER BY buy_date DESC LIMIT 1
+    </select>
+
+    <!-- 매출 내역 -->
+    <select id="salesList" resultType="BuyList">
+        SELECT 
+            t.no AS ticketNo,
+            t.name AS ticketName,
+            t.price AS ticketPrice,
+            u.name AS trainerName,
+            IFNULL(SUM(CASE WHEN b.status != '환불' THEN 1 ELSE 0 END), 0) AS salesCount
+        FROM 
+            Ticket t
+        LEFT JOIN 
+            buy_list b ON b.ticket_no = t.no
+             AND (#{startDate} IS NULL OR 
+            (DATE(b.buy_date) BETWEEN DATE(#{startDate}) AND DATE(#{endDate})))
+        LEFT JOIN 
+            users u ON b.trainer_no = u.no
+        WHERE 
+            (#{trainerNo} IS NULL OR u.no = #{trainerNo})
+        GROUP BY 
+            t.no, t.name, t.price, u.name
+        ORDER BY 
+            t.no ASC
+    </select>
+
+
+
+</mapper>

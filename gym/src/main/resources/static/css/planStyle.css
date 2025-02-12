@@ -1,0 +1,531 @@
+a{cursor: pointer;}
+textarea{resize: none;}
+.first-con{
+    background-color: #F3F3F3;
+    min-width: 300px; 
+    max-width: 300px; 
+    flex-shrink: 0;
+}
+
+.upd-schedule{
+    cursor: pointer;
+}
+.upd-schedule:hover{
+    background-color: #e9e9e9 !important;
+    box-shadow:2px 2px 5px rgba(160, 160, 160, 0.3);
+}
+.upd-schedule:active{
+    /* background-color: #eeeeee !important; */
+    box-shadow:none;
+}
+
+.cal-container{
+    /* background:#fad390;
+    padding:20px; */
+    /* font-family: 'Questrial', sans-serif; */
+    padding-top: 20px;
+    padding-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    /* height:100vh; */
+}
+.calendar {
+    display: inline-grid;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    padding: 10px; /* 패딩 줄이기 */
+    border-radius: 5px;
+    width: 100%;
+    max-width: 100%; /* col-2보다 작게 설정 */
+    /* 추가로 Bootstrap grid에 맞게 반응형 설정 */
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+  /* .calendar > div {
+    width: 100%; 
+    box-sizing: border-box; 
+  } */
+  
+  .month {
+    /* width: 100%;
+    box-sizing: border-box; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px; /* 폰트 크기 축소 */
+    margin-bottom: 10px; /* 간격 축소 */
+    font-weight: 300;
+
+    .year{
+        font-weight: 600;
+        margin-left: 8px;
+    }
+    .nav{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      text-decoration:none;
+      color:#0a3d62;
+      width:30px;
+      height:30px;
+      border-radius:40px;
+      transition-duration:.2s;
+      position:relative;
+      
+      &:hover{
+          background:#eee;
+      }
+    }
+  }
+  
+  .days,
+  .dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px; /* 셀 간격 축소 */
+    margin-top: 5px; /* 여백 축소 */
+  }
+  
+  .days {
+    justify-content: center;
+    align-items: center;
+    color: #999;
+    font-weight: 600;
+    margin-bottom: 8px; /* 여백 축소 */
+    font-size: 12px; /* 폰트 크기 축소 */
+
+    span {
+        width: 30px;
+        justify-self: center;
+        align-self: center;
+        text-align: center;
+    }
+  }
+  
+  
+  .dates button {
+    cursor: pointer;
+    outline: 0;
+    border: 0;
+    background: transparent;
+    font-size: 14px; /* 폰트 크기 축소 */
+    justify-self: center;
+    align-self: center;
+    width: 20px; /* 버튼 크기 축소 */
+    height: 20px; /* 버튼 크기 축소 */
+    border-radius: 20px; /* 둥글게 유지 */
+    padding: 0; /* 패딩 제거 */
+    margin: 1px; /* 마진 축소 */
+    transition: background 0.2s;
+  
+    &.today {
+      box-shadow: inset 0px 0px 0px 2px #0a3d62;
+    }
+  
+    &:focus {
+      background: #0a3d62;
+      color: #fff;
+      font-weight: 600;
+    }
+  }
+  
+  .dates button:hover {
+    background: #eee;
+}
+
+.comment{
+  background: #D7F0FF;
+  border-radius: 15px;
+  overflow: hidden;
+  height: 250px;
+}
+  .comment-title {
+    background: #C4E8FD;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 8px;
+    align-items: center;
+    /* margin: 0; */
+  }
+  .comment-title>p{
+    margin: auto;
+    font-weight: 600;
+    font-size: 22px;
+    color: #525767;
+  }
+  .comment-content{
+    padding: 8px 8px;
+    max-height: 218px; 
+    overflow-y: auto;
+  }
+
+  .comment-content .comment-date {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .comment-detail .cContent,
+  .comment-detail .fContent {
+    white-space: pre-line;
+  }
+
+  .comment-btn-container button:hover {
+    background-color: #08a1fa;
+  }
+
+  .comment-edit textarea {
+    width: 100%;
+    background-color: #fff;
+    border: none;
+  }
+
+  .comment-edit textarea:focus,
+  .comment-edit textarea:hover{
+    outline: none;
+    background-color: #eeeeee;
+  }
+
+
+.pop-up{
+  width: 350px;
+  height: 350px;
+  background-color: #F3F3F3;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow:1px 1px 5px rgba(10, 10, 10, 0.3);
+}
+
+.exercise-bymyself,
+.exercise-pt {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.pop-up .popup-type {
+    background-color: #ECECEC;
+    height: 50px;
+    display: flex;
+    padding: 10px 15px;
+    align-items: center;
+    
+    justify-content: space-between;
+}
+
+.pop-up .popup-type>p {
+    font-size: 18px;
+    margin: 0;
+}
+
+.input-schedule .popup-type{
+    justify-content: end;
+}
+
+.popup-type .icons {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+}
+.popup-type .icons a {
+    color: #444444;
+    width: 32px;
+    height: 32px;
+    display: flex; /* 내부 아이콘을 가운데 정렬 */
+    align-items: center; /* 세로 정렬 */
+    justify-content: center;
+    /* font-style: 10px; */
+    padding: 4px;
+    padding-left: 9px;
+    padding-right: 9px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    background-color: transparent;
+}
+
+.exercise-bymyself .popup-type {
+    background-color: #FEE6C9;
+}
+
+.exercise-pt .popup-type{
+    background-color: #D2F0FF;
+}
+
+.input-schedule>.popup-type .icons a:hover{
+    background-color:#c0c0c0 !important;
+}
+.exercise-bymyself>.popup-type .icons a:hover{
+    background-color: #ecceaa !important;
+}
+.exercise-pt>.popup-type .icons a:hover{
+    background-color: #b1e2fa !important;
+}
+/* .input-schedule>.popup-type:hover{
+    background-color:#c0c0c0 !important;
+}
+.exercise-bymyself>.popup-type:hover{
+    background-color: #ecceaa !important;
+}
+.exercise-pt>.popup-type:hover{
+    background-color: #b1e2fa !important;
+} */
+
+.pop-up .popup-edit,
+.pop-up .popup-content{
+  /* flex: 1; */
+  padding: 24px;
+  padding-top: 28px;
+  margin: 0;
+  height: 300px;
+}
+
+.popup-edit input,
+.popup-content input{
+  width: 100%;
+  height: 36px;
+  font-size: 20px;
+  border: none;
+  border-bottom: 1px solid #A5A5A5;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.popup-edit input:focus,
+.popup-content input:focus{
+  outline: none;
+  border-bottom: 2px solid #16ABFF;
+  transition: 0.1s;
+}
+
+.set-time{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  font-size: 15px;
+  align-items: center;
+}
+
+.set-time>p {
+  margin: 0;
+  align-items: center;
+  font-size: 18px;
+}
+.set-time-date{
+  margin: 0 auto;
+  font-weight: bold;
+}
+
+.set-time-drops{
+  margin: 0;
+  width: 180px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* .set-time-drops select{
+  appearance: none;
+  border: none;
+  width: 80px;
+  height: 28px;
+  text-align: center;
+  max-height: 80px;
+  overflow-y: auto;
+} */
+/* .set-time-drops .options{
+  max-height: 140px;
+  overflow-y: auto;
+} */
+/* .set-time-drops option{} */
+
+.dropdown{
+  width: 80px;
+  height: 28px;
+}
+.dropdown button{
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+/* 커스텀 옵션 컨테이너 */
+.options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 105px;
+  max-height: 140px; /* 보이는 개수 제한 (예: 3개 높이) */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: #fff;
+  z-index: 10;
+}
+
+.options div {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.dropdown button:hover,
+.options div:hover {
+  background-color: #ececec;
+}
+
+.popup-edit textarea,
+.popup-content textarea{
+  width: 100%;
+  height: 115px;
+  background-color: #ececec;
+  border: none;
+  resize: none;
+  border-radius: 3px;
+  padding: 2px;
+  overflow-y: auto;
+}
+
+.popup-edit textarea:focus,
+.popup-edit textarea:hover,  
+.popup-content textarea:focus,
+.popup-content textarea:hover {  
+  outline: none;
+  background-color: #e0e0e0;
+}
+
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  gap: 10px;
+}
+
+.button-container button{
+  border: none;
+  background-color: #16ABFF;
+  color: #fff;
+  padding: 4px 24px;
+  border-radius: 7px;
+  font-size: 15px;
+}
+
+#cancelButton{
+  background-color: #c2c2c2;
+  color: #121212;
+}
+#cancelButton:hover{
+  background-color: #acacac;
+}
+
+.exercise-bymyself .popup-edit #updateButton:hover,
+.input-schedule .popup-content .button-container button:hover{
+  background-color: #08a1fa;
+}
+
+.popup-content .popup-title{
+  font-size: 22px;
+  padding-bottom: 15px;
+}
+.popup-content .time-info{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.popup-content .time-info>p{
+  margin: 0;
+  align-items: center;
+  font-size: 18px;
+}
+.plan-date{
+  margin: 0 auto;
+  font-weight: bold;
+  text-align: center;
+}
+.popup-content .time-info .plan-time{
+  margin: 0;
+  width: 180px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  background-color: #ececec;
+  padding: 5px 12px;
+  margin: 0;
+}
+.popup-content .time-info .plan-time p{
+  margin: 0;
+}
+
+.popup-content .plan-detail {
+  margin: 0;
+  width: 100%;
+  height: calc(100% - 113.5px);
+  background-color: #ececec;
+  border-radius: 3px;
+  padding: 2px;
+  overflow-y: auto;
+}
+
+.exercise-pt .trainer-info{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 15px;
+  gap: 18px;
+}
+.exercise-pt .trainer-info p {
+  font-size: 18px;
+  margin: 0;
+}
+
+
+.exercise-pt .popup-content{
+  height: 180px;
+}
+
+.input-schedule {
+  position: fixed;
+  left: 295px;
+  top: 180px;
+  z-index: 10;
+  display: none;
+}
+
+.exercise-pt {
+  height: 230px;
+  display: none;
+}
+
+.exercise-bymyself{
+  display: none;
+}
+
+.fc-daygrid-day {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.fc-daygrid-day:hover {
+  background-color: #f0f8ff;
+}
+
+#calendar {
+  height: 850px;
+}
+
+a{
+  text-decoration: none;
+  color: #121212;
+}
+
+.focused-day {
+  outline: 2px solid #007bff; 
+  background-color: #cee6ff; /* 연한 파란색 배경 */
+  /* border-radius: 4px;  */
+}
