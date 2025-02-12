@@ -10,7 +10,6 @@ class TicketService {
 
       if (response.statusCode == 200) {
         print('티켓 목록 조회 성공!');
-        print(response.data);
 
         // List<dynamic> 데이터를 List<Map<String, dynamic>>로 변환
         List<Map<String, dynamic>> tickets =

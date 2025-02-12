@@ -3,39 +3,39 @@ import 'package:gym_app/service/ticket_service.dart';
 import 'package:intl/intl.dart';
 
 class TicketCard extends StatefulWidget {
-  const TicketCard({super.key});
+  final String type;
+  const TicketCard({super.key, required this.type});
 
   @override
   State<TicketCard> createState() => _TicketCardState();
 }
 
 class _TicketCardState extends State<TicketCard> {
-  List<Map<String, dynamic>> generalTickets = []; // 일반 이용권 리스트
+  List<Map<String, dynamic>> tickets = []; // 이용권 리스트
   Map<int, bool> isCheckedMap = {}; // 체크 상태 저장
   bool isLoading = true; // 로딩 상태 추가
 
   @override
   void initState() {
     super.initState();
-    _loadGeneralTickets(); // 일반 이용권 불러오기
+    _loadTickets(); // 이용권 불러오기
   }
 
   // 일반 이용권만 필터링하여 가져오기
-  Future<void> _loadGeneralTickets() async {
+  Future<void> _loadTickets() async {
     try {
+      print('widget.type : ' + widget.type);
       TicketService ticketService = TicketService();
       var allTickets = await ticketService.getTicket();
 
       // 받은 데이터를 List<Map<String, dynamic>>로 변환
       List<Map<String, dynamic>> filteredTickets =
           List<Map<String, dynamic>>.from(
-              allTickets.where((ticket) => ticket['type'] == '일반'));
+              allTickets.where((ticket) => ticket['type'] == widget.type));
 
       setState(() {
-        generalTickets = filteredTickets;
-        isCheckedMap = {
-          for (int i = 0; i < generalTickets.length; i++) i: false
-        };
+        tickets = filteredTickets;
+        isCheckedMap = {for (int i = 0; i < tickets.length; i++) i: false};
         isLoading = false; // 로딩 완료
       });
     } catch (e) {
@@ -53,7 +53,7 @@ class _TicketCardState extends State<TicketCard> {
       padding: const EdgeInsets.all(16.0),
       child: isLoading
           ? const Center(child: CircularProgressIndicator()) // 로딩 중
-          : generalTickets.isEmpty
+          : tickets.isEmpty
               ? const Center(
                   child: Text(
                     "이용 가능한 이용권이 없습니다.",
@@ -61,9 +61,9 @@ class _TicketCardState extends State<TicketCard> {
                   ),
                 )
               : ListView.builder(
-                  itemCount: generalTickets.length,
+                  itemCount: tickets.length,
                   itemBuilder: (context, index) {
-                    var ticket = generalTickets[index];
+                    var ticket = tickets[index];
 
                     return Card(
                       elevation: 3,
