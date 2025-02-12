@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/service/ticket_service.dart';
+import 'package:intl/intl.dart';
 
 class TicketCard extends StatefulWidget {
   const TicketCard({super.key});
@@ -95,7 +96,7 @@ class _TicketCardState extends State<TicketCard> {
                                   const SizedBox(height: 4),
                                   Text(
                                     ticket['price'] != null
-                                        ? '${ticket['price']}원'
+                                        ? '${NumberFormat('#,###').format(ticket['price'])}원'
                                         : "가격 정보 없음",
                                     style: const TextStyle(
                                         fontSize: 16, color: Colors.blueAccent),
