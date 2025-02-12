@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 등록</title>
+    <link rel="stylesheet" href="/css/board/boardInsert.css">
+</head>
+
+<body class="fullBody">
+    <th:block th:replace="~{fragment/header::header}"></th:block>
+        
+    <div class="top-space"></div>
+    <div class="container" >
+        <form action="insert" method="post">
+            <h1>고객문의 게시판</h1>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="border" style="margin-top: 40px;" >
+                <div class="inputbox1" >
+                    <label for="" style=" color: black; font-size: 30px; ">Q. </label>
+                    <input type="text" class="titleinput" name="title" placeholder="문의사항을 알려주세요." required>
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <textarea class="textareaInput" name="content" rows="5" cols="40" required></textarea>
+                </div>
+            </div>
+            <div class="btn-box" style="margin-top: 10px;">
+            <button type="button" class="btnInput" onclick="location.href='boardList'"> 목록 </button>
+            <input type="submit" style="background-color: rgb(172, 235, 77);" class="btnInput" value="등록">
+        </div>
+        </form>
+    </div>
+
+    <th:block th:replace="~{fragment/footer::footer}"></th:block>
+    <th:block th:replace="~{fragment/script::script}"></th:block>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!-- 관리자헤더 프라그먼트 -->
+<th:block th:replace="~{fragment/adminHeader::adminHeader}"></th:block>
+<!-- 관리자페이지 메인콘텐츠 영역 틀 예시 -->
+<div class="container">
+    <!-- 전체 컨테이너 영역 속 사이드바, 메인콘텐츠 영역 display flex 로 가로 배치 -->
+    <th:block th:replace="~{fragment/adminSidebar::adminSidebar}"></th:block>
+    
+    <div class="main">
+        <div class="inner">
+            <div class="title">
+                <h2>PT 예약 목록</h2>
+            </div>
+
+            <!-- 해당 영역에 콘텐츠 추가하시면 됩니다. 추가하는 콘텐츠의 css는 따로 만드시면 됩니다. -->
+
+        </div>
+    </div>
+</div>

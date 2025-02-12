@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.gym.gym.mapper.TrainerProfileMapper">
+
+    <!-- 목록 -->
+    <select id="list" resultType="trainerProfile">
+        SELECT 
+            tp.*, 
+            f.no AS fileNo,
+            u.id AS userId,
+            u.name AS userName,
+            (SELECT COUNT(*) FROM users u_sub WHERE u_sub.trainer_no = tp.trainer_no) AS userCount
+        FROM 
+            trainer_profile tp
+        JOIN 
+            files f 
+        ON 
+            tp.no = f.profile_no
+        LEFT JOIN 
+            users u 
+        ON 
+            u.no = tp.trainer_no
+        WHERE 
+            tp.name LIKE CONCAT('%', #{keyword}, '%')
+        LIMIT #{page.index}, #{page.rows}
+    </select>
+
+    <!-- 데이터 갯수 -->
+    <select id="count" resultType="int">
+        SELECT 
+            COUNT(*)
+        FROM 
+            trainer_profile tp
+        JOIN 
+            files f 
+        ON 
+            tp.no = f.profile_no
+        LEFT JOIN 
+            users u 
+        ON 
+            u.no = tp.trainer_no
+        WHERE 
+            tp.name LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+
+
+    <!-- 연결된 트레이너 번호로 조회 -->
+    <select id="select" resultType="trainerProfile">
+        SELECT tp.*, f.no AS fileNo
+        FROM trainer_profile tp
+        JOIN files f ON tp.no = f.profile_no
+        WHERE tp.trainer_no = #{trainerNo}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO trainer_profile ( trainer_no, name, simple_info, detail_info )
+        VALUES ( #{trainerNo}, #{name}, #{simpleInfo}, #{detailInfo} )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update">
+        UPDATE trainer_profile 
+           SET trainer_no = #{trainerNo}
+              ,name = #{name}
+              ,simple_info = #{simpleInfo}
+              ,detail_info = #{detailInfo}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete">
+        DELETE FROM trainer_profile 
+        WHERE no = #{no};
+    </delete>
+
+
+    <!-- 트레이너가 관리하는 회원 수 -->
+    <select id="userCount" parameterType="int">
+        SELECT trainer_no, COUNT(*) AS count
+        FROM buy_list
+        WHERE trainer_no = #{trainerNo}
+        GROUP BY trainer_no
+    </select>
+
+    <!-- 트레이너인 유저리스트 -->
+    <select id="trainerUsers">
+        SELECT 
+            u.no,
+            u.name,
+            u.id,
+            MAX(tp.name) AS trainerName -- 중복 제거 시 첫 번째 trainerName
+        FROM users u
+        JOIN user_auth a ON u.no = a.user_no
+        LEFT JOIN trainer_profile tp ON tp.trainer_no = u.no
+        WHERE a.auth = 'ROLE_TRAINER'
+        GROUP BY u.name, u.no, u.id
+    </select>
+
+    <select id="selectTrainer" resultType="trainerProfile">
+        SELECT tp.*, u.no AS userNo
+        FROM users u
+        JOIN trainer_profile tp ON u.trainer_no = tp.trainer_no
+        WHERE tp.trainer_no = #{trainerNo}
+        GROUP BY tp.no, u.no
+        LIMIT 1
+    </select>
+
+</mapper>
