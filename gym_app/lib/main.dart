@@ -53,8 +53,10 @@ class MyApp extends StatelessWidget {
         '/join': (context) => Join(),
         '/findId': (context) => FindIdScreen(),
         '/findPw': (context) => FindPwScreen(),
+
         '/myPage': (context) => MyPage(),
         '/myPageInfo': (context) => MyPageInfo()
+
       },
     );
   }
