@@ -98,7 +98,7 @@ class _LoginState extends State<Login> {
               children: [
                 Center(
                   child: Image(
-                    image: AssetImage('image/logo.png'),
+                    image: AssetImage('images/logo.png'),
                     height: 100,
                   ),
                 ),
@@ -292,7 +292,7 @@ class _LoginState extends State<Login> {
                             ),
                             onTap: () {
                               setState(() {
-                                Navigator.pushNamed(context, "/home");
+                                Navigator.pushNamed(context, "/findId");
                               });
                             },
                           ),
@@ -311,7 +311,7 @@ class _LoginState extends State<Login> {
                             ),
                             onTap: () {
                               setState(() {
-                                Navigator.pushNamed(context, "/home");
+                                Navigator.pushNamed(context, "/findPw");
                               });
                             },
                           ),

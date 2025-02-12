@@ -33,12 +33,7 @@ class _JoinState extends State<Join> {
   String _selectedDomain = "@naver.com";
   String _gender = "남자";
   String? _selectedQuestion = "강아지 이름은?";
-  String? _id;
-  String? _password;
-  String? _confirmPassword;
-  String? _name;
   String? _email;
-  String? _answer;
   String? _phone;
 
   UserService userService = UserService();
@@ -109,7 +104,7 @@ class _JoinState extends State<Join> {
           child: ListView(
             children: [
               const Image(
-                image: AssetImage("image/logo.png"),
+                image: AssetImage("images/logo.png"),
                 width: 100,
                 height: 100,
               ),

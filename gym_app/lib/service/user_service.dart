@@ -19,17 +19,16 @@ class UserService {
   }
 
 // 회원정보 조회
-  Future<Map<String, dynamic>> getUser(String? username) async {
-    if (username == null) {
+  Future<Map<String, dynamic>> getUser(String? id) async {
+    if (id == null) {
       return {};
     }
     try {
       final storage = const FlutterSecureStorage();
       String? jwt = await storage.read(key: "jwt");
-      final response = await _dio.get('$host/users/info',
+      final response = await _dio.get('$host/user/info',
           options: Options(headers: {'Authorization': 'Bearer $jwt'}));
       if (response.statusCode == 200) {
-        print("회원정보 조회");
         return response.data;
       } else {
         return {};
