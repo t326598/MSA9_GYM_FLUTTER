@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계정찾기</title>
+
+    <link rel="stylesheet" href="/css/home/join.css">
+    <script src="/js/join.js"></script>
+</head>
+
+<body>
+    <th:block th:replace="~{fragment/header::header}"></th:block>
+    <div class="top" style="height: 150px;">
+
+    </div>
+    <div class="container1 col-12 col-lg-4" style="border: none; background-color: #0f0f0f; width: 70%;"  id="contain-box">
+   
+            <p th:text="${message}" style="font-size: 20px;"></p>
+
+            <br>             
+            <div  style="display: flex; justify-content: center">
+            <a class="findPassword"  style="padding-right: 40px;" href="findId">아이디 찾기 ></a>
+            <a class="findPassword" style="padding-left: 40px;"  href="join">회원가입 ></a>
+        </div>
+        <br><br>
+        </div>
+    </div>
+
+
+    <div class="top" style="height: 400px;">
+
+    </div>
+
+    <th:block th:replace="~{fragment/script::script}"></th:block>
+    <th:block th:replace="~{fragment/footer::footer}"></th:block>
+</body>
+
+</html>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gym.gym.mapper.BoardMapper">
+
+ <select id="list" resultType="Board">
+        SELECT b.title, b.no, b.user_no,b.content, b.created_At, b.updated_At,
+               u.no, s.no, s.auth, s.user_no, u.id,
+               u.name
+        FROM board b , users u   Join user_auth s ON u.no = s.user_no
+        <!-- user 합쳐서 writer -> username으로 바꿔야함 -->
+        WHERE 
+            b.user_no = u.no 
+            AND
+            (
+            <if test="option.code == 0">
+                title LIKE CONCAT('%', #{option.keyword}, '%')
+            OR u.id LIKE CONCAT('%', #{option.keyword}, '%')
+            OR content LIKE CONCAT('%', #{option.keyword}, '%')
+          
+            </if>
+            <if test="option.code == 1">
+                title LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            <if test="option.code == 2">
+            content LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            <if test="option.code == 3">
+                title LIKE CONCAT('%', #{option.keyword}, '%')
+            OR content LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            <if test="option.code == 4">
+            u.id LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            )
+            <if test="option.orderCode == 0">
+            ORDER BY created_at DESC
+            </if>
+            <if test="option.orderCode == 1">
+            ORDER BY title ASC
+            </if>
+
+            LIMIT #{page.index}, #{page.rows}
+    </select>
+
+
+<select id="select" resultType="Board">
+ SELECT *
+    FROM board b
+    JOIN users u ON b.user_no = u.no
+    WHERE b.no = #{no}
+</select>
+
+
+
+
+
+<insert id="insert">
+INSERT INTO board (user_no, title, content)
+VALUES (#{userNo}, #{title}, #{content})
+</insert>
+
+<update id="update">
+UPDATE board
+SET title = #{title}
+    , content = #{content}
+    , updated_at = now()
+WHERE no = #{no}
+</update>
+
+<delete id="delete">
+DELETE FROM board
+WHERE no = #{no}
+</delete>
+
+
+<select id="count" resultType="int">
+        SELECT COUNT(*)
+          FROM board b
+          Join users u ON u.no = b.user_no
+        WHERE    
+            <if test="option.code == 0">
+                title LIKE CONCAT('%', #{option.keyword}, '%')
+            OR u.id LIKE CONCAT('%', #{option.keyword}, '%')
+            OR content LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            <if test="option.code == 1">
+                title LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            <if test="option.code == 2">
+            content LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            <if test="option.code == 3">
+                title LIKE CONCAT('%', #{option.keyword}, '%')
+            OR content LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            <if test="option.code == 4">
+            u.id LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+    </select>
+
+
+<select id="boardlist" resultType="Board">
+    SELECT b.title, b.no, b.user_no, b.content, b.created_At, b.updated_At,
+           u.no, s.no, s.auth, s.user_no, u.id, u.name,
+           CASE
+               WHEN a.board_no IS NOT NULL THEN 1
+               ELSE 0
+           END AS has_answer
+    FROM board b 
+    JOIN users u ON b.user_no = u.no 
+    JOIN user_auth s ON u.no = s.user_no
+    LEFT JOIN answer a ON b.no = a.board_no
+    WHERE b.user_no = u.no 
+    AND (
+        <if test="option.code == 0">
+            b.title LIKE CONCAT('%', #{option.keyword}, '%')
+            OR u.id LIKE CONCAT('%', #{option.keyword}, '%')
+            OR b.content LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+        <if test="option.code == 1">
+            b.title LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+        <if test="option.code == 2">
+            b.content LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+        <if test="option.code == 3">
+            b.title LIKE CONCAT('%', #{option.keyword}, '%')
+            OR b.content LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+        <if test="option.code == 4">
+            u.id LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+    )
+    <if test="option.orderCode == 0">
+        ORDER BY created_at DESC
+    </if>
+    <if test="option.orderCode == 1">
+        ORDER BY b.title ASC
+    </if>
+    LIMIT #{page.index}, #{page.rows}
+</select>
+
+
+<select id="myBoardlist" resultType="Board">
+    SELECT b.title, b.no, b.user_no, b.content, b.created_At, b.updated_At,
+           u.no, s.no, s.auth, s.user_no, u.id, u.name,
+           CASE
+               WHEN a.board_no IS NOT NULL THEN 1
+               ELSE 0
+           END AS has_answer
+    FROM board b 
+    JOIN users u ON b.user_no = u.no 
+    JOIN user_auth s ON u.no = s.user_no
+    LEFT JOIN answer a ON b.no = a.board_no
+    WHERE b.user_no = #{no}
+    AND (
+        <if test="option.code == 0">
+            b.title LIKE CONCAT('%', #{option.keyword}, '%')
+            OR u.id LIKE CONCAT('%', #{option.keyword}, '%')
+            OR b.content LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+        <if test="option.code == 1">
+            b.title LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+        <if test="option.code == 2">
+            b.content LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+        <if test="option.code == 3">
+            b.title LIKE CONCAT('%', #{option.keyword}, '%')
+            OR b.content LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+        <if test="option.code == 4">
+            u.id LIKE CONCAT('%', #{option.keyword}, '%')
+        </if>
+    )
+    <if test="option.orderCode == 0">
+        ORDER BY created_at DESC
+    </if>
+    <if test="option.orderCode == 1">
+        ORDER BY b.title ASC
+    </if>
+    LIMIT #{page.index}, #{page.rows}
+</select>
+
+
+<select id="countByUserNo" resultType="int">
+    SELECT COUNT(*)
+    FROM board b
+    JOIN users u ON b.user_no = u.no
+    LEFT JOIN answer a ON b.no = a.board_no
+    WHERE b.user_no = #{no}
+</select>
+
+
+</mapper>

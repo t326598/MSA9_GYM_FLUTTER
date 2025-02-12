@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.gym.gym.mapper.TicketMapper">
+
+    <!-- 조회 -->
+
+    <select id="allList" resultType="Ticket">
+        SELECT *
+        FROM ticket
+        WHERE name LIKE CONCAT ('%', #{keyword}, '%')
+    </select>
+
+    <select id="ptList" resultType="Ticket">
+        SELECT *
+        FROM ticket
+        WHERE type = 'PT'
+    </select>
+
+    <select id="normalList" resultType="Ticket">
+        SELECT *
+        FROM ticket
+        WHERE type = '일반'
+    </select>
+
+    <select id="select" resultType="Ticket">
+        SELECT *
+        FROM ticket
+        WHERE no = #{no}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO ticket ( name, price, info, type, months, pt_count )
+        VALUES ( #{name}, #{price}, #{info}, #{type}, #{months}, #{ptCount} )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update">
+        UPDATE ticket
+           SET name = #{name}
+              ,price = #{price}
+              ,info = #{info}
+              ,type = #{type}
+              ,months = #{months}
+              ,pt_count = #{ptCount}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete">
+        DELETE FROM ticket
+        WHERE no = #{no}
+    </delete>
+
+</mapper>

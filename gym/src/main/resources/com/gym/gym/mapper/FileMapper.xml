@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.gym.gym.mapper.FileMapper">
+
+    <!-- 목록 -->
+    <select id="list" resultType="Files">
+        SELECT * 
+        FROM files
+    </select>
+
+    <!-- 트레이너 프로필 번호로 조회 -->
+    <select id="select" resultType="Files">
+        SELECT * 
+        FROM files
+        WHERE profile_no = #{trainerNo}
+    </select>
+
+    <!-- 파일번호로 조회 -->
+    <select id="selectByNo" resultType="Files">
+        SELECT * 
+        FROM files
+        WHERE no = #{no}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert">
+        INSERT INTO files ( 
+            no, name, path, size, 
+            type, profile_no
+        )
+        VALUES (
+            #{no}, #{name}, #{path}, #{size}, 
+            #{type}, #{profileNo}
+        )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="map">
+        UPDATE files
+           SET name = #{file.name}
+              ,path = #{file.path}
+              ,size = #{file.size}
+              ,type = #{file.type}
+              ,profile_no = #{file.profileNo}
+        WHERE no = #{fileNo}
+    </update>
+
+    <!-- 삭제 -->
+	<delete id="delete">
+        DELETE FROM files
+        WHERE no = #{no}
+    </delete>
+
+    <!-- 부모테이블 기준 파일 목록 -->
+    <select id="listByParent" resultType="Files">
+        SELECT * 
+        FROM files
+        WHERE profile_no = #{profileNo}
+    </select>
+
+    <!-- 부모테이블 기준 파일 삭제 -->
+    <delete id="deleteByParent" >
+        DELETE FROM files
+        WHERE profile_no = #{profileNo}
+    </delete>
+    
+</mapper>

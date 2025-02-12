@@ -1,0 +1,140 @@
+@charset "UTF-8";
+
+.search-container {
+    display: flex;
+    justify-content: center;
+}
+.search {
+    width: 1000px;
+    height: 30px;
+    display: flex;
+    justify-content: end;
+    margin-bottom: 30px;
+}
+.search input[type="text"] {
+    padding: 8px;
+    width: 200px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+}
+button {
+    padding: 0px 20px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2); 
+}
+button:hover {
+    background-color: #005f73;
+}
+
+.list {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    max-height: 550px; 
+}
+.paging {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    margin: 0 5px;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #008CBA;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.pagination a:hover {
+    background-color: #005f73;
+    color: white;
+}
+
+.pagination a.active {
+    background-color: #008CBA;
+    color: white;
+    border: 1px solid #008CBA;
+    pointer-events: none;
+}
+table { 
+    width: 100%; 
+    max-height: 550px;
+    max-width: 1000px; 
+    border-collapse: collapse; 
+    background-color: #fff; 
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); 
+    margin-bottom: 30px; 
+    overflow-y: auto;
+} 
+thead { 
+    background-color: #F7F8F9; 
+} 
+th, td { 
+    height: 50px;
+    padding: 5px; 
+    text-align: center; 
+    border: 1px solid #ddd; 
+}
+
+.updateBtn,
+.deleteBtn {
+    display: inline-block;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.updateBtn {
+    background-color: #7c92c0;
+}
+.deleteBtn {
+    background-color: #e46262;
+}
+
+.updateBtn:hover,
+.deleteBtn:hover {
+    filter: brightness(90%);
+}
+
+/* ------------------------구매내역 css------------------------ */
+.text-red {
+    color: red;
+}
+
+.text-green {
+    color: rgb(0, 197, 0);
+}
+
+.text-blue {
+    color: rgba(0, 110, 255, 0.938);
+}
+
+select {
+    padding: 5px 10px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: #eee;
+    float: right;
+}

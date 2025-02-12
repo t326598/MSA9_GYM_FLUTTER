@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gym.gym.mapper.AttendanceMapper">
+
+    <!-- 출석 내역 조회 -->
+    <select id="list" resultMap="AttendanceWithUserMap"> 
+    SELECT
+     a.qr_id AS qrId, 
+     a.user_no AS userNo,
+      a.check_time AS checkTime, 
+      u.no AS userNo,
+       u.id AS userId, 
+       u.name AS userName, 
+       u.email AS userEmail, 
+       u.phone AS userPhone 
+       FROM attendance a 
+       INNER JOIN users u ON a.user_no = u.no
+    WHERE 
+            a.user_no = u.no 
+            AND
+            <if test="option.code == 0">
+                 u.id LIKE CONCAT('%', #{option.keyword}, '%')
+            OR u.name LIKE CONCAT('%', #{option.keyword}, '%')
+            OR u.phone LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            LIMIT #{page.index}, #{page.rows}    
+    </select>
+
+    <!-- 데이터 개수 조회 -->
+    <select id="count" resultType="int">
+        SELECT COUNT(*) 
+        FROM attendance a
+        INNER JOIN users u ON a.user_no = u.no
+        <where>
+            <if test="option.keyword != null and option.keyword != ''">
+                AND u.name LIKE CONCAT('%', #{option.keyword}, '%')
+            </if>
+            <if test="option.code != 0">
+                AND a.some_column = #{option.code}  <!-- 필요에 맞는 조건 추가 -->
+            </if>
+        </where>
+    </select>
+
+    <!-- Result Map -->
+    <resultMap id="AttendanceWithUserMap" type="com.gym.gym.domain.Attendance">
+        <result property="qrId" column="qrId" />
+        <result property="userNo" column="userNo" />
+        <result property="checkTime" column="checkTime" />
+        <association property="users" javaType="com.gym.gym.domain.Users">
+            <result property="id" column="userId" />
+            <result property="name" column="userName" />
+            <result property="email" column="userEmail" />
+            <result property="phone" column="userPhone" />
+        </association>
+    </resultMap>
+
+    
+
+    <!-- 출석 체크 (등록) -->
+<insert id="insertAttendance" parameterType="map">
+    INSERT INTO attendance (qr_id, user_no)
+    SELECT #{qrId}, #{userNo}
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM attendance
+        WHERE user_no = #{userNo}
+        AND DATE(check_time) = CURDATE()
+    )
+</insert>
+
+
+
+    <!-- 출석 체크 (등록) 여러번 가능 -->
+    <!-- <insert id="insertAttendance" parameterType="map">
+         INSERT INTO attendance (qr_id, user_no)
+         VALUES (#{qrId}, #{userNo})
+    </insert> -->
+
+
+    <!-- 유저 검색 -->
+    <select id="searchAttendance" resultMap="AttendanceWithUserMap">
+        SELECT 
+            a.qr_id AS qrId,
+            a.user_no AS userNo,
+            a.check_time AS checkTime,
+            u.no AS userNo, 
+            u.id AS userId,
+            u.name AS userName,
+            u.email AS userEmail,
+            u.phone AS userPhone
+        FROM attendance a
+        INNER JOIN users u ON a.user_no = u.no
+        WHERE 
+            (u.id LIKE CONCAT('%', #{searchKeyword}, '%') 
+            OR u.name LIKE CONCAT('%', #{searchKeyword}, '%') 
+            OR u.email LIKE CONCAT('%', #{searchKeyword}, '%') 
+            OR u.phone LIKE CONCAT('%', #{searchKeyword}, '%'))
+    </select>
+
+
+
+ <select id="listCount" resultType="int"> <!-- 1시간이 지나면 안셈 -->
+    SELECT COUNT(*)
+    FROM attendance
+    WHERE check_time &gt;= DATE_SUB(NOW(), INTERVAL 1 HOUR);
+</select>
+
+
+</mapper>

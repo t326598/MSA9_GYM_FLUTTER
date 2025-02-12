@@ -1,0 +1,133 @@
+body {
+    background-color: #252222;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    width: 1300px;
+}
+
+.form-box{
+    margin-bottom: 40px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.forms{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+select{
+    padding: 5px;
+}
+
+button{
+    padding: 5px 10px;
+}
+
+#keyword{
+    padding: 5px;
+    width: 200px;
+}
+
+.insert-button{
+    width: 1300px;
+    margin-right: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.tabletr{
+    border-bottom: 1px solid #ddd;
+}
+
+.tabletr:last-child{
+    border-bottom: none;
+}
+
+.btn-primary{
+    margin-top: 10px; 
+    text-decoration-line: none; 
+    font-weight: bold; 
+    font-size: 15px; 
+    color: black; 
+    background-color: rgba(215, 228, 224, 0.856); 
+    padding: 10px 20px 10px 20px; 
+    border-radius: 5px;
+}
+
+.pages{
+    color: #ddd;
+}
+
+th, td{
+    padding: 18px;
+}
+th{
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    background-color: rgba(245, 222, 179, 0.774);
+}
+td{
+    font-size: 15px;
+}
+
+select:hover{
+    background-color: rgb(221, 214, 214);
+}
+
+select{
+    border-radius: 5px;
+}
+input{
+    border-radius: 5px;
+}
+
+.titlebt:hover{
+    font-size: 18px;
+}
+
+a{
+    color: inherit; /* 기존의 색상을 유지 */
+    text-decoration: none; /* 링크에 밑줄을 없앱니다. */
+}
+
+a:hover{
+ font-weight: bold;   
+ text-decoration: underline; 
+}
+
+.scButton:hover{
+    background-color: #252222;
+    color: white;
+}
+
+tr{
+   
+}
+
+.pagetag {
+    padding: 8px 18px 4px 18px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    color: inherit; /* 기존의 색상을 유지 */
+    text-decoration: none; /* 링크에 밑줄을 없앱니다. */
+    border: 1px solid #3b3b3b;
+}
+
+.pagetag:hover{
+    background-color: #e6e2e2;
+    color: black;
+    text-decoration: none;
+}

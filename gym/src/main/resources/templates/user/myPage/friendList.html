@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 목록</title>
+    <link rel="stylesheet" href="/css/myPage/ptList.css">
+    <th:block th:replace="~{fragment/link::link}"></th:block>
+</head>
+
+<!-- 헤더 -->
+<th:block th:replace="~{fragment/header::header}"></th:block>
+
+<body style="color: rgb(3, 3, 3); background-color: #252222;">
+    <div class="wrapper" style="margin-top: 80px;">
+        <main>
+            <div class="main-text1" style="color: #9FD0D5;">마이페이지</div>
+            <div class="button-group">
+                <button onclick="window.location.href='/user/myPage/info'">내 정보</button>
+                <button onclick="window.location.href='/user/myPage/buyList'">이용권 내역</button>
+                <button onclick="window.location.href='/user/myPage/ptList'">PT 이용 내역</button>
+                <button class="active" onclick="window.location.href='/user/myPage/myBoardList'">내 문의사항</button>
+            </div>
+
+            <table class="info-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>담당 트레이너</th>
+                        <th>예약 날짜</th>
+                        <th>신청 일시</th>
+                        <th>취소 일시</th>
+                        <th>상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="reservation : ${reservationList}">
+                        <td th:text="${reservation.no}"></td>
+                        <td th:text="${reservation.trainerNo}"></td>
+                        <td th:text="${reservation.rvDate}"></td>
+                        <td th:text="${reservation.createdAt}"></td>
+                        <td th:text="${reservation.canceledAt}"></td>
+
+                        <td>
+                            <span th:if="${reservation.enabled == 1}">
+                                <form th:action="@{/user/myPage/ptList}" method="post"
+                                    onsubmit="return cancelConfirm();">
+                                    <input type="hidden" th:name="no" th:value="${reservation.no}">
+                                    <button type="submit" style="cursor: pointer;">
+                                        완료
+                                    </button>
+                                </form>
+                            </span>
+                            <span th:if="${reservation.enabled == 0}">취소</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+        <!-- 푸터 -->
+        <footer>
+            <th:block th:replace="~{fragment/footer::footer}"></th:block>
+        </footer>
+    </div>
+
+    <!-- 스크립트 -->
+    <th:block th:replace="~{fragment/script::script}"></th:block>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const buttons = document.querySelectorAll('.button-group button');
+            const currentPage = window.location.pathname; // 현재 페이지 경로
+
+            // 버튼 클릭 시 active 클래스 설정
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    buttons.forEach(btn => btn.classList.remove('active')); // 모든 버튼에서 active 클래스 제거
+                    button.classList.add('active'); // 클릭된 버튼에 active 클래스 추가
+                });
+
+                // 페이지 로드 시 버튼에 active 클래스 추가
+                if (currentPage.includes(button.innerText.trim())) {
+                    button.classList.add('active');
+                }
+            });
+        });
+
+        function cancelConfirm() {
+            return confirm("정말 예약을 취소하시겠습니까?");
+        }
+    </script>
+</body>
+
+</html>

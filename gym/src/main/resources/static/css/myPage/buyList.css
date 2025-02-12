@@ -1,0 +1,257 @@
+
+body {
+    background-color: #e9ecef;
+    font-family: 'Arial', sans-serif;
+    color: #c42525;
+    margin: 0;
+    padding: 0;
+}
+.wrapper {
+    width: 900px;
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: #252222;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+.button-group {
+    display: flex;
+    background-color: #333;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+.button-group button {
+    flex: 1;
+    padding: 15px 0;
+    border: none;
+    cursor: pointer;
+    background-color: #9FD0D5;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 16px;
+}
+.button-group button:hover {
+    background-color: #81d4fa;
+}
+.button-group .active {
+    background-color: #7e57c2;
+    color: rgb(255, 255, 255);
+}
+.info-table {
+    border-radius: 3px;
+    overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #ffffff;
+}
+.info-table th, .info-table td {
+    padding: 5px;
+    border: 1px solid #dee2e6;
+}
+.info-table th {
+    color: #fff;
+    width: 30%;
+    text-align: center;
+}
+.info-table td {
+    width: 70%;
+    text-align: left;
+}
+
+.info-table2 tr{
+    text-align: center;
+}
+
+.edit-button {
+    padding: 0 30px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    float: right;
+}
+.edit-button:hover {
+    background-color: #81d4fa;
+    color: #0a0a0a;
+}
+.main-text {
+    text-align: left;
+    font-weight: 900;
+    font-size: x-large;
+    padding-bottom: 10px;
+}
+
+.main-text1 {
+    text-align: center;
+    font-weight: 900;
+    font-size: xx-large;
+    padding-bottom: 10px;
+}
+
+button, .edit-button, .password-button {
+    padding: 10px 20px;
+    border: none;
+    /* border-radius: 5px; */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+
+/* 2번째 테이블 */
+
+
+/* 테이블 셀 스타일 */
+.info-table2 td {
+    padding: 15px 20px;  /* 위아래 간격 15px, 좌우 20px */
+    text-align: left;  /* 좌측 정렬 */
+}
+
+/* 헤더 셀 스타일 */
+.info-table2 th {
+    padding: 15px 20px;  /* 헤더 셀에도 동일하게 padding 추가 */
+    text-align: left;
+    background-color: #333;  /* 헤더 배경색 */
+    color: white;  /* 글자 색 */
+}
+
+/* 테이블의 간격을 넓게 하기 위한 스타일 */
+.info-table2 {
+    width: 100%;  /* 테이블 너비 100% */
+    border-collapse: collapse;  /* 테이블 간 경계 합침 */
+}
+
+
+
+/*   선 삭제    */
+
+/* 테이블 전체 스타일 */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;  /* 테이블 간 경계 합침 */
+}
+
+/* 테이블 전체 스타일 */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;  /* 테이블 간 경계 합침 */
+}
+
+/* 가로선만 유지하고 세로선은 없애기 */
+.info-table td, .info-table th {
+    border-top: 1px solid #dee2e6; /* 가로선만 유지 */
+    border-bottom: 1px solid #dee2e6; /* 가로선만 유지 */
+    border-left: none;  /* 세로선 제거 */
+    border-right: none;  /* 세로선 제거 */
+}
+
+/* 첫 번째 열의 가로선만 지우기 */
+.info-table td:first-child, .info-table th:first-child {
+    border-top: none;  /* 첫 번째 열의 가로선 제거 */
+}
+
+/* 두 번째 열의 가로선만 지우기 */
+.info-table td:nth-child(2), .info-table th:nth-child(2) {
+    border-top: none;  /* 두 번째 열의 가로선 제거 */
+}
+
+/* 헤더 셀 스타일 */
+.info-table th {
+    background-color: #333;  /* 헤더 배경색 */
+    color: white;  /* 글자 색 */
+    text-align: left;
+    padding: 15px 20px;
+}
+
+/* 데이터 셀 스타일 */
+.info-table td {
+    padding: 15px 20px;
+    text-align: left;
+}
+
+/* 두 번째 테이블 (세로형) 스타일 */
+.info-table2 {
+    width: 100%;
+    border-collapse: collapse;  /* 테이블 간 경계 합침 */
+    color: white;  /* 텍스트 색상 */
+}
+
+/* 두 번째 테이블 셀 스타일 */
+.info-table2 td, .info-table2 th {
+    padding: 15px 20px;  /* 위아래 간격 15px, 좌우 20px */
+    text-align: left;  /* 좌측 정렬 */
+    border-top: 1px solid #dee2e6; /* 가로선만 유지 */
+    border-bottom: 1px solid #dee2e6; /* 가로선만 유지 */
+    border-left: none;  /* 세로선 제거 */
+    border-right: none;  /* 세로선 제거 */
+}
+
+/* 첫 번째 행의 가로선 제거 */
+.info-table2 tr:first-child td, .info-table2 tr:first-child th {
+    border-top: none !important;  /* 첫 번째 행의 가로선 제거 */
+}
+
+/* 두 번째 테이블 헤더 셀 스타일 */
+.info-table2 th {
+    background-color: #333;  /* 헤더 배경색 */
+    color: white;  /* 글자 색 */
+    text-align: left;
+    padding: 15px 20px;
+}
+
+/* 데이터 셀 스타일 */
+.info-table2 td {
+    padding: 15px 20px;
+    text-align: left;
+}
+
+
+
+.paging {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.pagination a {
+    margin: 0 5px;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #008CBA;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.pagination a:hover {
+    background-color: #005f73;
+    color: white;
+}
+
+.pagination a.active {
+    background-color: #008CBA;
+    color: white;
+    border: 1px solid #008CBA;
+    pointer-events: none;
+}
+
+
+
+
+
+
+
+
