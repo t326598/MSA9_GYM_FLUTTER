@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/screens/trainer_screen.dart';
+import 'package:gym_app/service/ticket_service.dart';
+import 'package:gym_app/widgets/bottom_sheet.dart';
+import 'package:gym_app/widgets/ticket_card.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({super.key});
@@ -11,9 +14,21 @@ class TicketScreen extends StatefulWidget {
 class _TicketScreenState extends State<TicketScreen> {
   bool isGeneralActive = true;
   bool isPtActive = false;
+  int _currentIndex = 1;
+
+  final List<String> routes = [
+    '/home',
+    '/ticket',
+    '/trainer',
+    '/reservationInsert',
+    '/ptList',
+    '/calendar',
+  ];
 
   @override
   Widget build(BuildContext context) {
+    TicketService ticketService = TicketService();
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 49, 47, 47),
       appBar: AppBar(
@@ -99,7 +114,10 @@ class _TicketScreenState extends State<TicketScreen> {
               ),
             ],
           ),
-          Expanded(child: TextCardSample())
+          Expanded(child: TicketCard()),
+          SizedBox(
+            height: 42,
+          ),
         ],
       ),
       bottomSheet: Container(
@@ -118,54 +136,18 @@ class _TicketScreenState extends State<TicketScreen> {
             textColor: Colors.white,
             onTap: () {}),
       ),
-    );
-  }
-}
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
 
-class TextCardSample extends StatefulWidget {
-  const TextCardSample({super.key});
-
-  @override
-  State<TextCardSample> createState() => _TextCardSampleState();
-}
-
-class _TextCardSampleState extends State<TextCardSample> {
-  bool isChecked = false; // 체크 상태 변수
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromARGB(255, 49, 47, 47),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 3, // 카드 그림자 효과
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // 카드 둥글기 설정
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Checkbox(
-                  value: isChecked,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isChecked = value ?? false;
-                    });
-                  },
-                ),
-                const SizedBox(width: 10), // 체크박스와 텍스트 사이 간격
-                const Text(
-                  '1개월 이용권',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-          ),
-        ),
+          if (index >= 0 && index < routes.length) {
+            Navigator.pushNamed(context, routes[index]);
+          }
+        },
       ),
-      
     );
   }
 }
