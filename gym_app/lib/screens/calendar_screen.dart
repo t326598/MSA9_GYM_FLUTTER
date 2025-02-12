@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart';
 import 'package:gym_app/models/calendar_response.dart';
 import 'package:gym_app/service/calendar_service.dart';
+import 'package:gym_app/widgets/bottom_sheet.dart';
 import 'package:gym_app/widgets/event_cell_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:gym_app/widgets/calendar_bottom_sheet.dart';
@@ -14,10 +15,18 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
+  int _currentIndex = 5;
+  final List<String> routes = [
+    '/home',
+    '/ticket',
+    '/trainer',
+    '/reservationInsert',
+    '/calendar',
+  ];
   CalendarResponse? calendarResponse;
   CalendarService calendarService = CalendarService();
 
-  DateTime? _selectedDate; // 선택된 날짜 저장
+  DateTime? _selectedDate = DateTime.now().toLocal(); // 선택된 날짜 저장
 
   final List<NeatCleanCalendarEvent> _eventList = [];
 
@@ -33,8 +42,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     // 선택된 날짜 출력
     print("선택된 날짜: ${selectedDate.toLocal()}");
-
-    // 추가적으로 이 날짜에 해당하는 이벤트를 불러오는 등 필요한 작업을 할 수 있습니다.
   }
 
   @override
@@ -62,6 +69,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
         _eventList.addAll(response.toNeatCleanCalendarEvents());
       });
     }
+  }
+
+  void _fetchCalendarEventsByDate(DateTime selectedDate) async {
+    final response = await calendarService.getPlansByDate(selectedDate);
+    _eventList.clear();
+
+    if (response != null) {
+      setState(() {
+        _eventList.addAll(response.toNeatCleanCalendarEvents());
+      });
+    }
+    // 북마크 가져온 일정 데이터 화면에 적용시키기
   }
 
   @override
@@ -99,6 +118,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   end: end,
                 );
               },
+              onMonthChanged: (date) {
+                print("달이 바뀌었습니다");
+                _fetchCalendarEventsByDate(date);
+              },
               onDateSelected: _onDateSelected,
               isExpandable: true,
               eventDoneColor: Colors.green,
@@ -126,13 +149,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: const Icon(Icons.add),
             backgroundColor: Color.fromARGB(255, 159, 208, 213),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-              BottomNavigationBarItem(icon: Icon(Icons.person), label: "User"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.people), label: "Community"),
-            ],
+          bottomNavigationBar: CustomBottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+
+              if (index >= 0 && index < routes.length) {
+                Navigator.pushNamed(context, routes[index]);
+              }
+            },
           ),
         ));
   }
