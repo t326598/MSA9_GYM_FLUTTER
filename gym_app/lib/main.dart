@@ -7,6 +7,7 @@ import 'package:gym_app/screens/home_screen.dart';
 import 'package:gym_app/screens/join.dart';
 import 'package:gym_app/screens/login.dart';
 import 'package:gym_app/screens/my_page.dart';
+import 'package:gym_app/screens/my_page_info.dart';
 import 'package:gym_app/screens/ptList_screen.dart';
 import 'package:gym_app/screens/ptTicket_screen.dart';
 import 'package:gym_app/screens/reservation_insert_screen.dart';
@@ -14,7 +15,11 @@ import 'package:gym_app/screens/ticket_screen.dart';
 import 'package:gym_app/screens/trainer_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // ✅ 필수!
+  final userProvider = UserProvider();
+  await userProvider.autoLogin();
+
   runApp(ChangeNotifierProvider(
     // Provider
     // -ChangeNotifierProvider를 사용하여 UserProvider를 전역으로 사용
@@ -48,7 +53,10 @@ class MyApp extends StatelessWidget {
         '/join': (context) => Join(),
         '/findId': (context) => FindIdScreen(),
         '/findPw': (context) => FindPwScreen(),
-        '/myPage': (context) => MyPage()
+
+        '/myPage': (context) => MyPage(),
+        '/myPageInfo': (context) => MyPageInfo()
+
       },
     );
   }

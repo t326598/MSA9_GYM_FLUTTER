@@ -23,6 +23,8 @@ class _HomeContentState extends State<HomeContent> {
     '/ticket',
     '/reservationInsert',
     '/calendar',
+
+
     '/myPage'
   ];
 
@@ -45,7 +47,7 @@ String generateQRCodeData() {
       return count;
     } catch (e) {
       print('Error fetching user count: $e');
-      return 0;  // 에러 시 0명으로 반환
+      return 0; // 에러 시 0명으로 반환
     }
   }
 
@@ -152,7 +154,7 @@ String generateQRCodeData() {
 
                 // FutureBuilder를 사용하여 gymUserCount 비동기적으로 가져오기
                 FutureBuilder<int>(
-                  future: fetchGymUserCount(),  // gymUserCount를 가져오는 비동기 함수 호출
+                  future: fetchGymUserCount(), // gymUserCount를 가져오는 비동기 함수 호출
                   builder: (context, snapshot) {
                     String statusMessage = '';
                     Color statusColor = Colors.transparent;
@@ -183,7 +185,7 @@ String generateQRCodeData() {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            '$gymUserCount명  /',  // 서버에서 가져온 이용자 수 표시
+                            '$gymUserCount명  /', // 서버에서 가져온 이용자 수 표시
                             style: const TextStyle(
                               fontSize: 23,
                               fontWeight: FontWeight.bold,
@@ -192,14 +194,13 @@ String generateQRCodeData() {
                           ),
                           const SizedBox(width: 10),
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: statusColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
-                              statusMessage, 
+                              statusMessage,
                               style: const TextStyle(
                                 fontSize: 23,
                                 fontWeight: FontWeight.bold,
@@ -243,8 +244,7 @@ String generateQRCodeData() {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 175, 159, 179),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   textStyle: const TextStyle(fontSize: 18),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
