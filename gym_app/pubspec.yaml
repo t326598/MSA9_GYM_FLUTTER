@@ -57,11 +57,10 @@ dependencies:
 
   shared_preferences: ^2.5.1
   provider: ^6.1.2
-
-  # 토스 결제 SDK
+  # 결제
+  get: ^4.6.0
   tosspayments_widget_sdk_flutter: ^2.1.0
 
-  
 dev_dependencies:
   flutter_test:
     sdk: flutter
