@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+// 유저 서비스에요!
 class UserService {
   final Dio _dio = Dio();
   final String host = 'http://10.0.2.2:8080';

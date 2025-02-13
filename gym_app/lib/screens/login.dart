@@ -5,6 +5,7 @@ import 'package:gym_app/provider/user_provider.dart';
 import 'package:gym_app/widgets/custom_drawer.dart';
 import 'package:gym_app/widgets/custom_snackbar.dart';
 
+// 로그인 들어갑니다?
 class Login extends StatefulWidget {
   const Login({super.key});
 

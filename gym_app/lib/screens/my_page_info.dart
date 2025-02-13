@@ -8,6 +8,7 @@ import 'package:gym_app/service/user_service.dart';
 import 'package:gym_app/widgets/snackbar.dart';
 import 'package:provider/provider.dart';
 
+// 회원정보 수정... 가능?
 class MyPageInfo extends StatefulWidget {
   const MyPageInfo({super.key});
 

@@ -7,6 +7,7 @@ class FindPwScreen extends StatefulWidget {
   @override
   State<FindPwScreen> createState() => _FindPwScreenState();
 }
+// 비밀번호 찾아요
 
 class _FindPwScreenState extends State<FindPwScreen> {
   void _updatePhone() {

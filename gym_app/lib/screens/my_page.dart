@@ -5,7 +5,7 @@ import 'package:gym_app/widgets/my_page_button.dart'; // ✅ MyPageButton을 imp
 
 class MyPage extends StatelessWidget {
   const MyPage({super.key});
-
+// 내정보 메뉴임!
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = UserProvider();

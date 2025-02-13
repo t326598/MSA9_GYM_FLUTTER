@@ -4,7 +4,7 @@ import 'package:gym_app/service/user_service.dart';
 
 class Join extends StatefulWidget {
   const Join({super.key});
-
+// 회원가입해요!!
   @override
   State<Join> createState() => _JoinState();
 }
