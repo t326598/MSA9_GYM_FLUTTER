@@ -128,9 +128,9 @@ String generateQRCodeData() {
           scaffoldBackgroundColor: Color.fromARGB(255, 49, 47, 47),
           colorScheme: ColorScheme.dark(
             primary: const Color.fromARGB(255, 206, 61, 61),
-            onPrimary: const Color.fromARGB(255, 61, 18, 18),
-            surface: const Color.fromARGB(255, 105, 32, 32),
-            onSurface: Color.fromARGB(255, 159, 208, 213),
+            onPrimary: const Color.fromARGB(255, 241, 239, 239),
+            surface: const Color.fromARGB(255, 178, 10, 201),
+            onSurface: Color.fromARGB(255, 9, 191, 211),
           ),
         ),
         child: Scaffold(
