@@ -18,6 +18,19 @@ class UserService {
     }
   }
 
+  Future<bool> findPw(Map<String, dynamic> userData) async {
+    try {
+      final response = await _dio.post('$host/findPw', data: userData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
 // 회원정보 조회
   Future<Map<String, dynamic>> getUser(String? id) async {
     if (id == null) {

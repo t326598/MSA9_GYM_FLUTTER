@@ -237,19 +237,17 @@ public class UserController {
     @PostMapping("/findPw")
     public ResponseEntity<?> findPassword(@RequestBody Users user) throws Exception {
 
+        String id = user.getId();
         String name = user.getName();
         String phone = user.getPhone();
         String question = user.getQuestion();
         String answer = user.getAnswer();
-        String id = user.getId();
 
         // 이름, 전화번호, 질문, 답변을 기준으로 사용자 찾기
         Users foundUser = userService.findUserByPassword(name, phone, question, answer, id);
 
         if (foundUser != null && foundUser.getId() != null) {
             String code = UUID.randomUUID().toString().substring(0, 6);
-            // model.addAttribute("code", code);
-            // model.addAttribute("no", foundUser.getNo());
             foundUser.setCode(code);
             userService.codeInsert(foundUser);
 

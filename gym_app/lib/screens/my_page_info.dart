@@ -109,16 +109,10 @@ class _MyPageInfoState extends State<MyPageInfo> {
                 controller: _idController,
                 style: const TextStyle(color: Colors.white),
                 decoration: _buildInputDecoration("아이디", "아이디를 입력해주세요."),
-                validator: (value) => value == null || value.isEmpty ? "아이디를 입력하세요." : null,
               ),
               const SizedBox(height: 30),
-              TextFormField(
-                readOnly: updateUser,
-                controller: _nameController,
-                style: const TextStyle(color: Colors.white),
-                decoration: _buildInputDecoration("이름", "이름을 입력해주세요."),
-                validator: (value) => value == null || value.isEmpty ? "이름을 입력하세요." : null,
-              ),
+              _buildEditableTextField(label: "이름", controller: _nameController),
+              const SizedBox(height: 30),
               const SizedBox(height: 30),
               TextFormField(
                 readOnly: true,
@@ -128,21 +122,10 @@ class _MyPageInfoState extends State<MyPageInfo> {
                 validator: (value) => value == null || value.isEmpty ? "아이디를 입력하세요." : null,
               ),
               const SizedBox(height: 30),
-              TextFormField(
-                readOnly: updateUser,
-                controller: _emailController,
-                style: const TextStyle(color: Colors.white),
-                decoration: _buildInputDecoration("이메일", "이메일 입력해주세요."),
-                validator: (value) => value == null || value.isEmpty ? "이메일를 입력하세요." : null,
-              ),
+              _buildEditableTextField(label: "이메일", controller: _emailController),
               const SizedBox(height: 30),
-              TextFormField(
-                readOnly: updateUser,
-                controller: _phoneController,
-                style: const TextStyle(color: Colors.white),
-                decoration: _buildInputDecoration("연락처", "연락처를 입력해주세요."),
-                validator: (value) => value == null || value.isEmpty ? "아이디를 입력하세요." : null,
-              ),
+
+              _buildEditableTextField(label: "연락처", controller: _phoneController),
               const SizedBox(height: 30),
 
               /// 🔥 회원 수정 버튼
@@ -275,6 +258,30 @@ class _MyPageInfoState extends State<MyPageInfo> {
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
+      ),
+    );
+  }
+
+  Widget _buildEditableTextField({
+    required String label,
+    required TextEditingController controller,
+  }) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: updateUser ? Colors.transparent : Colors.white, // 🔥 처음에는 투명, 수정 가능할 때 하얀색
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white, width: 1),
+      ),
+      child: TextFormField(
+        readOnly: updateUser,
+        controller: controller,
+        style: TextStyle(color: updateUser ? Colors.white : Colors.black),
+        decoration: InputDecoration(
+          labelText: label,
+          border: InputBorder.none,
+        ),
       ),
     );
   }

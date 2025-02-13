@@ -91,7 +91,8 @@ class _LoginState extends State<Login> {
       body: Container(
           decoration: BoxDecoration(color: const Color.fromARGB(255, 49, 47, 47)),
           padding: const EdgeInsets.all(16),
-          child: Form(
+          child: SingleChildScrollView(
+              child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -317,13 +318,15 @@ class _LoginState extends State<Login> {
                           ),
                         ],
                       ),
-                      // 자동 로그인
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 178,
+                ),
               ],
             ),
-          )),
+          ))),
     );
   }
 }

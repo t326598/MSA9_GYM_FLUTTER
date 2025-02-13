@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gym_app/service/user_service.dart';
 
 class FindPwScreen extends StatefulWidget {
   const FindPwScreen({super.key});
@@ -8,20 +9,34 @@ class FindPwScreen extends StatefulWidget {
 }
 
 class _FindPwScreenState extends State<FindPwScreen> {
+  void _updatePhone() {
+    setState(() {
+      _phone =
+          "${_phoneFirstController.text}${_phoneSecondController.text}${_phoneThirdController.text}";
+    });
+  }
+
+  final _formkey = GlobalKey<FormState>();
+
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneFirstController = TextEditingController(text: "010");
+  final TextEditingController _phoneSecondController = TextEditingController();
+  final TextEditingController _phoneThirdController = TextEditingController();
+  final TextEditingController _answerController = TextEditingController();
+
+  String? _selectedQuestion = "강아지 이름은?";
+  String? _phone;
+
+  UserService userService = UserService();
+
   @override
   Widget build(BuildContext context) {
-    final _formkey = GlobalKey<FormState>();
-
-    final TextEditingController _idController = TextEditingController();
-    final TextEditingController _nameController = TextEditingController();
-    final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _phoneController = TextEditingController();
-    final TextEditingController _birthController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 49, 47, 47),
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("내 정보", style: TextStyle(color: Colors.white)),
+        title: const Text("비밀번호 찾기", style: TextStyle(color: Colors.white)),
       ),
       body: Container(
         decoration: const BoxDecoration(color: Color.fromARGB(255, 49, 47, 47)),
@@ -33,7 +48,6 @@ class _FindPwScreenState extends State<FindPwScreen> {
               const Image(image: AssetImage("images/logo.png"), width: 100, height: 100),
               const SizedBox(height: 30),
               TextFormField(
-                readOnly: true,
                 controller: _idController,
                 style: const TextStyle(color: Colors.white),
                 decoration: _buildInputDecoration("아이디", "아이디를 입력해주세요."),
@@ -47,28 +61,154 @@ class _FindPwScreenState extends State<FindPwScreen> {
                 validator: (value) => value == null || value.isEmpty ? "이름을 입력하세요." : null,
               ),
               const SizedBox(height: 30),
-              TextFormField(
-                readOnly: true,
-                controller: _birthController,
-                style: const TextStyle(color: Colors.white),
-                decoration: _buildInputDecoration("생일", ""),
-                validator: (value) => value == null || value.isEmpty ? "아이디를 입력하세요." : null,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // 첫 번째 필드 (010 고정)
+                  SizedBox(
+                    width: 60,
+                    height: 45,
+                    child: TextFormField(
+                      controller: _phoneFirstController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: _buildInputDecoration("", "").copyWith(
+                        contentPadding: EdgeInsets.symmetric(vertical: 10), // 👈 내부 여백 조정
+                      ),
+                      keyboardType: TextInputType.number,
+                      readOnly: true,
+                      textAlignVertical: TextAlignVertical.center, // 👈 세로 중앙 정렬
+                      textAlign: TextAlign.center, // 👈 가로 중앙 정렬 (선택 사항)
+                    ),
+                  ),
+
+                  // 첫 번째 "-" 추가
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(" - ", style: TextStyle(color: Colors.white, fontSize: 30)),
+                  ),
+
+                  // 두 번째 필드 (4자리 입력)
+                  SizedBox(
+                    width: 90,
+                    height: 45,
+                    child: TextFormField(
+                      controller: _phoneSecondController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: _buildInputDecoration("", "").copyWith(
+                        contentPadding: EdgeInsets.symmetric(vertical: 10), // 👈 내부 여백 조정
+                      ),
+                      keyboardType: TextInputType.number,
+                      maxLength: 4,
+                      validator: (value) {
+                        if (value == null || value.length != 4) {
+                          return "4자리 입력";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        if (value.length == 4) {
+                          FocusScope.of(context).nextFocus();
+                        }
+                        _updatePhone();
+                      },
+                      textAlignVertical: TextAlignVertical.center, // 👈 세로 중앙 정렬
+                      textAlign: TextAlign.center, // 👈 가로 중앙 정렬 (선택 사항)
+                    ),
+                  ),
+
+                  // 두 번째 "-" 추가
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(" - ", style: TextStyle(color: Colors.white, fontSize: 30)),
+                  ),
+
+                  // 세 번째 필드 (4자리 입력)
+                  SizedBox(
+                    width: 90,
+                    height: 45,
+                    child: TextFormField(
+                      controller: _phoneThirdController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: _buildInputDecoration("", "").copyWith(
+                        contentPadding: EdgeInsets.symmetric(vertical: 10), // 👈 내부 여백 조정
+                      ),
+                      keyboardType: TextInputType.number,
+                      maxLength: 4,
+                      validator: (value) {
+                        if (value == null || value.length != 4) {
+                          return "4자리 입력";
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        _updatePhone();
+                      },
+                      textAlignVertical: TextAlignVertical.center, // 👈 세로 중앙 정렬
+                      textAlign: TextAlign.center, // 👈 가로 중앙 정렬 (선택 사항)
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              DropdownButtonFormField<String>(
+                isExpanded: true,
+                decoration: _buildInputDecoration("질문 확인", "").copyWith(
+                  hintText: "질문을 선택해주세요.",
+                  hintStyle: const TextStyle(color: Colors.white),
+                ),
+                dropdownColor: const Color.fromARGB(255, 49, 47, 47),
+                value: _selectedQuestion,
+                validator: (value) => value == null ? "질문을 선택하세요." : null,
+                items: ["강아지 이름은?", "졸업한 초등학교는?", "태어난 지역은?", "보물 1호는?"].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value, style: const TextStyle(color: Colors.white)),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedQuestion = newValue;
+                  });
+                },
               ),
               const SizedBox(height: 30),
               TextFormField(
-                controller: _emailController,
+                controller: _answerController,
                 style: const TextStyle(color: Colors.white),
-                decoration: _buildInputDecoration("이메일", "이메일 입력해주세요."),
-                validator: (value) => value == null || value.isEmpty ? "이메일를 입력하세요." : null,
+                decoration: _buildInputDecoration("답변", "답변을 입력해주세요."),
+                validator: (value) => value == null || value.isEmpty ? "답변을 입력하세요." : null,
               ),
               const SizedBox(height: 30),
-              TextFormField(
-                controller: _phoneController,
-                style: const TextStyle(color: Colors.white),
-                decoration: _buildInputDecoration("연락처", "연락처를 입력해주세요."),
-                validator: (value) => value == null || value.isEmpty ? "아이디를 입력하세요." : null,
+
+              // 회원가입 버튼
+              ElevatedButton(
+                onPressed: () async {
+                  if (!_formkey.currentState!.validate()) {
+                    return;
+                  }
+                  bool result = await userService.findPw({
+                    'id': _idController.text,
+                    'name': _nameController.text,
+                    'phone': _phone,
+                    'question': _selectedQuestion,
+                    'answer': _answerController.text,
+                  });
+                  result;
+                  if (result) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar());
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(customSnackbar1());
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                  minimumSize: const Size(double.infinity, 50.0),
+                ),
+                child: const Text("비밀번호 찾기", style: TextStyle(fontSize: 24)),
               ),
-              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -83,7 +223,7 @@ class _FindPwScreenState extends State<FindPwScreen> {
         children: const [
           Icon(Icons.check_circle, color: Colors.white),
           SizedBox(width: 8),
-          Text("회원수정이 완료되었습니다."),
+          Text("정보가 일치합니다."),
         ],
       ),
       duration: const Duration(seconds: 5),
@@ -101,7 +241,7 @@ class _FindPwScreenState extends State<FindPwScreen> {
         children: const [
           Icon(Icons.check_circle, color: Colors.white),
           SizedBox(width: 8),
-          Text("회원 탈퇴 성공!"),
+          Text("정보가 일치하는 회원을 찾지 못했습니다."),
         ],
       ),
       duration: const Duration(seconds: 5),
