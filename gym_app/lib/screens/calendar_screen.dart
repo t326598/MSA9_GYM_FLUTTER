@@ -15,13 +15,13 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  int _currentIndex = 5;
+  int _currentIndex = 3;
   final List<String> routes = [
     '/home',
     '/ticket',
-    '/trainer',
     '/reservationInsert',
     '/calendar',
+    '/myPage'
   ];
   CalendarResponse? calendarResponse;
   CalendarService calendarService = CalendarService();
@@ -73,14 +73,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void _fetchCalendarEventsByDate(DateTime selectedDate) async {
     final response = await calendarService.getPlansByDate(selectedDate);
-    _eventList.clear();
-
+    print(response);
     if (response != null) {
+      _eventList.clear();
       setState(() {
         _eventList.addAll(response.toNeatCleanCalendarEvents());
       });
     }
-    // 북마크 가져온 일정 데이터 화면에 적용시키기
   }
 
   @override

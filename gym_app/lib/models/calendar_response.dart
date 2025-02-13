@@ -6,13 +6,13 @@ import 'package:hexcolor/hexcolor.dart';
 
 class CalendarResponse {
   final Comment comment;
-  final String userAuthAuth;
+  // final String userAuthAuth;
   final List<Event> planEvents;
   final List<Event> reservationEvents;
 
   CalendarResponse({
     required this.comment,
-    required this.userAuthAuth,
+    // required this.userAuthAuth,
     required this.planEvents,
     required this.reservationEvents,
   });
@@ -20,13 +20,15 @@ class CalendarResponse {
   factory CalendarResponse.fromJson(Map<String, dynamic> json) {
     return CalendarResponse(
       comment: Comment.fromJson(json['comment']),
-      userAuthAuth: json['userAuthAuth'],
+      // userAuthAuth: json['userAuthAuth'] ?? '',
       planEvents: (json['planEvents'] as List<dynamic>)
-          .map((e) => Event.fromJson(e))
-          .toList(),
+              .map((e) => Event.fromJson(e))
+              .toList() ??
+          [],
       reservationEvents: (json['reservationEvents'] as List<dynamic>)
-          .map((e) => Event.fromJson(e))
-          .toList(),
+              .map((e) => Event.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 

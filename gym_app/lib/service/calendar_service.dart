@@ -8,13 +8,13 @@ class CalendarService {
 
   Future<CalendarResponse?> getPlans() async {
     try {
-      // final storage = const FlutterSecureStorage();
-      // String? jwt = await storage.read(key: 'jwt');
-      String? jwt =
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3Mzk5MjU4MzgsImlkIjoiam9ldW4iLCJ1c2VyTm8iOjEsInJvbCI6WyJST0xFX1VTRVIiXX0.Gko_kP81tKeephZwAi90K1RkHzlk691mXWNXkbTBG2MGXJXjOgr0x8BQJD6GT3bw4k0np69mPCo84rtLxZH8Ww';
-      // if (jwt == null) {
-      //   return null;
-      // }
+      // String? jwt =
+      //     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3Mzk5MjU4MzgsImlkIjoiam9ldW4iLCJ1c2VyTm8iOjEsInJvbCI6WyJST0xFX1VTRVIiXX0.Gko_kP81tKeephZwAi90K1RkHzlk691mXWNXkbTBG2MGXJXjOgr0x8BQJD6GT3bw4k0np69mPCo84rtLxZH8Ww';
+      final storage = const FlutterSecureStorage();
+      String? jwt = await storage.read(key: 'jwt');
+      if (jwt == null) {
+        return null;
+      }
       final response = await _dio.get(
         '$host/user/schedule',
         options: Options(
@@ -38,13 +38,13 @@ class CalendarService {
 
   Future<CalendarResponse?> getPlansByDate(DateTime selectedDate) async {
     try {
-      // final storage = const FlutterSecureStorage();
-      // String? jwt = await storage.read(key: 'jwt');
-      String? jwt =
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3Mzk5MjU4MzgsImlkIjoiam9ldW4iLCJ1c2VyTm8iOjEsInJvbCI6WyJST0xFX1VTRVIiXX0.Gko_kP81tKeephZwAi90K1RkHzlk691mXWNXkbTBG2MGXJXjOgr0x8BQJD6GT3bw4k0np69mPCo84rtLxZH8Ww';
-      // if (jwt == null) {
-      //   return null;
-      // }
+      // String? jwt =
+      //     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3Mzk5MjU4MzgsImlkIjoiam9ldW4iLCJ1c2VyTm8iOjEsInJvbCI6WyJST0xFX1VTRVIiXX0.Gko_kP81tKeephZwAi90K1RkHzlk691mXWNXkbTBG2MGXJXjOgr0x8BQJD6GT3bw4k0np69mPCo84rtLxZH8Ww';
+      final storage = const FlutterSecureStorage();
+      String? jwt = await storage.read(key: 'jwt');
+      if (jwt == null) {
+        return null;
+      }
 
       final year = selectedDate.year;
       final month = selectedDate.month;
@@ -68,7 +68,7 @@ class CalendarService {
         return CalendarResponse.fromJson(response.data);
       }
     } catch (e) {
-      print('getPlans Error : $e');
+      print('getPlansByDate Error : $e');
     }
     return null;
   }
@@ -76,13 +76,13 @@ class CalendarService {
   // 일정 수정
   Future<bool> updatePlan(Map<String, dynamic> userData) async {
     try {
-      // final storage = const FlutterSecureStorage();
-      // String? jwt = await storage.read(key: 'jwt');
-      String? jwt =
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3Mzk5MjU4MzgsImlkIjoiam9ldW4iLCJ1c2VyTm8iOjEsInJvbCI6WyJST0xFX1VTRVIiXX0.Gko_kP81tKeephZwAi90K1RkHzlk691mXWNXkbTBG2MGXJXjOgr0x8BQJD6GT3bw4k0np69mPCo84rtLxZH8Ww';
-      // if (jwt == null) {
-      //   return null;
-      // }
+      // String? jwt =
+      //     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3Mzk5MjU4MzgsImlkIjoiam9ldW4iLCJ1c2VyTm8iOjEsInJvbCI6WyJST0xFX1VTRVIiXX0.Gko_kP81tKeephZwAi90K1RkHzlk691mXWNXkbTBG2MGXJXjOgr0x8BQJD6GT3bw4k0np69mPCo84rtLxZH8Ww';
+      final storage = const FlutterSecureStorage();
+      String? jwt = await storage.read(key: 'jwt');
+      if (jwt == null) {
+        return false;
+      }
       final response = await _dio.put(
         '$host/user/schedule',
         data: userData,
@@ -100,20 +100,21 @@ class CalendarService {
         return false;
       }
     } catch (e) {
-      rethrow;
+      print("updatePlans error: $e");
+      return false;
     }
   }
 
   // 일정 추가
   Future<bool> insertPlan(Map<String, dynamic> userData) async {
     try {
-      // final storage = const FlutterSecureStorage();
-      // String? jwt = await storage.read(key: 'jwt');
-      String? jwt =
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3Mzk5MjU4MzgsImlkIjoiam9ldW4iLCJ1c2VyTm8iOjEsInJvbCI6WyJST0xFX1VTRVIiXX0.Gko_kP81tKeephZwAi90K1RkHzlk691mXWNXkbTBG2MGXJXjOgr0x8BQJD6GT3bw4k0np69mPCo84rtLxZH8Ww';
-      // if (jwt == null) {
-      //   return null;
-      // }
+      // String? jwt =
+      //     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJleHAiOjE3Mzk5MjU4MzgsImlkIjoiam9ldW4iLCJ1c2VyTm8iOjEsInJvbCI6WyJST0xFX1VTRVIiXX0.Gko_kP81tKeephZwAi90K1RkHzlk691mXWNXkbTBG2MGXJXjOgr0x8BQJD6GT3bw4k0np69mPCo84rtLxZH8Ww';
+      final storage = const FlutterSecureStorage();
+      String? jwt = await storage.read(key: 'jwt');
+      if (jwt == null) {
+        return false;
+      }
       final response = await _dio.post(
         '$host/user/schedule',
         data: userData,
