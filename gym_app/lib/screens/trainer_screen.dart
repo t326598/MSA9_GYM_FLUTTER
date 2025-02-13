@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/screens/ticket_screen.dart';
+import 'package:gym_app/widgets/bottom_sheet.dart';
 import 'package:gym_app/widgets/trainer_card.dart';
-import 'package:gym_app/widgets/trainer_pofile.dart';
 
 class TrainerScreen extends StatefulWidget {
   const TrainerScreen({super.key});
@@ -13,6 +13,16 @@ class TrainerScreen extends StatefulWidget {
 class _TrainerScreenState extends State<TrainerScreen> {
   bool isGeneralActive = false;
   bool isPtActive = true;
+  int _currentIndex = 1;
+
+  final List<String> routes = [
+    '/home',
+    '/ticket',
+    '/trainer',
+    '/reservationInsert',
+    '/ptList',
+    '/calendar',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -101,18 +111,21 @@ class _TrainerScreenState extends State<TrainerScreen> {
           ],
         ),
         Container(
-          child: Column(
-            children: [
-              Wrap(
-                spacing: 10, // 가로 간격
-                runSpacing: 10, // 세로 간격 (줄바꿈 시)
-                alignment: WrapAlignment.center, // 중앙 정렬
-                children: [TrainerProfile()],
-              )
-            ],
-          ),
+          child: TrainerCard(),
         ),
       ]),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          if (index >= 0 && index < routes.length) {
+            Navigator.pushReplacementNamed(context, routes[index]);
+          }
+        },
+      ),
     );
   }
 }
