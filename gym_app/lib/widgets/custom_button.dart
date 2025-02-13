@@ -5,7 +5,11 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final isFullWidth;
 
-  const CustomButton({super.key, required this.text, required this.onPressed, this.isFullWidth});
+  const CustomButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.isFullWidth});
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +18,8 @@ class CustomButton extends StatelessWidget {
       child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white, // 글자 색상
+            backgroundColor: Colors.blue, // 버튼 배경 색상
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: const TextStyle(fontSize: 16),
           ),

@@ -122,7 +122,19 @@ String generateQRCodeData() {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+    Theme(
+        data: ThemeData(
+          scaffoldBackgroundColor: Color.fromARGB(255, 49, 47, 47),
+          colorScheme: ColorScheme.dark(
+            primary: const Color.fromARGB(255, 206, 61, 61),
+            onPrimary: const Color.fromARGB(255, 61, 18, 18),
+            surface: const Color.fromARGB(255, 105, 32, 32),
+            onSurface: Color.fromARGB(255, 159, 208, 213),
+          ),
+        ),
+        child: Scaffold(
+
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -263,10 +275,10 @@ String generateQRCodeData() {
           });
 
           if (index >= 0 && index < routes.length) {
-            Navigator.pushNamed(context, routes[index]);
+            Navigator.pushReplacementNamed(context, routes[index]);
           }
         },
       ),
-    );
+    ));
   }
 }
