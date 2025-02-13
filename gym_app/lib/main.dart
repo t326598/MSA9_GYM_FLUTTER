@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:gym_app/intro.dart';
 import 'package:gym_app/provider/user_provider.dart';
 import 'package:gym_app/screens/calendar_screen.dart';
 import 'package:gym_app/screens/find_id_screen.dart';
@@ -8,7 +10,6 @@ import 'package:gym_app/screens/join.dart';
 import 'package:gym_app/screens/login.dart';
 import 'package:gym_app/screens/my_page.dart';
 import 'package:gym_app/screens/my_page_info.dart';
-import 'package:gym_app/screens/pay_screen.dart';
 import 'package:gym_app/screens/ptList_screen.dart';
 import 'package:gym_app/screens/ptTicket_screen.dart';
 import 'package:gym_app/screens/reservation_insert_screen.dart';
@@ -35,16 +36,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: '네비게이션 위젯',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/home',
+      initialRoute: '/pay',
       routes: {
-        '/pay': (context) => PayScreen(),
+        '/pay': (context) => Intro(),
         '/home': (context) => HomeContent(),
         '/ticket': (context) => TicketScreen(),
         '/trainer': (context) => TrainerScreen(),
