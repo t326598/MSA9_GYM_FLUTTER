@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/provider/user_provider.dart';
 import 'package:gym_app/screens/login.dart';
+import 'package:gym_app/widgets/bottom_sheet.dart';
 import 'package:gym_app/widgets/my_page_button.dart'; // ✅ MyPageButton을 import
 
-class MyPage extends StatelessWidget {
+class MyPage extends StatefulWidget {
   const MyPage({super.key});
+
+  @override
+  _MyPageState createState() => _MyPageState();
+}
+
+class _MyPageState extends State<MyPage> {
+  final List<String> routes = ['/home', '/ticket', '/reservationInsert', '/calendar', '/myPage'];
+  int _currentIndex = 4;
 // 내정보 메뉴임!
   @override
   Widget build(BuildContext context) {
@@ -29,13 +38,13 @@ class MyPage extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 49, 47, 47),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 49, 47, 47),
         foregroundColor: Colors.white,
         title: const Text("마이페이지"),
       ),
       body: Container(
-        decoration: const BoxDecoration(color: Color.fromARGB(255, 49, 47, 47)),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -84,6 +93,18 @@ class MyPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          if (index >= 0 && index < routes.length) {
+            Navigator.pushReplacementNamed(context, routes[index]);
+          }
+        },
       ),
     );
   }

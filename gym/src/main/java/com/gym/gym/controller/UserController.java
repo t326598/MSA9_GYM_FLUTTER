@@ -265,7 +265,8 @@ public class UserController {
     @PostMapping("/newPw")
     public ResponseEntity<?> changePassword(@RequestBody Users user ) throws Exception {
         String password = user.getPassword();
-              user = userService.selectCode(user.getCode());
+        String id = user.getId();
+              user = userService.selectId(id);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         String encodedNewPassword = encoder.encode(password);
