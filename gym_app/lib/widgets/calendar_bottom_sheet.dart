@@ -247,32 +247,33 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
               onPressed: () async {
                 if (widget.event == null) {
                   bool result = await calendarService.insertPlan({
-                    "planTime": startTime,
-                    "plnaEnd": endTime,
+                    "planTime": startTime?.toIso8601String(),
+                    "planEnd": endTime?.toIso8601String(),
                     "no": 0,
                     "userNo": 0,
                     "planName": _titleController.text,
                     "planContent": _descriptionController.text
                   });
                   if (result) {
-                    // Navigator.pop(context);
-                    // 북마크 새로 넣은 일정까지 다시 가져오기
+                    Navigator.pop(context);
+                    setState(() {});
                   }
                 } else {
                   bool result = await calendarService.updatePlan({
-                    "planTime": startTime,
-                    "plnaEnd": endTime,
+                    "planTime": startTime?.toIso8601String(),
+                    "planEnd": endTime?.toIso8601String(),
                     "no": widget.event!.id,
                     "userNo": 0,
                     "planName": _titleController.text,
                     "planContent": _descriptionController.text
                   });
                   if (result) {
-                    // Navigator.pop(context);
+                    Navigator.pop(context);
+                    setState(() {});
                     // 북마크 새로 넣은 일정까지 다시 가져오기
                   }
                 }
-                Navigator.pop(context);
+                // Navigator.pop(context);
               },
               child: Text('저장하기'),
               style: ElevatedButton.styleFrom(
