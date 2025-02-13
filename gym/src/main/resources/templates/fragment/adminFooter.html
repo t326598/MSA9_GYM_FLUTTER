@@ -1,0 +1,81 @@
+<th:block th:fragment="adminFooter">
+    <footer>
+        <div class="link">
+            <a href="#">Home</a>
+            <a href="#">Notice</a>
+            <a href="#">Q&A</a>
+            <a href="#">About</a>
+        </div>
+        <div class="copyright">
+            <span>© 2024 Company, Inc</span>
+        </div>
+    </footer>
+
+    <style>
+        footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 145px;
+            background-color: #fff;
+        }
+
+        .link {
+            display: flex;
+            width: 1440px;
+            height: 75px;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #000;
+        }
+
+        .link a {
+            width: 100px;
+            color: #000;
+        }
+
+        .copyright {
+            display: flex;
+            width: 1320px;
+            height: 70px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .copyright span {
+            color: #000;
+        }
+
+        /* footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 145px;
+            background-color: #000;
+        }
+        .link {
+            display: flex;
+            width: 1440px;
+            height: 75px;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #fff;
+        }
+        .link a {
+            width: 100px;
+            color: #fff;
+        }
+        .copyright {
+            display: flex;
+            width: 1320px;
+            height: 70px;
+            justify-content: center;
+            align-items: center;
+        }
+        .copyright span {
+            color: #fff;
+        } */
+    </style>
+</th:block>

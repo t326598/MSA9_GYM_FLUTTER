@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>트레이너 목록</title>
+    <!-- 부트스트랩 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- css -->
+    <link rel="stylesheet" href="/css/ticket/trainerList.css">
+    <!-- 프래그먼트 -->
+    <th:block th:replace="~{fragment/link::link}"></th:block>
+</head>
+
+<body class="fullBody">
+    <th:block th:replace="~{fragment/header::header}"></th:block>
+
+    <div class="container">
+        <div class="title d-flex justify-content-center align-items-center mt-5" style="height: 200px;">
+            <h1>트레이너</h1>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div th:each="trainer : ${trainerList}" class="col-12 col-lg-3 col-md-6 d-flex justify-content-center">
+                <div class="card mb-5">
+                    <div class="img">
+                        <img th:src="|/img?no=${trainer.no}|" alt="파일 이미지" class="card-img-top">
+                    </div>
+                    <div class="card-body">
+                        <h5 th:text="${trainer.name + ' 트레이너'}"></h5>
+                        <div class="simple d-flex justify-content-center">
+                            <span>[&nbsp;</span>
+                            <p th:text="${trainer.simpleInfo}"></p>
+                            <span>&nbsp;]</span>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <div class="userCount">
+                            <span>함께하는 회원 수 : &ensp;</span>
+                            <span th:text="${trainer.userCount ?: 0}"></span>
+                        </div>
+                        <a class="rounded-3" 
+                            th:href="@{/user/ticket/trainerDetail(trainerNo=${trainer.no})}"
+                            th:classappend="${trainer.userCount >= 20} ? 'disabled' : ''"
+                            th:disabled="${trainer.userCount >= 20}">
+                            선택
+                        </a>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <th:block th:replace="~{fragment/footer::footer}"></th:block>
+        <th:block th:replace="~{fragment/script::script}"></th:block>
+    </div>
+
+</body>
+
+</html>

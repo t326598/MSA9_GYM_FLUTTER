@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/screens/ticket_screen.dart';
+import 'package:gym_app/widgets/bottom_sheet.dart';
+import 'package:gym_app/widgets/trainer_card.dart';
 
 class TrainerScreen extends StatefulWidget {
   const TrainerScreen({super.key});
@@ -11,6 +13,15 @@ class TrainerScreen extends StatefulWidget {
 class _TrainerScreenState extends State<TrainerScreen> {
   bool isGeneralActive = false;
   bool isPtActive = true;
+  int _currentIndex = 1;
+
+  final List<String> routes = [
+    '/home',
+    '/ticket',
+    '/reservationInsert',
+    '/calendar',
+    '/myPage'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -24,97 +35,95 @@ class _TrainerScreenState extends State<TrainerScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: Colors.white, width: 0.2),
-                    ),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        isGeneralActive = true;
-                        isPtActive = false;
-                      });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const TicketScreen(),
-                        ),
-                      ).then((_) {
-                        // TicketScreen에서 돌아올 때 상태 업데이트
-                        setState(() {
-                          isGeneralActive = false;
-                          isPtActive = true;
-                        });
-                      });
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: isGeneralActive
-                          ? Colors.blue // 활성화된 상태
-                          : Colors.transparent, // 비활성화된 상태
-                      shape: const RoundedRectangleBorder(),
-                    ),
-                    child: const Text(
-                      '일반 이용권',
-                      style: TextStyle(color: Colors.white),
-                    ),
+      body: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.white, width: 0.2),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: Colors.white, width: 0.2),
-                    ),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      isGeneralActive = true;
+                      isPtActive = false;
+                    });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TicketScreen(),
+                      ),
+                    ).then((_) {
+                      // TicketScreen에서 돌아올 때 상태 업데이트
                       setState(() {
                         isGeneralActive = false;
                         isPtActive = true;
                       });
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: isPtActive
-                          ? Colors.blue // 활성화된 상태
-                          : Colors.transparent, // 비활성화된 상태
-                      shape: const RoundedRectangleBorder(),
-                    ),
-                    child: const Text(
-                      'PT 이용권',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    });
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: isGeneralActive
+                        ? Colors.blue // 활성화된 상태
+                        : Colors.transparent, // 비활성화된 상태
+                    shape: const RoundedRectangleBorder(),
+                  ),
+                  child: const Text(
+                    '일반 이용권',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
-      bottomSheet: SizedBox(
-        width: double.infinity,
-        child: TextButton(
-          onPressed: () {},
-          style: TextButton.styleFrom(
-            shape:
-                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            padding: const EdgeInsets.symmetric(vertical: 16), // 버튼 높이 조절
-          ),
-          child: const Text(
-            '구매하기',
-            style: TextStyle(fontSize: 18),
-          ),
+            ),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.white, width: 0.2),
+                  ),
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      isGeneralActive = false;
+                      isPtActive = true;
+                    });
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: isPtActive
+                        ? Colors.blue // 활성화된 상태
+                        : Colors.transparent, // 비활성화된 상태
+                    shape: const RoundedRectangleBorder(),
+                  ),
+                  child: const Text(
+                    'PT 이용권',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
+        Container(
+          child: TrainerCard(),
+        ),
+      ]),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+
+          if (index >= 0 && index < routes.length) {
+            Navigator.pushReplacementNamed(context, routes[index]);
+          }
+        },
       ),
     );
   }

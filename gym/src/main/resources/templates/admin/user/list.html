@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유저 관리</title>
+    <link rel="stylesheet" href="/css/trainer/adminList.css">
+</head>
+
+<body>
+    <!-- 관리자헤더 프라그먼트 -->
+    <th:block th:replace="~{fragment/adminHeader::adminHeader}"></th:block>
+    <!-- 관리자페이지 메인콘텐츠 영역 틀 예시 -->
+    <div class="container">
+        <!-- 전체 컨테이너 영역 속 사이드바, 메인콘텐츠 영역 display flex 로 가로 배치 -->
+        <th:block th:replace="~{fragment/adminSidebar::adminSidebar}"></th:block>
+
+
+        <script th:if="${message != null}" th:inline="javascript">
+            alert(/*[[${message}]]*/);
+        </script>
+
+        <div class="main">
+            <div class="inner">
+                <div class="title">
+                    <h2>유저 목록</h2>
+                </div>
+
+                <div class="search-container">
+                    <form class="search" action="/admin/user/list" method="get" id="form">
+                        <input type="text" name="keyword" placeholder="등록명으로 검색" th:value="${param.keyword}" />
+                        <button type="submit">검색</button>
+                    </form>
+                </div>
+
+                <div class="list" style="margin-bottom: 40px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>이름</th>
+                                <th>이메일</th>
+                                <th>연락처</th>
+                                <th>권한</th>
+                                <th>담당 트레이너</th>
+                                <th>가입일자</th>
+                                <th>회원수정</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <th:block th:if="${userList.isEmpty()}">
+                                <tr>
+                                    <td colspan="6">조회된 데이터가 없습니다.</td>
+                                </tr>
+                            </th:block>
+                            <th:block th:each="user : ${userList}">
+                                <tr>
+                                    <td><a th:href="|read?no=${user.no}|" th:text="${user.id}"></a></td>
+                                    <td th:text="${user.name}"></td>
+                                    <td th:text="${user.email}"></td>
+                                    <td th:text="${user.phone}"></td>
+                                    <td>
+                                        <!-- 권한에 따른 표시 -->
+                                        <span th:switch="${user.userAuth}">
+                                            <span th:case="'ROLE_ADMIN'">관리자</span>
+                                            <span th:case="'ROLE_USER'">회원</span>
+                                            <span th:case="'ROLE_TRAINER'">트레이너</span>
+                                            <span th:case="*">기타</span> <!-- 만약 예상치 못한 권한이 있다면 "기타"로 표시 -->
+                                        </span>
+                                    </td>
+
+                                    <td th:text="${user.trainerNo == null or user.trainerNo == 0 ? '-' : user.trainerName}"></td>
+                                    <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <th:block th:unless="${user.userAuth.contains('ROLE_ADMIN')}">
+
+                                    <td><a class="updateBtn" th:href="|update?no=${user.no}|">수정</a></td>
+                                </th:block>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" style="">
+                    <a th:href="@{${pageUrl}(page=${page.first})}" class="first">≪</a>
+                    <th:block th:if="${page.page != page.first}">
+                        <a th:href="@{${pageUrl}(page=${page.prev})}" class="prev">＜</a>
+                    </th:block>
+                    <th:block th:each="no : ${#numbers.sequence(page.start, page.end)}">
+                        <th:block th:if="${page.page == no}">
+                            <a class="active" th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                        <th:block th:if="${page.page != no}">
+                            <a th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                    </th:block>
+                    <th:block th:if="${page.page != page.last}">
+                        <a th:href="@{${pageUrl}(page=${page.next})}" class="next">＞</a>
+                    </th:block>
+                    <a th:href="@{${pageUrl}(page=${page.last})}" class="first">≫</a>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
