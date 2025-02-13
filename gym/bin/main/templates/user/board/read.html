@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고객문의 게시판</title>
+    <link rel="stylesheet" href="/css/board/boardRead.css">
+</head>
+
+<body class="fullBody" >
+    <th:block th:replace="~{fragment/header::header}"></th:block>
+        
+       <div class="top-space"></div>
+
+       <div class="container">
+        <div style="text-align: left; width: 100%;">
+            <h1 style="text-align: left; margin-left: px; font-size: 35px; padding-left: 0; margin-left: 220px;">고객문의 게시판</h1>
+        </div>
+    
+            <div class="border" style="margin-top: 20px; margin-bottom: 20px;" >
+                <div class="inputbox1" >
+                    <label for="" style=" color: black; font-size: 30px;">Q. </label>
+                    <input type="text" class="titleinput" name="title" th:value="${board.title}" style=" background-color: white; border: none; font-weight: bold; color: black;" readonly disabled>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <h3 style="color: black; margin-right: 70px; margin-bottom: 10px;"  th:text="${board.name} + ' 회원님'" ></h3>
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <textarea class="textareaInput" th:text="${board.content}" style="font-weight: bold; font-size: 18px; color: black;" name="content" rows="5" cols="40" readonly disabled></textarea>
+
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-right: 30px;">
+          <label style="color: black;" th:text="${#dates.format(board.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></label>
+        </div>
+            </div>
+        </div>
+        <div class="btn-box" style="width: 880px;" >
+            <button type="button" class="btnInput" onclick="location.href='boardList'"> 목록 </button>
+            <th:block sec:authorize="isAuthenticated()">
+
+            <th:block th:if="${board.userNo == #authentication.principal.user.no}">
+                <input type="button"  th:onclick="update()" style="background-color: rgb(172, 235, 77);" class="btnInput" value="수정">
+            </th:block>
+            <th:block th:unless="${board.userNo == #authentication.principal.user.no}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_TRAINER')">
+                    
+                <input type="button"  th:onclick="update()" style="background-color: rgb(172, 235, 77);" class="btnInput" value="수정">
+            </th:block>
+            </th:block>
+        </div>
+        <th:block th:unless="${answerList.isEmpty}" sec:authorize="hasAnyRole('ROLE_USER')">
+        <div style="text-align: left; width: 860px; margin-top: 20px;">
+            <h1 style="text-align: left; margin-left: 0; font-size: 35px; padding-left: 0;">트레이너 답변</h1>
+        </div>
+    </th:block>
+    <th:block sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_TRAINER')">
+        <div style="text-align: left; width: 860px; margin-top: 20px;">
+            <h1 style="text-align: left; margin-left: 0; font-size: 35px; padding-left: 0;">트레이너 답변</h1>
+        </div>
+    </th:block>
+    
+        <section id="answer-form">
+            
+            
+        </section>
+        
+        <section id="answer-list">
+        </section> 
+
+
+       
+
+
+<th:block th:if="${answerList.isEmpty}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_TRAINER')"> 
+        <form action="" >
+            <div class="border" style="margin-top: 30px; margin-bottom: 20px;" >
+                <div class="inputbox1"  style="display: flex; justify-content: space-between;">
+                    <div>
+                    <label for="" style="margin-top: 10px; color: black; font-size: 30px;">A. </label>
+                    <input type="text" class="titleinput" name="title" th:value="${board.title}" style=" background-color: white; border: none; font-weight: bold; color: black;" readonly disabled>
+                </div>
+            </div>
+                    <div style="display: flex; justify-content: flex-end;">
+                    <h3 style="color: black; margin-right: 70px; margin-bottom: 10px;"  th:text="${#authentication.principal.user.name} + ' 트레이너'"></h3>
+                </div>
+                <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+                    <textarea class="textareaInput" style=" font-weight: bold; font-size: 18px; color: black;" id="content" name="content" rows="5" cols="40" required></textarea>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 30px;">      
+                <input type="button"  onclick="insertAnswer()" style="background-color: rgb(172, 235, 77);" class="btnInput" value="등록">
+            </div>
+        </form>
+</th:block>
+          
+              
+
+<script>
+
+    function update(){
+        let no = "[[${board.no}]]"
+    location.href= "update?no="+no
+    
+    }
+    
+
+
+    // 답변 등록
+    function insertAnswer() {
+    const boardNo = "[[${board.no}]]";
+    let content = document.getElementById('content').value;
+
+    console.log(`content : ${content}`);
+
+    let data = {
+        'boardNo': boardNo,
+        'content': content
+    };
+
+    const csrfHeader = "[[${_csrf.headerName}]]";
+    const csrfToken = "[[${_csrf.token}]]";
+
+    let request = new XMLHttpRequest();
+    let url = '/answer';
+
+    request.open('POST', url, true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 추가
+    request.send(JSON.stringify(data));
+
+    request.onreadystatechange = function () {
+        if (request.readyState == request.DONE && request.status == 200) {
+            let response = request.responseText;
+            if (response == 'SUCCESS') {
+                console.log('답변 등록 성공');
+                location.reload();
+
+                // 입력한 작성자, 내용 비우기
+                document.getElementById('content').value = "";
+            } else {
+                console.log('답변 등록 실패');
+            }
+        }
+    };
+}
+
+
+
+    //답변 목록
+    answerList()
+    function answerList(){
+        let request = new XMLHttpRequest();
+        let boardNo = "[[ ${board.no} ]]"
+        let url = `/answer?boardNo=${boardNo}`
+        request.open('GET',url,true)
+        request.send()
+    
+        request.onreadystatechange=function(){
+            let answerList = request.responseText
+            let $answerList = document.getElementById('answer-list')
+            $answerList.innerHTML = answerList
+        }
+    }
+
+ //답변 [수정] 버튼 클릭 시 - 수정 폼으로 전환
+function editAnswer(button, no) {
+    console.log(`editAnswer 호출됨: ${no}`);
+    const $parent = button.closest('.answer-box'); // 수정 버튼이 포함된 div 요소
+    if (!$parent) return console.error('.answer-box못찾음');
+
+    // textarea 내용 가져오기
+    const textarea = $parent.querySelector('textarea');
+    const titleinput = $parent.querySelector('.titleinput');
+    const title = titleinput.value;
+    const content = textarea.value;
+
+    // 기존답변 숨기기
+    $parent.style.display = 'none';
+
+    // 수정 폼 추가
+    const updateForm = `
+    <div class="answer-box" style="margin-bottom: 30px">
+         <div class="border" id="edit-form-${no}" style="margin-top: 30px; margin-bottom: 20px;">
+            <div class="inputbox1" style="display: flex; justify-content: space-between;">
+                <div>
+                    <label for="" style="margin-top: 10px; color: black; font-size: 30px;">A.  </label>
+                    <input type="text" class="titleinput" name="title" value="${title}" style="background-color: white; border: none; font-weight: bold; color: black;">
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+                <textarea id="edit-content-${no}" class="textareaInput" style="font-weight: bold; font-size: 18px; color: black;" name="content" rows="5" cols="40">${content}</textarea>
+            </div>
+            </div>
+            <div style="text-align: right;">
+                <button type="button" onclick="updateAnswer(${no})"  class="btnInput" style="background-color: rgb(172, 235, 77);" >수정</button>
+                <button type="button" onclick="cancelEdit(${no})" class="btnInput">취소</button>
+            </div>
+    </div>`;
+$parent.insertAdjacentHTML('afterend', updateForm);
+
+}
+
+//답변 수정 요청
+function updateAnswer(no) {
+    console.log(`updateAnswer 호출됨: ${no}`);
+    const content = document.getElementById(`edit-content-${no}`).value;
+
+    const data = {
+        no: no,
+        content: content
+    };
+
+    // CSRF 토큰 가져오기
+    const csrfHeader = "[[${_csrf.headerName}]]";
+    const csrfToken = "[[${_csrf.token}]]";
+
+    const request = new XMLHttpRequest();
+    request.open('PUT', '/answer', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 추가
+    request.send(JSON.stringify(data));
+
+    request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+            const response = request.responseText;
+            if (response === 'SUCCESS') {
+                alert('답변 수정 성공');
+                answerList(); //답변 목록 갱신
+            } else {
+                alert('답변 수정 실패');
+            }
+        }
+    };
+}
+
+//답변 수정 취소
+function cancelEdit(no) {
+    console.log(`cancelEdit 호출됨: ${no}`);
+    const editForm = document.getElementById(`edit-form-${no}`);
+    if (editForm) editForm.remove();
+    
+    // 원래답변 영역 다시 표시
+    const original = document.querySelector(`.border[style*="display: none"]`);
+    if (original) original.style.display = 'block';
+    location.reload();
+}
+
+//답변 삭제
+function remove(no) {
+    console.log(`remove 호출됨: ${no}`);
+
+    // 사용자에게 삭제 확인 요청
+    if (!confirm('삭제하시겠습니까?')) {
+        return;
+    }
+
+    // CSRF 토큰 가져오기
+    const csrfHeader = "[[${_csrf.headerName}]]";
+    const csrfToken = "[[${_csrf.token}]]";
+
+    const request = new XMLHttpRequest();
+    const url = `/answer/${no}`;
+    request.open('DELETE', url, true);
+    request.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 추가
+    request.send();
+
+    request.onreadystatechange = function () {
+        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+            const response = request.responseText;
+            if (response === 'SUCCESS') {
+                alert('답변 삭제 성공');
+                location.reload();
+            } else {
+                alert('답변 삭제 실패');
+            }
+        }
+    };
+}
+
+
+
+</script>
+<th:block th:replace="~{fragment/footer::footer}"></th:block>
+<th:block th:replace="~{fragment/script::script}"></th:block>
+</body>
+
+</html>

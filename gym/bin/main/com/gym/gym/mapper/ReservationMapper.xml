@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.gym.gym.mapper.ReservationMapper">
+
+    <!-- 예약 등록 -->
+    <insert id="insert">
+      insert into reservation (user_no, trainer_no, rv_date)
+      values (#{userNo}, #{trainerNo}, #{rvDate})
+    </insert>
+
+    <!-- 트레이너별 예약 목록 조회 -->
+    <select id="sortByTrainer">
+        SELECT r.*, u.name as userName, u.id as userId, tu.name as trainerName
+        FROM reservation r
+        LEFT JOIN users u ON r.user_no = u.no
+        LEFT JOIN users tu ON r.trainer_no = tu.no
+        WHERE r.trainer_no IN (
+          SELECT ua.user_no
+          from user_auth ua
+          where ua.auth = 'ROLE_TRAINER'
+        )
+        <if test="keyword != null and keyword != ''">
+          and r.trainer_no = #{keyword}
+        </if>
+        <if test="code == 0">
+          and (r.enabled = 1 or 2)
+        </if>
+        <if test="code == 1">
+          and r.enabled = 1
+        </if>
+        <if test="code == 2">
+          and r.enabled = 2
+        </if>
+    </select>
+
+    <!-- 트레이너인 유저리스트 -->
+    <select id="trainerUsers">
+        SELECT *
+        FROM users u
+        JOIN user_auth a ON u.no = a.user_no
+        WHERE a.auth = 'ROLE_TRAINER'
+    </select>
+
+    <!-- 사용자의 예약 목록 -->
+    <select id="userByList" resultType="Reservation">
+      SELECT 
+          r.*,
+          u.name AS userName, 
+          u.id AS userId, 
+          tp.name AS trainerName,
+          ptSum.ptCount AS ptCount
+      FROM 
+         users u
+      LEFT JOIN reservation r ON r.user_no = u.no
+      LEFT JOIN trainer_profile tp ON r.trainer_no = tp.trainer_no
+      LEFT JOIN (
+          SELECT b.user_no, SUM(t.pt_count) AS ptCount
+          FROM buy_list b
+          JOIN ticket t ON t.no = b.ticket_no
+          WHERE b.status = '정상'
+          GROUP BY b.user_no
+        ) ptSum ON ptSum.user_no = u.no
+      WHERE
+        u.no = #{no}
+      ORDER BY r.created_at DESC
+      LIMIT #{page.index}, #{page.rows}
+    </select>
+
+    <select id="disabledCount" resultType="int">
+      SELECT COUNT(*)
+      FROM reservation r
+      JOIN users u ON r.user_no = u.no
+      WHERE u.no = #{no} AND r.enabled = 2
+    </select>
+
+    
+
+    <!-- 예약 목록 전체 조회 -->
+    <select id="list" resultType="Reservation">
+      SELECT 
+          r.*, 
+          u.name AS userName, 
+          u.id AS userId, 
+          tp.name AS trainerName,
+          ptSum.ptCount
+      FROM 
+          reservation r
+          LEFT JOIN users u ON r.user_no = u.no
+          LEFT JOIN trainer_profile tp ON r.trainer_no = tp.trainer_no
+          LEFT JOIN (
+              SELECT b.user_no, SUM(t.pt_count) AS ptCount
+              FROM buy_list b
+              JOIN ticket t ON t.no = b.ticket_no
+              WHERE b.status = '정상'
+              GROUP BY b.user_no
+          ) ptSum ON ptSum.user_no = r.user_no
+      where
+          (u.id LIKE CONCAT('%', #{option.keyword}, '%')
+          OR u.name LIKE CONCAT('%', #{option.keyword}, '%')
+          OR tp.name LIKE CONCAT('%', #{option.keyword}, '%'))
+          <if test="option.code == 1">
+            AND r.enabled = 2
+          </if>
+          <if test="option.code == 2">
+            AND r.enabled = 1
+          </if>
+          <if test="option.code == 3">
+            AND r.enabled = 0
+          </if>
+        <if test="option.orderCode == 0">
+          ORDER BY r.created_at DESC
+        </if>
+        <if test="option.orderCode == 1">
+          ORDER BY r.rv_date ASC
+        </if>
+        LIMIT #{page.index}, #{page.rows}
+    </select>
+
+    <!-- 예약 상세 조회 -->
+    <select id="findByNo" resultType="Reservation">
+      select *
+      from reservation
+      where no = #{no}
+    </select>
+
+    <!-- 예약 취소(수정) -->
+    <update id="cancel">
+      update reservation
+      set enabled = 0,
+          canceled_at = now()
+      where no = #{no} and enabled = 1
+    </update>
+
+    <!-- 예약 완료(수정) -->
+    <update id="complete">
+      update reservation
+      set enabled = 2,
+          canceled_at = now()
+      where no = #{no} and enabled = 1
+    </update>
+
+    <!-- 예약 완료 -->
+    <!-- <update id="ptComplete">
+      update reservation
+      set enabled = 2,
+          canceled_at = DATE_ADD(rv_date, INTERVAL 1 HOUR)
+      where rv_date &lt; DATE_ADD(now(), INTERVAL 1 HOUR)
+    </update> -->
+
+    <!-- 전체 카운트 -->
+    <select id="count" resultType="int">
+      select count(*)
+      from reservation r
+      LEFT JOIN users u ON r.user_no = u.no
+      LEFT JOIN users tu ON r.trainer_no = tu.no
+      where
+          (u.id LIKE CONCAT('%', #{keyword}, '%')
+          OR u.name LIKE CONCAT('%', #{keyword}, '%')
+          OR tu.name LIKE CONCAT('%', #{keyword}, '%'))
+          <if test="option.code == 1">
+            AND r.enabled = 2
+          </if>
+          <if test="option.code == 2">
+            AND r.enabled = 1
+          </if>
+          <if test="option.code == 3">
+            AND r.enabled = 0
+          </if>
+    </select>
+
+    <!-- 유저별 카운트 -->
+    <select id="countByUser" resultType="int">
+      select count(*)
+      from reservation r
+      join users user ON r.user_no = user.no
+      where user.no = #{no}
+    </select>
+    
+
+    <!-- 트레이너 예약 조회 -->
+    
+
+    <!-- PlanController -->
+    <!-- 사용자 예약 조회 -->
+    <select id="selectByStartEnd">
+      SELECT r.*, tu.name as trainerName
+      FROM reservation r
+      LEFT JOIN users tu on r.trainer_no = tu.no
+      WHERE r.user_no = #{userNo}
+      AND r.rv_date BETWEEN #{startTime} AND #{endTime}
+      AND (r.enabled = 1 or 2)
+    </select>
+</mapper>

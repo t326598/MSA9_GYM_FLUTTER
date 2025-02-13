@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매출 내역</title>
+    <!-- css -->
+    <link rel="stylesheet" href="/css/trainer/adminList.css">
+    <!-- 차트 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <th:block th:replace="~{fragment/adminHeader::adminHeader}"></th:block>
+    <div class="container">
+        <th:block th:replace="~{fragment/adminSidebar::adminSidebar}"></th:block>
+
+        <div class="main">
+            <div class="inner">
+                <div class="title">
+                    <h2>매출 조회</h2>
+                </div>
+
+                <form action="salesList" method="GET" id="searchForm" style="display: flex; justify-content: space-between; margin: 0 50px; margin-bottom: 100px;">
+                    <div>
+                        <select name="trainerNo">
+                            <option value="">트레이너 이름</option>
+                            <th:block th:each="trainerUser : ${trainerUsers}">
+                                <option th:if="${trainerUser.trainerName != null}"
+                                        th:value="${trainerUser.no}" 
+                                        th:text="${trainerUser.trainerName} + '(' + ${trainerUser.id} + ')'" 
+                                        th:selected="${trainerUser.no == selectedTrainer}"></option>
+                            </th:block>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <select name="startYear" id="startYear">
+                            <option value="">시작 연도</option>
+                            <option th:each="year : ${#numbers.sequence(2010, 2025)}" 
+                                    th:value="${year}" 
+                                    th:text="${year}" 
+                                    th:selected="${selectedStartYear == year}"></option>
+                        </select>
+                        
+                        <select name="startMonth" id="startMonth">
+                            <option value="">시작 월</option>
+                            <th:block th:each="month : ${#numbers.sequence(1, 12)}">
+                                <option th:value="${month}" th:text="${month + '월'}" th:selected="${selectedStartMonth != null and selectedStartMonth == month}"></option>
+                            </th:block>
+                        </select>
+                        <select name="startDay" id="startDay">
+                            <option value="">시작 일</option>
+                            <th:block th:each="i : ${#numbers.sequence(1, 31)}">
+                                <option th:value="${i}" th:text="${i + '일'}" th:selected="${i == selectedStartDay}"></option>
+                            </th:block>
+                        </select>
+                        ~
+                        <select name="endYear" id="endYear">
+                            <option value="">종료 연도</option>
+                            <th:block th:each="year : ${#numbers.sequence(2010, 2025)}">
+                                <option th:value="${year}" th:text="${year}" th:selected="${selectedEndYear != null and selectedEndYear == year}"></option>
+                            </th:block>
+                        </select>
+                        <select name="endMonth" id="endMonth">
+                            <option value="">종료 월</option>
+                            <th:block th:each="month : ${#numbers.sequence(1, 12)}">
+                                <option th:value="${month}" th:text="${month + '월'}" th:selected="${selectedEndMonth != null and selectedEndMonth == month}"></option>
+                            </th:block>
+                        </select>
+                        <select name="endDay" id="endDay">
+                            <option value="">종료 일</option>
+                            <th:block th:each="i : ${#numbers.sequence(1, 31)}">
+                                <option th:value="${i}" th:text="${i + '일'}" th:selected="${i == selectedEndDay}"></option>
+                            </th:block>
+                        </select>
+                        <button type="submit">검색</button>
+                        <button type="reset" onclick="resetForm()">초기화</button>
+                    </div>
+                </form>
+                
+                
+                <div class="list">
+                    <div id="chart-container">
+                        <canvas id="myChart" width="900" height="500"></canvas>
+                        <div id="total" style="font-weight: bold; text-align: center; font-size: 18px; margin-top: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Thymeleaf를 이용해 salesList 데이터를 JavaScript로 전달
+
+        const salesList = /*[[${salesList}]]*/ [];
+        
+        // 차트에 사용될 데이터 준비
+        const labels = salesList.map(item => item.ticketName);  // 상품명
+        const quantities = salesList.map(item => item.salesCount);  // 판매 수량
+        const totalSales = salesList.reduce((acc, item) => acc + (item.ticketPrice * item.salesCount), 0);  // 총 매출 합계
+        
+        // Chart.js 차트 생성
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '판매 수량',
+                    data: quantities,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItem) {
+                                return tooltipItem[0].label; // 상품명
+                            },
+                            label: function(tooltipItem) {
+                                return '수량: ' + tooltipItem.raw; // 판매 수량
+                            }
+                        },
+                        // tooltip 스타일에서 기울임 제거
+                        titleFont: {
+                            style: 'normal' // 기울임 제거
+                        },
+                        bodyFont: {
+                            style: 'normal' // 기울임 제거
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        
+        // 총 합계 표시
+        document.getElementById('total').innerText = `총 매출 금액: ${totalSales} 원`;
+
+        // 월별 일수 표시 (윤년 고려)
+        const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        function updateDays(startYearSelectId, startMonthSelectId, startDaySelectId) {
+            const yearSelect = document.getElementById(startYearSelectId);  // 시작/종료 연도 선택
+            const monthSelect = document.getElementById(startMonthSelectId);  // 시작/종료 월 선택
+            const daySelect = document.getElementById(startDaySelectId);  // 시작/종료 일 선택
+            const selectedYear = parseInt(yearSelect.value); // 선택된 연도
+            const selectedMonth = parseInt(monthSelect.value); // 선택된 월
+
+            // 일 선택지 초기화
+            daySelect.innerHTML = ''; // 기존 옵션 초기화
+
+            if (!isNaN(selectedYear) && !isNaN(selectedMonth)) {
+                // 윤년 계산
+                const isLeapYear = selectedYear % 4 === 0 && (selectedYear % 100 !== 0 || selectedYear % 400 === 0);
+                const days = selectedMonth === 2 && isLeapYear ? 29 : daysInMonth[selectedMonth - 1];
+
+                // 1일부터 최대 일 수까지 옵션 추가
+                for (let i = 1; i <= days; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `${i}일`;
+                    daySelect.appendChild(option);
+                }
+            }
+        }
+
+        // 연도나 월이 변경될 때 일 수를 업데이트
+        document.getElementById('startYear').addEventListener('change', function() {
+            updateDays('startYear', 'startMonth', 'startDay');
+        });
+        document.getElementById('startMonth').addEventListener('change', function() {
+            updateDays('startYear', 'startMonth', 'startDay');
+        });
+
+        document.getElementById('endYear').addEventListener('change', function() {
+            updateDays('endYear', 'endMonth', 'endDay');
+        });
+        document.getElementById('endMonth').addEventListener('change', function() {
+            updateDays('endYear', 'endMonth', 'endDay');
+        });
+
+
+        function resetForm() {
+            const form = document.querySelector('form');
+            form.reset();
+
+            // URL 파라미터 초기화
+            const url = new URL(window.location.href);
+            url.search = ''; // 모든 파라미터 제거
+            window.history.pushState({}, '', url);
+
+            location.reload(); // 페이지 새로고침
+        }
+
+        // 날짜 계산
+        function getFormattedDate(year, month, day) {
+            if (year && month && day) {
+                return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+            }
+            return null;
+        }
+
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault();  // 기본 form 제출 방지
+
+            const startYear = document.getElementById('startYear').value;
+            const startMonth = document.getElementById('startMonth').value;
+            const startDay = document.getElementById('startDay').value;
+            const endYear = document.getElementById('endYear').value;
+            const endMonth = document.getElementById('endMonth').value;
+            const endDay = document.getElementById('endDay').value;
+
+            // 날짜 문자열 생성
+            const startDate = getFormattedDate(startYear, startMonth, startDay);
+            const endDate = getFormattedDate(endYear, endMonth, endDay);
+
+            // 날짜가 유효한 경우에만 검색 처리
+            if (startDate && endDate) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('startDate', startDate);
+                url.searchParams.set('endDate', endDate);
+                
+                // 검색된 날짜를 포함한 URL로 리디렉션
+                window.location.href = url.toString(); // 페이지 새로고침
+            } else {
+                alert("시작일과 종료일을 모두 선택해주세요.");
+            }
+        });
+
+
+    </script>
+    
+    
+</body>
+
+</html>

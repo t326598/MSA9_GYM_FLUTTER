@@ -1,0 +1,125 @@
+@charset "UTF-8";
+
+.main-title {
+    width: 100%;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+}
+
+.form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.form-inner {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 600px;
+    height: 760px;
+    background-color: #ffffff;
+    border-radius: 2%;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.file-upload {
+    padding: 30px;
+}
+
+.file-upload-box {
+    width: 278px;
+    height: 250px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-upload-box .insertImg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: none;
+}
+
+.file-upload-box .updateImg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    
+}
+
+.file-upload-box span {
+    font-size: 16px;
+    color: #aaa;
+    pointer-events: none;
+}
+
+.file-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    height: 100%;
+    line-height: 55px;
+}
+
+tr {
+    width: 100%;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    padding: 0 50px;
+}
+
+td input {
+    width: 300px;
+    height: 28px;
+    padding: 5px 10px; /* 안쪽 여백 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 4px; /* 둥근 테두리 */
+    font-size: 16px; /* 글꼴 크기 */
+}
+
+textarea {
+    width: 300px; /* 가로 길이 */
+    height: 120px; /* 높이 */
+    padding: 5px 10px; /* 안쪽 여백 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 4px; /* 둥근 테두리 */
+    font-size: 16px; /* 글꼴 크기 */
+    box-sizing: border-box; /* 패딩 포함 크기 조정 */
+    resize: none; /* 크기 조정 비활성화 */
+}
+
+button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    background-color: #81cf7a;
+    color: #fff;
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(90%);
+}
+
+select {
+        padding: 5px 10px;
+        border: 1px solid #000;
+        border-radius: 5px;
+        background-color: #eee;
+}
