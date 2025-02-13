@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.gym.gym.mapper.QRcodeMapper">
+
+
+ <!-- QR 코드 발급 (생성) -->
+    <insert id="insertQRcode" parameterType="QRcode">
+        INSERT INTO qr_code (user_no, uuid)
+        VALUES (#{userNo}, #{uuid} )
+    </insert>
+
+
+
+ <!-- QR 코드 발급 (제거) -->
+    <delete id="deleteQRcode" parameterType="String">
+        DELETE FROM qr_code
+        WHERE uuid = #{uuid};
+    </delete>
+ 
+
+
+
+ <!--  UUID 존재 여부  -->
+  <select id="selectQRcode" resultType="QRcode">
+    SELECT *  
+    FROM qr_code
+    WHERE user_no = #{userNo}
+    ORDER BY created_at DESC
+    LIMIT 1
+</select>
+
+
+
+        <!-- 모든 QR 코드 목록  -->
+    <select id="getAllQRcodes" resultType="QRcode">
+        SELECT * 
+        FROM qr_code
+    </select>
+
+    </mapper>

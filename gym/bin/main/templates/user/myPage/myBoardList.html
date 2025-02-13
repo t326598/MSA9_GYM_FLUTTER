@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 문의내역</title>
+    <link rel="stylesheet" href="/css/myPage/ptList.css">
+    <link rel="stylesheet" href="/css/myPage/info.css">
+    <th:block th:replace="~{fragment/link::link}"></th:block>
+
+</head>
+
+<!-- 헤더 -->
+<body class="fullBody"  style="color: rgb(3, 3, 3); background-color: #252222;">
+    <th:block th:replace="~{fragment/header::header}"></th:block>
+
+    <div class="wrapper" style="margin-top: 80px;">
+        <main>
+            <div class="main-text1" style="color: #9FD0D5;">마이페이지</div>
+            <div class="button-group">
+                <button onclick="window.location.href='/user/myPage/info'">내 정보</button>
+                <button onclick="window.location.href='/user/myPage/buyList'">이용권 내역</button>
+                <button  onclick="window.location.href='/user/myPage/ptList'">PT 이용 내역</button>
+                <button class="active" onclick="window.location.href='/user/myPage/myBoardList'">내 문의내역</button>
+            </div>
+        </div>
+        <div style="width: 1000px; text-align: left;">
+        <h2 style="margin-bottom: 15px; font-weight: 800; color: white;">내 문의내역</h2>
+    </div>
+        <table class="table table-bordered text-center" style="margin-bottom: 30px; border-collapse: collapse;  box-shadow: 1px 2px 2px rgba(0, 0.5, 0.5, 0.5);"  >
+            <thead class="table-light" >
+                <tr style="width: 100%; ">
+                    <th style="width: 45%;">문의내용</th>
+                    <th style="width: 20%;">문의자</th>
+                    <th style="width: 25%;">등록일자</th>
+                    <th style="width: 25%;">답변상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <th:block th:if="${boardList.isEmpty()}">
+                    <tr>
+                        <td colspan="5">조회된 데이터가 없습니다.</td>
+                    </tr>
+                </th:block>
+                <th:block th:each="board : ${boardList}" th:style="${board.hasAnswer == 1 ? 'color: green; font-weight: bold;' : 'color: red;'}">
+                    <tr style="text-align: center; border-bottom: 1px solid white;" class="tabletr">
+                        <td>
+                            <a class="titlebt" th:href="|/user/board/read?no=${board.no}|" th:text="${board.title}"></a>
+                           
+                        </td>
+                        <td th:text="${board.name}"></td>
+                        <td th:text="${#dates.format(board.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></td>
+                        <td>
+                            <label th:if="${board.hasAnswer == 1}" style="color: rgb(21, 121, 21);">(답변 완료)</label>
+                            <label th:if="${board.hasAnswer != 1}" style="color: rgb(200, 0, 0);">(미답변)</label>
+                        </td>
+                        
+                    </tr>
+                </th:block>
+                
+            </tbody>
+        </table>
+        
+           
+     
+    
+    
+    <div class="insert-button" style="width: 1000px; text-align: right;" >
+        <a href="/user/board/insert" class="btn-primary">문의하기</a>
+    </div>
+
+    <div class="pagination">
+        <a th:href="@{'?page=' + ${page.first}}" class="first">처음</a>
+        <th:block th:if="${page.page != page.first}">
+            <a th:href="@{ '?page=' + ${page.prev}}" class="prev">이전</a>
+        </th:block>
+
+        <th:block th:each="no : ${#numbers.sequence(page.start, page.end)}">
+            <th:block th:if="${page.page == no}">
+                <a class="active" th:href="@{(page=${no})}" th:text="${no}"></a>
+            </th:block>
+            <th:block th:if="${page.page != no}">
+                <a th:href="@{'?page=' + ${no}}" th:text="${no}"></a>
+            </th:block>
+        </th:block>
+        <th:block th:if="${page.page != page.last}">
+            <a  th:href="@{'?page=' + ${page.next}}" class="next">다음</a>
+        </th:block>
+        <a th:href="@{'?page=' + ${page.last}}" class="first">마지막</a>
+    </div>
+    
+        </main>
+
+    </div>
+    
+    <div style="margin-bottom: 100px;"></div>
+
+    <script>
+   
+        </script>
+</body>
+<!-- 푸터 -->
+<footer>
+    <th:block th:replace="~{fragment/footer::footer}"></th:block>
+</footer>
+
+</html>

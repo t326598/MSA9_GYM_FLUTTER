@@ -1,0 +1,306 @@
+body {
+    background-color: #000000dc;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    align-items: center;      /* 수직 중앙 정렬 */
+}
+
+.container1 {
+    width: 760px;
+    padding: 40px;
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+}
+
+hr {
+    width: 100%;
+    border: none; /* 기본 경계선을 제거 */
+    height: 2px; /* 선의 두께 설정 */
+    background-color: rgb(70, 69, 67); /* 선의 색상을 빨간색으로 설정 */
+}
+
+.container1 img {
+    width: 50%;   /* 이미지 크기 설정 */
+    height: auto; /* 비율 유지 */
+    object-fit: contain;
+    border-radius: 5px;
+    margin-bottom: 20px;  /* 이미지와 텍스트 사이 여백 */
+}
+
+h1 {
+    margin-bottom: 30px;
+    font-size: 25px;
+    font-weight: bold;
+}
+.centerdhkwnj {
+    display: flex;               /* 플렉스박스로 설정 */
+    justify-content: center;     /* 수평 중앙 정렬 */
+    align-items: center;         /* 수직 중앙 정렬 */
+    height: 100%;               /* 화면 전체 높이로 설정 */
+    flex-direction: column;      /* 자식 요소들을 세로로 정렬 */
+    gap: 20px;
+}
+
+
+.top {
+    height: 500px;
+}
+
+label {
+    font-size: 18px;
+    margin-bottom: 5px;
+    text-align: left;
+    display: block;
+}
+
+.form-floating{
+    width: 100%;
+}
+
+.form-control {
+    height: 40px;
+    width: 80%;
+    margin: 10px 0; /* 상하 여백만 설정 */
+    padding: 0 15px; /* 좌우 여백 추가 */
+    background-color: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 8px;
+}
+
+.input-group-id .form-control {
+    font-size: 18px; /* 아이디 입력창 텍스트 크기 설정 */
+    font-weight: bold;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    outline: none;
+    background-color: #333;
+}
+
+.input-group {
+    width: 80%;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.btn-outline-secondary{
+    cursor: pointer;
+}
+
+.input-group button:hover {
+    background-color: #444;
+    color: white;
+}
+
+.d-grid {
+    margin-top: 20px;
+}
+
+.items{
+    transform: translateX(13%);
+}
+
+
+.d-grid .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.d-grid .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.d-grid .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.d-grid .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.input-group-id {
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    width: 100%;
+}
+
+.input-group-id .form-control {
+    flex-grow: 1;          /* 아이디 입력창이 가능한 공간을 다 차지하도록 */
+    margin-right: 10px;
+    margin-left: 55px;    /* 버튼과의 간격 */
+    height: 40px;
+    width: 50%;
+    border-radius: 8px;
+    border: none;
+}
+
+.input-group-id button {
+    background-color:ffffff ;
+    font-weight: bold;
+    border: none;
+    height: 40px;
+    margin-right: 55px;
+    width: 20%;
+    border-radius: 8px; /* 우측 둥근 모서리 */
+    font-size: 16px;
+    
+}
+
+.btn-join{
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 30px 10px 30px; border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+
+}
+.btn-join:hover{
+    background-color: #444;
+    color: white;
+}
+
+label {
+    text-align: left;
+    font-size: 16px;
+    margin-bottom: 5px; /* 입력 필드와 라벨 간 간격 */
+}
+
+/* 생일 필드 */
+#birth {
+    height: 40px;
+    width: 80%;
+    padding: 0 15px;
+    border-radius: 8px;
+    background-color: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+}
+
+/* 이메일 그룹 */
+.email-group .email-row {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 입력 필드 간 간격 */
+    margin-left: 50px;
+    margin-right: 55px;
+    
+}
+
+.email-row input {
+    flex: 1; /* 입력 필드 크기 균등 배분 */
+    height: 40px;
+    width: 80%;
+    border-radius: 8px;
+    padding: 0 15px;
+    background-color: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+}
+
+/* 연락처 그룹 */
+.phone-group .phone-row {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 입력 필드 간 간격 */
+    margin-left: 50px;
+    margin-right: 55px;
+}
+
+.phone-row input {
+    flex: 1; /* 입력 필드 크기 균등 배분 */
+    height: 40px;
+    width: 80%;
+    border-radius: 8px;
+    padding: 0 15px;
+    background-color: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+}
+
+span {
+    color: white;
+    font-size: 20px; /* 구분자 크기 조정 */
+    line-height: 50px; /* 입력 필드와 수직 정렬 */
+}
+
+/* 성별 그룹 전체 */
+.gender-group {
+    display: flex;
+    flex-direction: column; /* 전체를 위아래 정렬 */
+    align-items: flex-start; /* 라벨은 왼쪽 정렬 */
+    gap: 5px; /* 라벨과 버튼 그룹 사이 간격 */
+}
+
+/* 버튼 그룹 */
+.gender-options {
+    display: flex;
+    justify-content: center; /* 라디오 버튼들을 가운데 정렬 */
+    align-items: center;
+    gap: 5px;
+}
+
+/* 라디오 버튼 */
+.gender-options input[type="radio"] {
+    accent-color: #ffffff; /* 라디오 버튼 색상 */
+    width: 18px;
+    height: 18px;
+    margin: 0; /* 기본 여백 제거 */
+    margin-left: 120px;
+        cursor: pointer; /* 클릭 가능 표시 */
+}
+
+
+/* 라벨 스타일 */
+.gender-options label {
+    color: white;
+    font-size: 16px;
+    cursor: pointer; /* 클릭 가능 표시 */
+    margin-left: 5px; /* 버튼과 텍스트 사이 간격 */
+}
+
+/* 라디오 버튼 클릭 시 색상 변경 */
+.gender-options input[type="radio"]:checked {
+    background-color: #007bff; /* 클릭 시 배경 색상 */
+    border-color: #007bff; /* 클릭 시 테두리 색상 */
+    accent-color: #007bff; /* 클릭 시 라디오 버튼 색상 */
+}
+
+/* 라벨 클릭 시 라디오 버튼 강조 */
+.gender-options input[type="radio"]:checked + label {
+    color: #007bff; /* 클릭된 라벨 색상 변경 */
+    font-weight: bold; /* 클릭된 라벨 굵게 */
+}
+
+
+
+/* 계정찾기 css */
+
+
+.findPassword {
+    margin-top: 50px;
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 기본 텍스트 색상과 동일하게 */
+    padding: 5px 10px; /* 버튼 느낌의 패딩 */
+    color: white; /* 텍스트 색상 */
+    border-radius: 8px; /* 둥근 모서리 */
+    display: inline-block; /* 버튼처럼 보이도록 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* 호버 효과 */
+.findPassword:hover {
+    text-shadow: 2px 2px 2px  rgb(218, 197, 197);
+    color: white; /* 텍스트 색상 유지 */
+}

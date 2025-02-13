@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>출석 체크</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            height: 500px;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .btn-secondary {
+            background-color: #008CBA;
+        }
+
+        .btn-secondary:hover {
+            background-color: #007bb5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 style="margin-top: 100px;">출석 체크</h1>
+        <!-- <p>사용자 번호: <span th:text="${qrcodeId}"></span></p> -->
+        <!-- <p>사용자 UUID: <span th:text="${uuid}"></span></p> -->
+        <!-- 출석 확인 버튼 및 폼 -->
+        <form action="/user/attendance/check" method="post">
+            <input type="hidden" name="userNo" th:value="${qrcodeId}">
+            <input type="hidden" name="qrId" th:value="${uuid}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" class="btn">출석 확인</button>
+        </form>
+        <button onclick="goToMain()" class="btn btn-secondary">메인으로</button>
+    </div>
+
+    <script>
+        function goToMain() {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+
+</html>

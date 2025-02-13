@@ -1,15 +1,15 @@
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart';
 import 'package:gym_app/service/calendar_service.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:bottom_picker/bottom_picker.dart';
-import 'package:bottom_picker/resources/arrays.dart';
+// import 'package:bottom_picker/resources/arrays.dart';
 // import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 void showCalendarBottomSheet(BuildContext context, DateTime selectedDate,
-    {NeatCleanCalendarEvent? event}) {
+    {NeatCleanCalendarEvent? event, required Function() onEventUpdated}) {
   showMaterialModalBottomSheet(
     backgroundColor: const Color.fromARGB(255, 49, 47, 47),
     context: context,
@@ -17,18 +17,24 @@ void showCalendarBottomSheet(BuildContext context, DateTime selectedDate,
       borderRadius: BorderRadius.vertical(top: Radius.circular(18.0)),
     ),
     builder: (context) => CalendarBottomSheet(
-        selectedDate: selectedDate, event: event), // selectedDate 전달
+      selectedDate: selectedDate,
+      event: event,
+      onEventUpdated: onEventUpdated,
+    ), // selectedDate 전달
   );
 }
 
 class CalendarBottomSheet extends StatefulWidget {
   final DateTime selectedDate; // selectedDate를 받아옴
   final NeatCleanCalendarEvent? event;
+  final Function() onEventUpdated;
 
-  const CalendarBottomSheet(
-      {super.key,
-      required this.selectedDate,
-      this.event}); // 생성자에서 selectedDate 받기
+  const CalendarBottomSheet({
+    super.key,
+    required this.selectedDate,
+    this.event,
+    required this.onEventUpdated,
+  }); // 생성자에서 selectedDate 받기
 
   @override
   State<CalendarBottomSheet> createState() => _CalendarBottomSheetState();
@@ -38,8 +44,8 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
   DateTime? startTime;
   DateTime? endTime;
 
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   CalendarService calendarService = CalendarService();
 
@@ -52,25 +58,67 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
       _titleController.text = widget.event?.summary ?? '';
       _descriptionController.text = widget.event?.description ?? '';
     } else {
-      startTime = DateTime.now().toLocal();
-      endTime = DateTime.now().toLocal().add(Duration(hours: 1));
+      startTime = DateTime(
+        widget.selectedDate.year,
+        widget.selectedDate.month,
+        widget.selectedDate.day,
+        DateTime.now().hour,
+        DateTime.now().minute,
+        DateTime.now().second,
+      );
+      endTime = startTime?.add(Duration(hours: 1));
     }
+
+    // 초기화 후 값 확인
+    print("Initial startTime: $startTime");
+    print("Initial endTime: $endTime");
   }
 
   void _openTimePicker(BuildContext context, String type) {
+    DateTime? selectedTime = type == 'startTime' ? startTime : endTime;
+
+    // 시간 값이 null이면 현재 시간을 기본값으로 설정
+    selectedTime ??= DateTime.now();
     BottomPicker.time(
+      buttonContent: Text(
+        '확인',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
       pickerTitle: Text(
         type == 'startTime' ? '시작 시간' : '종료 시간',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20,
-          // color: Colors.orange,
+          color: Colors.black,
         ),
       ),
       onSubmit: (index) {
-        print(index);
+        print("$type onSubmit의 $index입니다.");
         setState(() {
-          type == 'startTime' ? startTime = index : endTime = index;
+          if (type == 'startTime') {
+            startTime = DateTime(
+              selectedTime!.year,
+              selectedTime.month,
+              selectedTime.day,
+              index.hour,
+              index.minute,
+            );
+          } else {
+            endTime = DateTime(
+              selectedTime!.year,
+              selectedTime.month,
+              selectedTime.day,
+              index.hour,
+              index.minute,
+            );
+          }
+          // 값이 변경된 후 확인
+          print("Updated startTime: $startTime");
+          print("Updated endTime: $endTime");
         });
       },
       use24hFormat: true,
@@ -84,14 +132,7 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
       buttonStyle: BoxDecoration(
           color: Color.fromARGB(255, 159, 208, 213),
           borderRadius: BorderRadius.all(Radius.circular(6.0))),
-      buttonContent: Text(
-        '확인',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          // color: Colors.white,
-          fontSize: 16,
-        ),
-      ),
+
       // backgroundColor: Color.fromARGB(255, 49, 47, 47),
     ).show(context);
   }
@@ -154,66 +195,81 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                '시작',
-                style: TextStyle(color: Colors.white),
+              Row(
+                children: [
+                  Icon(Icons.access_time),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    '시작',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
               SizedBox(width: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  _openTimePicker(context, 'startTime');
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  // backgroundColor: HexColor('9FD0D5'),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6)),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                child: Text(
-                  startTime != null
-                      ? "${startTime!.hour}:${startTime!.minute.toString().padLeft(2, '0')}"
-                      : '시작 시간 선택',
+              SizedBox(
+                width: 100,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _openTimePicker(context, 'startTime');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    // backgroundColor: HexColor('9FD0D5'),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6)),
+                    textStyle: const TextStyle(fontSize: 16),
+                  ),
+                  child: Text(
+                    startTime != null
+                        ? "${startTime!.hour}:${startTime!.minute.toString().padLeft(2, '0')}"
+                        : '시작 시간 선택',
+                  ),
                 ),
               ),
-              // Expanded(
-              //   child:
-              // ),
             ],
           ),
           SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                '종료',
-                style: TextStyle(color: Colors.white),
+              Row(
+                children: [
+                  Icon(Icons.access_time),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    '종료',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
               SizedBox(width: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  _openTimePicker(context, 'endTime');
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  // backgroundColor: HexColor('9FD0D5'),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6)),
-                  textStyle: const TextStyle(fontSize: 16),
-                ),
-                child: Text(
-                  endTime != null
-                      ? "${endTime!.hour}:${endTime!.minute.toString().padLeft(2, '0')}"
-                      : '종료 시간 선택',
+              SizedBox(
+                width: 100, // 원하는 너비 설정
+                child: ElevatedButton(
+                  onPressed: () {
+                    _openTimePicker(context, 'endTime');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6)),
+                    textStyle: const TextStyle(fontSize: 16),
+                  ),
+                  child: Text(
+                    endTime != null
+                        ? "${endTime!.hour}:${endTime!.minute.toString().padLeft(2, '0')}"
+                        : '종료 시간 선택',
+                  ),
                 ),
               ),
-              // Expanded(
-              //   child:
-              // ),
             ],
           ),
           SizedBox(height: 16.0),
@@ -237,45 +293,36 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
             maxLines: 6,
           ),
           SizedBox(height: 16.0),
-          // Align(
-          //   alignment: Alignment.bottomCenter,
-          //   child:
-          // ),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () async {
+                bool result;
                 if (widget.event == null) {
-                  bool result = await calendarService.insertPlan({
-                    "planTime": startTime?.toIso8601String(),
-                    "planEnd": endTime?.toIso8601String(),
+                  result = await calendarService.insertPlan({
+                    "planTime": startTime?.toUtc().toIso8601String(),
+                    "planEnd": endTime?.toUtc().toIso8601String(),
                     "no": 0,
                     "userNo": 0,
                     "planName": _titleController.text,
                     "planContent": _descriptionController.text
                   });
-                  if (result) {
-                    Navigator.pop(context);
-                    setState(() {});
-                  }
                 } else {
-                  bool result = await calendarService.updatePlan({
-                    "planTime": startTime?.toIso8601String(),
-                    "planEnd": endTime?.toIso8601String(),
+                  result = await calendarService.updatePlan({
+                    "planTime": startTime?.toUtc().toIso8601String(),
+                    "planEnd": endTime?.toUtc().toIso8601String(),
                     "no": widget.event!.id,
                     "userNo": 0,
                     "planName": _titleController.text,
                     "planContent": _descriptionController.text
                   });
-                  if (result) {
-                    Navigator.pop(context);
-                    setState(() {});
-                    // 북마크 새로 넣은 일정까지 다시 가져오기
-                  }
+                }
+                if (result) {
+                  widget.onEventUpdated();
+                  Navigator.pop(context);
                 }
                 // Navigator.pop(context);
               },
-              child: Text('저장하기'),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: HexColor('6A1ED0'),
@@ -285,6 +332,7 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
                     borderRadius: BorderRadius.circular(4)),
                 textStyle: const TextStyle(fontSize: 16),
               ),
+              child: Text('저장하기'),
             ),
           ),
         ],

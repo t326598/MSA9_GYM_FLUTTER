@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace="매퍼 인터페이스 경로" -->
+<mapper namespace="com.gym.gym.mapper.PlanMapper">
+    <!-- 일정 모두 조회 -->
+    <select id="listAll" resultType="Plan">
+        SELECT *
+        FROM plan
+        ORDER BY plan_time
+    </select>
+
+    <!-- 일정 회원별 조회 -->
+    <select id="selectByUser" resultType="Plan">
+        SELECT *
+        FROM plan
+        WHERE user_no = #{userNo}
+    </select>
+    
+    <!-- 일정 회원별 날짜별 조회 -->
+    <select id="selectByUserDate" resultType="Plan">
+        SELECT *
+        FROM plan
+        WHERE user_no = #{userNo} 
+        AND plan_time BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!-- 일정번호로 조회 -->
+    <select id="selectByNo" resultType="Plan">
+        SELECT *
+        FROM plan
+        WHERE no = #{no}
+    </select>
+
+    <!-- 일정 추가 -->
+    <insert id="insert" >
+        INSERT INTO plan (user_no, plan_name, plan_time, plan_content, plan_end)
+        VALUES (#{userNo}, #{planName},#{planTime}, #{planContent}, #{planEnd})
+    </insert>
+
+    <!-- 일정 수정 -->
+    <update id="update">
+        UPDATE plan
+        SET plan_name = #{planName}
+        , plan_time = #{planTime}
+        , plan_content = #{planContent}
+        , plan_end = #{planEnd}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 일정 삭제 -->
+    <delete id="delete">
+        DELETE FROM plan
+        WHERE no = #{no}
+    </delete>
+</mapper>

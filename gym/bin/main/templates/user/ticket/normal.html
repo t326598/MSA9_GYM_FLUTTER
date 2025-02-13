@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일반 이용권 구매</title>
+    <!-- 부트스트랩 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- css -->
+    <link rel="stylesheet" href="/css/ticket/trainerDetail.css">
+    <!-- 프래그먼트 -->
+    <th:block th:replace="~{fragment/link::link}"></th:block>
+</head>
+
+<body class="fullBody">
+    <th:block th:replace="~{fragment/header::header}"></th:block>
+
+    <div class="ticket-container" style="margin-top: 150px; margin-bottom: 100px;">
+        <div class="card">
+            <div class="hr">
+                <span>일반 이용권 구매</span>
+            </div>
+            <div class="ticket-date d-flex fw-bold justify-content-center align-items-center" style="height: 200px;">
+                <span>보유중인 이용권 : &ensp;</span>
+                <span th:text="${#lists.size(buyList) > 0 ? buyList[#lists.size(buyList) - 1].ticketName : '없음'}"></span>
+                &ensp;(&ensp;
+                <span th:text="${oldestBuyList != null ? #dates.format(oldestBuyList.startDate, 'yyyy-MM-dd') + '&ensp;~&ensp;' : '-'}"></span>
+                <span th:text="${#lists.size(buyList) > 0 ? #dates.format(buyList[#lists.size(buyList) - 1].endDate, 'yyyy-MM-dd') : ''}"></span>
+                &ensp;)
+            </div>
+            <div class="hr"></div>
+            
+            <input type="hidden" name="userNo" th:value="${user != null ? user.no : ''}">
+            <input type="hidden" name="name" th:value="${user != null ? user.name : ''}">
+            <input type="hidden" name="tel" th:value="${user != null ? user.phone : ''}">
+            <input type="hidden" name="email" th:value="${user != null ? user.email : ''}">
+            <input type="hidden" name="csrf" th:value="${_csrf.token}" />
+
+            <div class="ticket d-flex flex-column align-items-center">
+                <div class="item" th:each="ticket : ${ticketList}">
+                    <div class="d-flex align-items-center border-bottom" style="width: 100%; height: 150px;">
+                        <div class="checkbox">
+
+                            <input type="checkbox" class="ticket-checkbox" name="ticket" th:value="${ticket.no}" th:data-months="${ticket.months}">
+                            <input type="hidden" name="startDate" th:value="${#dates.format(startDate, 'yyyy-MM-dd HH:mm:ss')}">
+                            <input type="hidden" name="endDate" id="endDate">
+
+                        </div>
+                        <div class="ticket-content d-flex flex-column">
+                            <span class="ticket-name" th:text="${ticket.name}"></span>
+                            <span class="ticket-info" th:text="${ticket.info}"></span>
+                            <span class="ticket-price" th:text="${#numbers.formatInteger(ticket.price, 3, 'COMMA') + '원'}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button">
+                        <button onclick="requestPay()" class="btn btn-success">결제하기</button>
+                    </div>
+
+            </div>
+        </div>
+
+
+        <th:block th:replace="~{fragment/footer::footer}"></th:block>
+        <th:block th:replace="~{fragment/script::script}"></th:block>
+
+     <!-- 1️⃣ 포트원 라이브러리 추가  -->
+     <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+
+     <script>
+        // 모든 체크박스를 선택할 때, 하나만 선택되도록 설정
+        document.querySelectorAll('.ticket-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                // 다른 체크박스는 모두 해제
+                document.querySelectorAll('.ticket-checkbox').forEach(function(otherCheckbox) {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.checked = false;
+                    }
+                });
+            });
+        });
+
+         // 2️⃣  객체 초기화 하기
+         var IMP = window.IMP; 
+         IMP.init('imp24820185');
+         
+         var today = new Date();   
+         var hours = today.getHours(); // 시
+         var minutes = today.getMinutes();  // 분
+         var seconds = today.getSeconds();  // 초
+         var milliseconds = today.getMilliseconds();
+         var makeMerchantUid = hours +  minutes + seconds + milliseconds;
+ 
+         
+         // 3️⃣ 결제 요청하기
+         function requestPay() {
+
+            let checkedTicket = document.querySelector('.ticket-checkbox:checked');
+            if (!checkedTicket) {
+                alert('상품을 선택하세요.');
+                return;
+            }
+            
+            let ticketContainer = checkedTicket.closest('.item');
+            let productName = ticketContainer.querySelector('.ticket-name').innerText;
+            let price = ticketContainer.querySelector('.ticket-price').innerText.replace('원', '').replace(',', '');
+            
+            let name = document.querySelector('input[name="name"]').value;
+            let tel = document.querySelector('input[name="tel"]').value;
+            let email = document.querySelector('input[name="email"]').value;
+            let userNo = document.querySelector('input[name="userNo"]').value;
+            let startDate = document.querySelector('input[name="startDate"]').value;
+            let ticketNo = checkedTicket.value; // 선택된 티켓 번호
+            let months = checkedTicket.getAttribute('data-months'); // 티켓에 설정된 months 속성 가져오기
+            months = parseInt(months); // 문자열로 넘어올 수 있기 때문에 정수로 변환
+            
+            // startDate를 Date 객체로 변환
+            let start = new Date(startDate);
+            startDate = new Date(startDate).toISOString();
+
+            // months를 더한 endDate 계산
+            let end = new Date(start.setMonth(start.getMonth() + months));  // startDate에 months를 더함
+            let endDate = end.toISOString();  // ISO 형식으로 변환하여 endDate 설정
+            
+
+            // alert('month : '+ months + '\nticketNo : ' + ticketNo + '\nstartDate : ' + startDate + '\nendDate : ' + endDate);
+            
+            document.getElementById('endDate').value = endDate;  // endDate input에 값 설정
+            
+            IMP.request_pay({
+                pg: 'html5_inicis',
+                pay_method: 'card',
+                merchant_uid: "IMP" + makeMerchantUid,
+                name: productName,
+                amount: price,
+                buyer_email: email,
+                buyer_name: name,
+                buyer_tel: tel,
+            }, function (rsp) {
+                if (rsp.success) {
+                    var csrfToken = document.querySelector('input[name="csrf"]').value;
+
+                    // 결제 성공 시 buyList에 데이터 삽입
+                    fetch('/user/pay/paying', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        body: JSON.stringify({
+                            ticketNo: ticketNo,
+                            userNo: userNo,
+                            startDate: startDate,
+                            endDate: endDate,
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.href = '/user/pay/payResult?result=ok';
+                        } else {
+                            alert('구매 목록에 추가하는데 실패했습니다.');
+                            console.error('Failure data:', data);  // 실패 시 응답 데이터 로그
+                        }
+                    })
+                    .catch(error => {
+                        alert('서버와의 통신에 실패했습니다.');
+                        console.error(error);
+                    });
+                } else {
+                    alert('결제가 실패했습니다. 다시 시도해주세요.');
+                }
+            });
+        }
+
+     </script>
+
+</body>
+
+</html>
