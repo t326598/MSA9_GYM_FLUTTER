@@ -35,14 +35,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
           selectedColor: Colors.green,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.calendar_today),
           icon: const Icon(Icons.calendar_today_sharp),
           title: const Text("캘린더"),
           selectedColor: Colors.purple,
         ),
         SalomonBottomBarItem(
           icon: const Icon(Icons.list),
-          title: const Text("마이페이지"),
           title: const Text("메뉴"),
           selectedColor: Colors.teal,
         ),
