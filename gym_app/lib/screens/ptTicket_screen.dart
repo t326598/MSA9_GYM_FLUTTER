@@ -19,10 +19,9 @@ class _PtTicketScreenState extends State<PtTicketScreen> {
   final List<String> routes = [
     '/home',
     '/ticket',
-    '/trainer',
     '/reservationInsert',
-    '/ptList',
     '/calendar',
+    '/myPage'
   ];
 
   @override
