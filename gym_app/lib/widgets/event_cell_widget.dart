@@ -64,7 +64,7 @@ class EventCellWidget extends StatelessWidget {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              showCalendarBottomSheet(context, event.startTime);
+              showCalendarBottomSheet(context, event.startTime, event: event);
             },
             onLongPress: () {
               // if (widget.onEventLongPressed != null) {

@@ -23,7 +23,9 @@ class _HomeContentState extends State<HomeContent> {
     '/ticket',
     '/reservationInsert',
     '/calendar',
-    '/myPage',
+
+
+    '/myPage'
   ];
 
   @override
@@ -32,10 +34,12 @@ class _HomeContentState extends State<HomeContent> {
     qrCodeData = generateQRCodeData();
   }
 
-  String generateQRCodeData() {
-    String uniqueId = uuid.v4();
-    return 'https://example.com/?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
-  }
+String generateQRCodeData() {
+  String uniqueId = uuid.v4();
+  return 'http://10.0.2.2:8080/checkAttendance?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
+}
+
+
 
   Future<int> fetchGymUserCount() async {
     try {
@@ -118,7 +122,19 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return 
+    Theme(
+        data: ThemeData(
+          scaffoldBackgroundColor: Color.fromARGB(255, 49, 47, 47),
+          colorScheme: ColorScheme.dark(
+            primary: const Color.fromARGB(255, 206, 61, 61),
+            onPrimary: const Color.fromARGB(255, 241, 239, 239),
+            surface: const Color.fromARGB(255, 178, 10, 201),
+            onSurface: Color.fromARGB(255, 9, 191, 211),
+          ),
+        ),
+        child: Scaffold(
+
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -259,10 +275,10 @@ class _HomeContentState extends State<HomeContent> {
           });
 
           if (index >= 0 && index < routes.length) {
-            Navigator.pushNamed(context, routes[index]);
+            Navigator.pushReplacementNamed(context, routes[index]);
           }
         },
       ),
-    );
+    ));
   }
 }

@@ -39,7 +39,7 @@ class CalendarResponse {
         event.title,
         startTime: DateTime.parse(event.start).toLocal(),
         endTime: DateTime.parse(event.end).toLocal(),
-        // description: event.description,
+        description: event.description,
         color: HexColor(event.color),
         id: event.id.toString(),
         metadata: {'type': event.type},

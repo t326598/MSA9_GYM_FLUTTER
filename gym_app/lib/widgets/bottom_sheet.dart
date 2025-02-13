@@ -20,28 +20,28 @@ class CustomBottomNavigationBar extends StatelessWidget {
       },
       items: [
         SalomonBottomBarItem(
-          icon: const Icon(Icons.home),
+          icon: const Icon(Icons.home, color:Colors.black),
           title: const Text("홈"),
           selectedColor: Colors.blue,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.confirmation_number_outlined),
+          icon: const Icon(Icons.confirmation_number_outlined, color: Colors.black),
           title: const Text("티켓"),
           selectedColor: Colors.pink,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.event_available),
+          icon: const Icon(Icons.event_available , color: Colors.black),
           title: const Text("예약"),
           selectedColor: Colors.green,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.calendar_today),
+          icon: const Icon(Icons.calendar_today_sharp , color: Colors.black),
           title: const Text("캘린더"),
           selectedColor: Colors.purple,
         ),
         SalomonBottomBarItem(
-          icon: const Icon(Icons.list),
-          title: const Text("마이페이지"),
+          icon: const Icon(Icons.list , color: Colors.black),
+          title: const Text("메뉴"),
           selectedColor: Colors.teal,
         ),
       ],
