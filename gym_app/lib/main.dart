@@ -43,9 +43,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/home',
       routes: {
-        '/': (context) => PayScreen(),
+        '/pay': (context) => PayScreen(),
         '/home': (context) => HomeContent(),
         '/ticket': (context) => TicketScreen(),
         '/trainer': (context) => TrainerScreen(),
