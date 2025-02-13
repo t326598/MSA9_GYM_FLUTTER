@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/provider/user_provider.dart';
 import 'package:gym_app/screens/calendar_screen.dart';
+import 'package:gym_app/screens/changePw.dart';
 import 'package:gym_app/screens/find_id_screen.dart';
 import 'package:gym_app/screens/find_pw_screen.dart';
 import 'package:gym_app/screens/home_screen.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         '/join': (context) => Join(),
         '/findId': (context) => FindIdScreen(),
         '/findPw': (context) => FindPwScreen(),
+        '/changePw': (context) => Changepw(),
         '/myPage': (context) => MyPage(),
         '/myPageInfo': (context) => MyPageInfo()
       },

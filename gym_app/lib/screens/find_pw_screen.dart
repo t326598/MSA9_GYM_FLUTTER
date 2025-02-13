@@ -196,7 +196,11 @@ class _FindPwScreenState extends State<FindPwScreen> {
                   });
                   result;
                   if (result) {
-                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(
+                      context,
+                      "/changePw",
+                      arguments: {'id': _idController.text},
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar());
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(customSnackbar1());
@@ -210,6 +214,7 @@ class _FindPwScreenState extends State<FindPwScreen> {
                 ),
                 child: const Text("비밀번호 찾기", style: TextStyle(fontSize: 24)),
               ),
+              const SizedBox(height: 10),
             ],
           ),
         ),

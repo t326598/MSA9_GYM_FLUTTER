@@ -19,9 +19,24 @@ class UserService {
     }
   }
 
+// 비밀번호 찾기
   Future<bool> findPw(Map<String, dynamic> userData) async {
     try {
       final response = await _dio.post('$host/findPw', data: userData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  //  비밀번호 변경
+  Future<bool> changePw(Map<String, dynamic> userData) async {
+    try {
+      final response = await _dio.post('$host/newPw', data: userData);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       }
