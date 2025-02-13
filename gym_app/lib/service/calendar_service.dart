@@ -132,8 +132,38 @@ class CalendarService {
         return false;
       }
     } catch (e) {
-      rethrow;
+      print("updatePlans error: $e");
+      return false;
     }
+  }
+
+  /// 회원탈퇴
+  Future<bool> deletePlan(int no) async {
+    if (no.isNaN) {
+      return false;
+    }
+    try {
+      final storage = const FlutterSecureStorage();
+      String? jwt = await storage.read(key: 'jwt');
+      final response = await _dio.delete(
+        '$host/user/schedule?no=$no',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $jwt',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print('일정 삭제 성공!');
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("일정 삭제 시, 에러발생: $e");
+    }
+    return false;
   }
 }
 // 여기 로그인한 상태의 요청으로 바꾸기

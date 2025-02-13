@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gym_app/service/calendar_service.dart';
 import 'package:gym_app/widgets/calendar_bottom_sheet.dart';
 
-class EventCellWidget extends StatelessWidget {
+class EventCellWidget extends StatefulWidget {
   final dynamic event; // 이벤트 객체
   final String start; // 시작 시간
   final String end; // 종료 시간
+  final VoidCallback? onEventUpdated;
 
   const EventCellWidget({
     Key? key,
     required this.event,
     required this.start,
     required this.end,
+    this.onEventUpdated,
   }) : super(key: key);
+
+  @override
+  _EventCellWidgetState createState() => _EventCellWidgetState();
 
   Column singleDayTimeWidget(String start, String end) {
     // widget.onPrintLog != null
@@ -31,6 +37,10 @@ class EventCellWidget extends StatelessWidget {
       ],
     );
   }
+}
+
+class _EventCellWidgetState extends State<EventCellWidget> {
+  final CalendarService calendarService = CalendarService();
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +49,12 @@ class EventCellWidget extends StatelessWidget {
           motion: const DrawerMotion(), // 슬라이드 애니메이션 효과
           children: [
             SlidableAction(
-              onPressed: (context) {
-                // onDelete(event);
+              onPressed: (context) async {
+                bool success = await calendarService
+                    .deletePlan(int.parse(widget.event.id));
+                if (success) {
+                  widget.onEventUpdated?.call();
+                }
               },
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,
@@ -64,26 +78,37 @@ class EventCellWidget extends StatelessWidget {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              showCalendarBottomSheet(context, event.startTime, event: event);
+              showCalendarBottomSheet(
+                context,
+                widget.event.startTime,
+                event: widget.event,
+                onEventUpdated: () {
+                  if (widget.onEventUpdated != null) {
+                    widget.onEventUpdated!(); // 콜백 실행
+                  }
+                },
+              );
             },
-            onLongPress: () {
-              // if (widget.onEventLongPressed != null) {
-              //   widget.onEventLongPressed!(event);
-              // }
-            },
+            // onLongPress: () {
+            //   // if (widget.onEventLongPressed != null) {
+            //   //   widget.onEventLongPressed!(event);
+            //   // }
+            // },
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 // 왼쪽: 이벤트 아이콘 또는 색상 표시
                 Expanded(
-                  flex: event.wide != null && event.wide! == true ? 25 : 5,
+                  flex: widget.event.wide != null && widget.event.wide! == true
+                      ? 25
+                      : 5,
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Container(
                       height: 60.0,
                       decoration: BoxDecoration(
                         // 아이콘이 없으면 색상을 사용
-                        color: event.color,
+                        color: widget.event.color,
                         borderRadius: BorderRadius.circular(3),
                       ),
                     ),
@@ -100,7 +125,7 @@ class EventCellWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          event.summary, // 제목만 표시
+                          widget.event.summary, // 제목만 표시
                           style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                       ],
@@ -113,7 +138,8 @@ class EventCellWidget extends StatelessWidget {
                   flex: 30,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: singleDayTimeWidget(start, end), // Single day event
+                    child: widget.singleDayTimeWidget(
+                        widget.start, widget.end), // Single day event
                   ),
                 )
               ],

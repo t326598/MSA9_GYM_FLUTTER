@@ -4,7 +4,6 @@ import 'package:gym_app/models/calendar_response.dart';
 import 'package:gym_app/service/calendar_service.dart';
 import 'package:gym_app/widgets/bottom_sheet.dart';
 import 'package:gym_app/widgets/event_cell_widget.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:gym_app/widgets/calendar_bottom_sheet.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -115,6 +114,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   event: event,
                   start: start,
                   end: end,
+                  onEventUpdated: () {
+                    _fetchCalendarEventsByDate(_selectedDate!);
+                  },
                 );
               },
               onMonthChanged: (date) {
@@ -143,10 +145,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              showCalendarBottomSheet(context, _selectedDate!);
+              showCalendarBottomSheet(
+                context,
+                _selectedDate!,
+                onEventUpdated: () {
+                  _fetchCalendarEventsByDate(
+                      _selectedDate!); // ✅ 선택된 날짜의 이벤트 다시 불러오기
+                },
+              );
             },
-            child: const Icon(Icons.add),
             backgroundColor: Color.fromARGB(255, 159, 208, 213),
+            child: const Icon(Icons.add),
           ),
           bottomNavigationBar: CustomBottomNavigationBar(
             currentIndex: _currentIndex,
