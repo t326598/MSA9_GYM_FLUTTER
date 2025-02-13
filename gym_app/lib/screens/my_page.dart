@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gym_app/provider/user_provider.dart';
+import 'package:gym_app/screens/login.dart';
 import 'package:gym_app/widgets/my_page_button.dart'; // ✅ MyPageButton을 import
 
 class MyPage extends StatelessWidget {
   const MyPage({super.key});
-
+// 내정보 메뉴임!
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = UserProvider();
@@ -69,7 +70,13 @@ class MyPage extends StatelessWidget {
               title: "로그아웃",
               onPressed: () {
                 userProvider.logout();
-                Navigator.pushReplacementNamed(context, "/login");
+
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => Login()), // 로그인 페이지로 이동
+                  (route) => false, // 모든 기존 페이지 제거
+                );
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   customSnackbar(),
                 );

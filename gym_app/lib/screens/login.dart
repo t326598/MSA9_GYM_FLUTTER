@@ -5,6 +5,7 @@ import 'package:gym_app/provider/user_provider.dart';
 import 'package:gym_app/widgets/custom_drawer.dart';
 import 'package:gym_app/widgets/custom_snackbar.dart';
 
+// 로그인 들어갑니다?
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -91,7 +92,8 @@ class _LoginState extends State<Login> {
       body: Container(
           decoration: BoxDecoration(color: const Color.fromARGB(255, 49, 47, 47)),
           padding: const EdgeInsets.all(16),
-          child: Form(
+          child: SingleChildScrollView(
+              child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -317,13 +319,15 @@ class _LoginState extends State<Login> {
                           ),
                         ],
                       ),
-                      // 자동 로그인
                     ],
                   ),
                 ),
+                const SizedBox(
+                  height: 178,
+                ),
               ],
             ),
-          )),
+          ))),
     );
   }
 }

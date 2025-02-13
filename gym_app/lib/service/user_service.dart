@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+// 유저 서비스에요!
 class UserService {
   final Dio _dio = Dio();
   final String host = 'http://10.0.2.2:8080';
@@ -15,6 +16,19 @@ class UserService {
     } catch (e) {
       print(e);
       rethrow;
+    }
+  }
+
+  Future<bool> findPw(Map<String, dynamic> userData) async {
+    try {
+      final response = await _dio.post('$host/findPw', data: userData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 

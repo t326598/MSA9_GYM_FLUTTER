@@ -15,6 +15,7 @@ import 'package:gym_app/screens/ticket_screen.dart';
 import 'package:gym_app/screens/trainer_screen.dart';
 import 'package:provider/provider.dart';
 
+//  메인 수정했을지도?
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // ✅ 필수!
   final userProvider = UserProvider();
@@ -53,10 +54,8 @@ class MyApp extends StatelessWidget {
         '/join': (context) => Join(),
         '/findId': (context) => FindIdScreen(),
         '/findPw': (context) => FindPwScreen(),
-
         '/myPage': (context) => MyPage(),
         '/myPageInfo': (context) => MyPageInfo()
-
       },
     );
   }
