@@ -9,6 +9,7 @@ import 'package:gym_app/screens/join.dart';
 import 'package:gym_app/screens/login.dart';
 import 'package:gym_app/screens/my_page.dart';
 import 'package:gym_app/screens/my_page_info.dart';
+import 'package:gym_app/screens/pay_screen.dart';
 import 'package:gym_app/screens/ptList_screen.dart';
 import 'package:gym_app/screens/ptTicket_screen.dart';
 import 'package:gym_app/screens/reservation_insert_screen.dart';
@@ -42,8 +43,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/home',
+      initialRoute: '/',
       routes: {
+        '/': (context) => PayScreen(),
         '/home': (context) => HomeContent(),
         '/ticket': (context) => TicketScreen(),
         '/trainer': (context) => TrainerScreen(),
