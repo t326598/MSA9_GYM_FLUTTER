@@ -26,6 +26,15 @@ class _PtTicketScreenState extends State<PtTicketScreen> {
     '/myPage'
   ];
 
+  List<Map<String, dynamic>> selectedTickets = []; // 체크된 티켓 리스트
+
+  // 체크된 티켓을 받는 함수
+  void _onTicketSelectionChanged(List<Map<String, dynamic>> selected) {
+    setState(() {
+      selectedTickets = selected;
+    });
+  }
+
   Future<void> _loadTrainerProfile(int trainerNo) async {
     try {
       final profile = await _trainerService.getTrainerProfile(trainerNo);
@@ -40,7 +49,8 @@ class _PtTicketScreenState extends State<PtTicketScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (arguments != null && arguments.containsKey('no')) {
       final trainerNoValue = arguments['no'];
       print('전달된 trainerNo: $trainerNoValue');
@@ -60,7 +70,7 @@ class _PtTicketScreenState extends State<PtTicketScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      backgroundColor: Color.fromARGB(255, 49, 47, 47),  // 전체 배경색을 변경
+      backgroundColor: Color.fromARGB(255, 49, 47, 47), // 전체 배경색을 변경
       body: Column(
         children: [
           trainerProfile == null
@@ -76,31 +86,39 @@ class _PtTicketScreenState extends State<PtTicketScreen> {
                           contentPadding: EdgeInsets.zero,
                           leading: Image.network(
                             'http://10.0.2.2:8080/files/${trainerProfile!['fileNo']}/thumbnail',
-                            width: 60,  // 이미지 크기
+                            width: 60, // 이미지 크기
                             height: 60, // 이미지 크기
                             fit: BoxFit.cover,
                           ),
                           title: Text(
                             trainerProfile!['name'] ?? 'No Name',
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                trainerProfile!['simpleInfo'] ?? 'No Simple Info',
-                                style: const TextStyle(fontSize: 14, color: Colors.white),
+                                trainerProfile!['simpleInfo'] ??
+                                    'No Simple Info',
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.white),
                               ),
                               const SizedBox(height: 8),
                               // detailInfo에 배경 색상 추가
                               Container(
                                 padding: const EdgeInsets.all(8.0),
                                 decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 122, 135, 141), // 배경 색상
-                                  borderRadius: BorderRadius.circular(8.0), // 둥근 모서리
+                                  color: const Color.fromARGB(
+                                      255, 122, 135, 141), // 배경 색상
+                                  borderRadius:
+                                      BorderRadius.circular(8.0), // 둥근 모서리
                                 ),
                                 child: Text(
-                                  trainerProfile!['detailInfo'] ?? 'No Detail Info',
+                                  trainerProfile!['detailInfo'] ??
+                                      'No Detail Info',
                                   style: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.white, // 텍스트 색상
@@ -115,7 +133,9 @@ class _PtTicketScreenState extends State<PtTicketScreen> {
                     ],
                   ),
                 ),
-          const Expanded(child: TicketCard(type: 'PT')),
+          Expanded(
+              child: TicketCard(
+                  type: 'PT', onSelectionChanged: _onTicketSelectionChanged)),
         ],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(

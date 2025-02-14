@@ -97,7 +97,7 @@ class _TrainerCardState extends State<TrainerCard> {
                                 alignment: Alignment.center,
                                 child: TextButton(
                                   onPressed: () {
-                                    Navigator.pushReplacementNamed(
+                                    Navigator.pushNamed(
                                       context,
                                       '/ptTicket',
                                       arguments: {'no': trainer['trainerNo']},
