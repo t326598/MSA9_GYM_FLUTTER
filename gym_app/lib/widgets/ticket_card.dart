@@ -4,7 +4,11 @@ import 'package:intl/intl.dart';
 
 class TicketCard extends StatefulWidget {
   final String type;
-  const TicketCard({super.key, required this.type});
+  final Function(List<Map<String, dynamic>>)
+      onSelectionChanged; // 선택된 티켓을 부모로 전달하는 콜백
+
+  const TicketCard(
+      {super.key, required this.type, required this.onSelectionChanged});
 
   @override
   State<TicketCard> createState() => _TicketCardState();
@@ -24,11 +28,9 @@ class _TicketCardState extends State<TicketCard> {
   // 일반 이용권만 필터링하여 가져오기
   Future<void> _loadTickets() async {
     try {
-      print('widget.type : ' + widget.type);
       TicketService ticketService = TicketService();
       var allTickets = await ticketService.getTicket();
 
-      // 받은 데이터를 List<Map<String, dynamic>>로 변환
       List<Map<String, dynamic>> filteredTickets =
           List<Map<String, dynamic>>.from(
               allTickets.where((ticket) => ticket['type'] == widget.type));
@@ -39,11 +41,20 @@ class _TicketCardState extends State<TicketCard> {
         isLoading = false; // 로딩 완료
       });
     } catch (e) {
-      print('이용권 불러오기 실패: $e');
       setState(() {
         isLoading = false; // 로딩 실패 시도 완료
       });
     }
+  }
+
+  void _updateSelection() {
+    List<Map<String, dynamic>> selectedTickets = [];
+    for (int i = 0; i < tickets.length; i++) {
+      if (isCheckedMap[i] == true) {
+        selectedTickets.add(tickets[i]);
+      }
+    }
+    widget.onSelectionChanged(selectedTickets); // 부모로 전달
   }
 
   @override
@@ -78,7 +89,12 @@ class _TicketCardState extends State<TicketCard> {
                               value: isCheckedMap[index] ?? false,
                               onChanged: (bool? value) {
                                 setState(() {
+                                  // 모든 항목을 false로 설정한 후, 현재 항목만 true로 설정
+                                  for (int i = 0; i < tickets.length; i++) {
+                                    isCheckedMap[i] = false;
+                                  }
                                   isCheckedMap[index] = value ?? false;
+                                  _updateSelection(); // 선택 변경 시 콜백 호출
                                 });
                               },
                             ),

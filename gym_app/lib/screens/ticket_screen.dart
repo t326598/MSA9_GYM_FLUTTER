@@ -24,6 +24,15 @@ class _TicketScreenState extends State<TicketScreen> {
     '/myPage'
   ];
 
+  List<Map<String, dynamic>> selectedTickets = []; // 체크된 티켓 리스트
+
+  // 체크된 티켓을 받는 함수
+  void _onTicketSelectionChanged(List<Map<String, dynamic>> selected) {
+    setState(() {
+      selectedTickets = selected;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     TicketService ticketService = TicketService();
@@ -113,7 +122,9 @@ class _TicketScreenState extends State<TicketScreen> {
               ),
             ],
           ),
-          Expanded(child: TicketCard(type: '일반')),
+          Expanded(
+              child: TicketCard(
+                  type: '일반', onSelectionChanged: _onTicketSelectionChanged)),
           SizedBox(
             height: 42,
           ),
@@ -134,7 +145,7 @@ class _TicketScreenState extends State<TicketScreen> {
             tileColor: Colors.blueAccent,
             textColor: Colors.white,
             onTap: () {
-              Navigator.pushNamed(context, '/pay');
+              Navigator.pushNamed(context, '/pay', arguments: selectedTickets);
             }),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(

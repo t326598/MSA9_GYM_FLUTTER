@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gym_app/intro.dart';
 import 'package:gym_app/provider/user_provider.dart';
 import 'package:gym_app/result.dart';
 import 'package:gym_app/screens/calendar_screen.dart';
@@ -20,7 +19,6 @@ import 'package:gym_app/screens/ticketList_screen.dart';
 import 'package:gym_app/screens/ticket_screen.dart';
 import 'package:gym_app/screens/trainer_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:tosspayments_widget_sdk_flutter/model/tosspayments_result.dart';
 
 //  메인 수정했을지도?
 void main() async {
