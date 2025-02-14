@@ -15,6 +15,8 @@ class UserProvider extends ChangeNotifier {
   final Dio _dio = Dio();
   final storage = const FlutterSecureStorage();
 
+  int? get userNo => _userInfo?.no; // 유저 no 가져오기
+
   Future<void> login(String id, String password,
       {bool rememberId = false, bool rememberMe = false}) async {
     _loginStat = false;
