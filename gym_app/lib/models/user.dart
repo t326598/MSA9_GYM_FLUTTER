@@ -71,6 +71,22 @@ class Users {
     };
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'no': no,
+      'id': id,
+      'passowrd': password,
+      'name': name,
+      'phone': phone,
+      'email': email,
+      'birth': birth,
+      'enabled': enabled,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
+      'trainerNo': trainerName,
+    };
+  }
+
   factory Users.fromMap(Map<String, dynamic> map) {
     return Users(
       no: map['no'],
@@ -80,11 +96,10 @@ class Users {
       phone: map['phone'],
       email: map['email'],
       birth: map['birth'],
-      createdAt:
-          map['createdAt'] != null ? DateTime.fromMillisecondsSinceEpoch(map['createdAt']) : null,
-      updatedAt:
-          map['updatedAt'] != null ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt']) : null,
       enabled: map['enabled'],
+      createdAt: map['createdAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(int.tryParse(map['createdAt'].toString()) ?? 0)
+          : null,
       authList: map['authList'] != null
           ? List<UserAuth>.from(map['authList'].map((auth) => UserAuth.fromMap(auth)))
           : [],
