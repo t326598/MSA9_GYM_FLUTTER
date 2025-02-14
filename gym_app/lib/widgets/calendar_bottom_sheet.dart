@@ -6,7 +6,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:bottom_picker/bottom_picker.dart';
 // import 'package:bottom_picker/resources/arrays.dart';
-// import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 
 void showCalendarBottomSheet(BuildContext context, DateTime selectedDate,
     {NeatCleanCalendarEvent? event, required Function() onEventUpdated}) {
@@ -197,7 +196,10 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
             children: <Widget>[
               Row(
                 children: [
-                  Icon(Icons.access_time),
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.white,
+                  ),
                   SizedBox(
                     width: 10,
                   ),
@@ -215,7 +217,8 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
                     _openTimePicker(context, 'startTime');
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
+                    backgroundColor: Color.fromARGB(255, 78, 78, 78),
+                    foregroundColor: Colors.white,
                     // backgroundColor: HexColor('9FD0D5'),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
@@ -238,7 +241,10 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
             children: <Widget>[
               Row(
                 children: [
-                  Icon(Icons.access_time),
+                  Icon(
+                    Icons.access_time,
+                    color: Colors.white,
+                  ),
                   SizedBox(
                     width: 10,
                   ),
@@ -256,7 +262,8 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
                     _openTimePicker(context, 'endTime');
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
+                    backgroundColor: Color.fromARGB(255, 78, 78, 78),
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     shape: RoundedRectangleBorder(
