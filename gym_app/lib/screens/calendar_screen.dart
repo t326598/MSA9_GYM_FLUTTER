@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart';
 import 'package:gym_app/models/calendar_response.dart';
 import 'package:gym_app/models/comment.dart';
+import 'package:gym_app/provider/user_provider.dart';
+import 'package:gym_app/screens/home_screen.dart';
 import 'package:gym_app/service/calendar_service.dart';
 import 'package:gym_app/widgets/bottom_sheet.dart';
 import 'package:gym_app/widgets/event_cell_widget.dart';
 import 'package:gym_app/widgets/calendar_bottom_sheet.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class CalendarScreen extends StatefulWidget {
   // final ValueNotifier<ThemeMode> theme = ValueNotifier(ThemeMode.dark);
@@ -92,6 +95,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: true);
+    print(userProvider.isLogin);
+    if (!userProvider.isLogin) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // canPop 남아있는 스택이 있는지 확인
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
+        Navigator.pushNamed(context, "/login");
+      });
+      return const HomeContent();
+    }
     return Theme(
         data: ThemeData(
           scaffoldBackgroundColor: Color.fromARGB(255, 49, 47, 47),
@@ -153,11 +169,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
           ),
           floatingActionButton: SpeedDial(
-            // animatedIcon: AnimatedIcons.menu_close,
-            // animatedIconTheme: IconThemeData(size: 22.0),
-            // / This is ignored if animatedIcon is non null
-            // child: Text("open"),
-            // activeChild: Text("close"),
             icon: Icons.menu,
             activeIcon: Icons.close,
             spacing: 3,
@@ -165,17 +176,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
             childPadding: const EdgeInsets.all(5),
             spaceBetweenChildren: 4,
             backgroundColor: Color.fromARGB(255, 159, 208, 213),
-
-            /// Transition Builder between label and activeLabel, defaults to FadeTransition.
             labelTransitionBuilder: (widget, animation) =>
                 ScaleTransition(scale: animation, child: widget),
-
-            /// The below button size defaults to 56 itself, its the SpeedDial childrens size
             direction: SpeedDialDirection.up,
-
-            /// If true user is forced to close dial manually
-
-            /// If false, backgroundOverlay will not be rendered.
             renderOverlay: true,
             overlayColor: Colors.black,
             overlayOpacity: 0.5,
@@ -184,16 +187,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
             useRotationAnimation: true,
             tooltip: 'Open Speed Dial',
             heroTag: 'speed-dial-hero-tag',
-            // foregroundColor: Colors.black,
-            // backgroundColor: Colors.white,
-            // activeForegroundColor: Colors.red,
-            // activeBackgroundColor: Colors.blue,
             elevation: 8.0,
             animationCurve: Curves.elasticInOut,
             isOpenOnStart: false,
-            // shape: const StadiumBorder(),
-            // shape: const RoundedRectangleBorder(),
-            // childMargin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             children: [
               SpeedDialChild(
                 child: const Icon(Icons.add),
@@ -263,8 +259,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
                               ],
                             ),
                             const SizedBox(height: 12),
-
-                            // ✅ 스크롤 가능한 부분 추가
                             Expanded(
                               child: SingleChildScrollView(
                                 child: Column(
@@ -297,7 +291,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                             color: Colors.white),
                                         const SizedBox(width: 10),
                                         Expanded(
-                                          // ✅ 긴 텍스트도 줄바꿈됨
                                           child: Text(
                                             comment?.ccontent ?? "",
                                             style: TextStyle(
@@ -321,7 +314,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                             color: Colors.white),
                                         const SizedBox(width: 10),
                                         Expanded(
-                                          // ✅ 긴 텍스트도 줄바꿈됨
                                           child: Text(
                                             comment?.fcontent ?? "",
                                             style: TextStyle(
@@ -342,32 +334,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   );
                 },
               ),
-              // SpeedDialChild(
-              //   child: !rmicons ? const Icon(Icons.margin) : null,
-              //   backgroundColor: Colors.indigo,
-              //   foregroundColor: Colors.white,
-              //   label: 'Show Snackbar',
-              //   visible: true,
-              //   onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              //       const SnackBar(content: Text(("Third Child Pressed")))),
-              //   onLongPress: () => debugPrint('THIRD CHILD LONG PRESS'),
-              // ),
             ],
           ),
-          // FloatingActionButton(
-          //   onPressed: () {
-          //     showCalendarBottomSheet(
-          //       context,
-          //       _selectedDate!,
-          //       onEventUpdated: () {
-          //         _fetchCalendarEventsByDate(
-          //             _selectedDate!); // ✅ 선택된 날짜의 이벤트 다시 불러오기
-          //       },
-          //     );
-          //   },
-          //   backgroundColor: Color.fromARGB(255, 159, 208, 213),
-          //   child: const Icon(Icons.add),
-          // ),
           bottomNavigationBar: CustomBottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gym_app/service/calendar_service.dart';
 import 'package:gym_app/widgets/calendar_bottom_sheet.dart';
+import 'package:gym_app/widgets/reservation_detail.dart';
 
 class EventCellWidget extends StatefulWidget {
   final dynamic event; // 이벤트 객체
@@ -78,22 +79,21 @@ class _EventCellWidgetState extends State<EventCellWidget> {
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              showCalendarBottomSheet(
-                context,
-                widget.event.startTime,
-                event: widget.event,
-                onEventUpdated: () {
-                  if (widget.onEventUpdated != null) {
-                    widget.onEventUpdated!(); // 콜백 실행
-                  }
-                },
-              );
+              if (widget.event.metadata['type'] == 'plan') {
+                showCalendarBottomSheet(
+                  context,
+                  widget.event.startTime,
+                  event: widget.event,
+                  onEventUpdated: () {
+                    if (widget.onEventUpdated != null) {
+                      widget.onEventUpdated!(); // 콜백 실행
+                    }
+                  },
+                );
+              } else {
+                showReservationDetail(context, widget.event);
+              }
             },
-            // onLongPress: () {
-            //   // if (widget.onEventLongPressed != null) {
-            //   //   widget.onEventLongPressed!(event);
-            //   // }
-            // },
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
