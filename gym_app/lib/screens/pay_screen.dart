@@ -5,6 +5,7 @@ import 'package:gym_app/models/user.dart';
 import 'package:gym_app/provider/user_provider.dart';
 import 'package:gym_app/screens/payment_screen.dart';
 import 'package:gym_app/service/pay_service.dart';
+import 'package:gym_app/service/ticketList_service.dart';
 import 'package:gym_app/service/user_service.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -33,9 +34,10 @@ class _PayScreenState extends State<PayScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // if (Method) {
+
     _fetchUserData(); // ✅ 사용자 데이터 불러오기
-    // }
+    _loadTickets(); // ✅ 이용권 정보 불러오기
+
     // arguments로 selectedTickets 받기
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is List<Map<String, dynamic>>) {
@@ -84,6 +86,27 @@ class _PayScreenState extends State<PayScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> _loadTickets() async {
+    if (_user == null) return; // _user가 null일 경우 처리
+
+    TicketListService ticketListService = TicketListService();
+    try {
+      // getTicketDate 메서드 호출 시 괄호 추가
+      final response = await ticketListService.getTicketDate();
+      final buyList = response['buyList']; // 구매 리스트
+      final startDate = response['startDate']; // 티켓 시작 날짜
+      final oldTicket = response['oldTicket']; // 가장 오래된 티켓
+
+      // 상태 업데이트
+      setState(() {
+        selectedTickets = buyList; // 구매 리스트 업데이트
+        // startDate와 oldTicket도 필요한 경우 상태에 저장할 수 있습니다.
+      });
+    } catch (e) {
+      print('이용권 정보 조회 중 오류 : $e');
     }
   }
 
@@ -155,7 +178,6 @@ class _PayScreenState extends State<PayScreen> {
                 decoration: const InputDecoration(
                   labelText: '구매자명(customerName)',
                 ),
-                // initialValue: _user?.name ?? '없음',
                 onSaved: (String? value) {
                   customerName = value!;
                 },
@@ -165,7 +187,6 @@ class _PayScreenState extends State<PayScreen> {
                   labelText: '이메일(customerEmail)',
                 ),
                 controller: _emailController,
-                // initialValue: _user?.email ?? '없음',
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (String? value) {
                   customerEmail = value!;
@@ -197,17 +218,34 @@ class _PayScreenState extends State<PayScreen> {
                     );
                     print('result : $result');
                     if (result != null) {
-                      // 구매 내역 저장 로직 추가
+                      // 'months' 값을 selectedTickets[0]['months']에서 가져옴
+                      int months = selectedTickets[0]['months'];
+
+                      // startDate를 ISO 형식으로 변환
+                      final start =
+                          DateTime.parse(selectedTickets[0]['start_date']);
+
+                      // endDate를 계산
+                      DateTime endDate =
+                          DateTime(start.year, start.month + months, start.day);
+
+                      // 구매 내역 저장 로직
                       Map<String, dynamic> buyData = {
                         'ticket_no': selectedTickets[0]['no'],
-                        'user_no': _user?.no ?? 0,
+                        'user_no': _user!.no!,
                         'trainer_no': null, // trainer_no가 null인 경우
                         'buy_date': DateTime.now().toIso8601String(),
-                        'start_date': DateTime.now().toIso8601String(),
-                        'end_date': selectedTickets[0]['end_date'],
+                        'start_date':
+                            start.toIso8601String(), // start_date는 수정된 값으로 설정
+                        'end_date':
+                            endDate.toIso8601String(), // 계산된 end_date 사용
                         'status': '정상',
                       };
+
+                      // 결제 내역 저장
                       await PayService().postBuyList(buyData);
+
+                      // 결과 화면으로 이동
                       Get.toNamed("/result", arguments: result);
                     }
                   },
