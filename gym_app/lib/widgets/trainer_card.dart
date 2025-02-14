@@ -100,7 +100,7 @@ class _TrainerCardState extends State<TrainerCard> {
                                     Navigator.pushReplacementNamed(
                                       context,
                                       '/ptTicket',
-                                      arguments: {'no': trainer['no']},
+                                      arguments: {'no': trainer['trainerNo']},
                                     );
                                   },
                                   style: TextButton.styleFrom(

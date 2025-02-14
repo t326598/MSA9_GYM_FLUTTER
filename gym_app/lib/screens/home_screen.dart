@@ -23,8 +23,6 @@ class _HomeContentState extends State<HomeContent> {
     '/ticket',
     '/reservationInsert',
     '/calendar',
-
-
     '/myPage'
   ];
 
@@ -34,12 +32,10 @@ class _HomeContentState extends State<HomeContent> {
     qrCodeData = generateQRCodeData();
   }
 
-String generateQRCodeData() {
-  String uniqueId = uuid.v4();
-  return 'http://10.0.2.2:8080/checkAttendance?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
-}
-
-
+  String generateQRCodeData() {
+    String uniqueId = uuid.v4();
+    return 'http://10.0.2.2:8080/checkAttendance?userNo=12345&timestamp=${DateTime.now().millisecondsSinceEpoch}&uuid=$uniqueId';
+  }
 
   Future<int> fetchGymUserCount() async {
     try {
@@ -62,18 +58,16 @@ String generateQRCodeData() {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            if (_timer == null) {
-              _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-                if (_counter > 0) {
-                  setModalState(() {
-                    _counter--;
-                  });
-                } else {
-                  _timer?.cancel();
-                  Navigator.pop(context);
-                }
-              });
-            }
+            _timer ??= Timer.periodic(const Duration(seconds: 1), (timer) {
+              if (_counter > 0) {
+                setModalState(() {
+                  _counter--;
+                });
+              } else {
+                _timer?.cancel();
+                Navigator.pop(context);
+              }
+            });
 
             return WillPopScope(
               onWillPop: () async {
@@ -122,8 +116,7 @@ String generateQRCodeData() {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    Theme(
+    return Theme(
         data: ThemeData(
           scaffoldBackgroundColor: Color.fromARGB(255, 49, 47, 47),
           colorScheme: ColorScheme.dark(
@@ -134,151 +127,162 @@ String generateQRCodeData() {
           ),
         ),
         child: Scaffold(
-
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          ColorFiltered(
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5),
-              BlendMode.darken,
-            ),
-            child: Image.asset(
-              'images/main.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 0),
-                const Text(
-                  '실시간 헬스장 이용자 수',
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    height: 0,
-                  ),
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.5),
+                  BlendMode.darken,
                 ),
-                const SizedBox(height: 10),
+                child: Image.asset(
+                  'images/main.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 0),
+                    const Text(
+                      '실시간 헬스장 이용자 수',
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 0,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    FutureBuilder<int>(
+                      future: fetchGymUserCount(),
+                      builder: (context, snapshot) {
+                        String statusMessage = '';
+                        Color statusColor = Colors.transparent;
 
-                // FutureBuilder를 사용하여 gymUserCount 비동기적으로 가져오기
-                FutureBuilder<int>(
-                  future: fetchGymUserCount(), // gymUserCount를 가져오는 비동기 함수 호출
-                  builder: (context, snapshot) {
-                    String statusMessage = '';
-                    Color statusColor = Colors.transparent;
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          int gymUserCount = snapshot.data!;
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      // 데이터가 로딩 중일 때 로딩 표시
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      // 에러 발생 시 에러 메시지 표시
-                      return Text('Error: ${snapshot.error}');
-                    } else if (snapshot.hasData) {
-                      // 데이터가 정상적으로 로딩되었을 때 표시
-                      int gymUserCount = snapshot.data!;
+                          if (gymUserCount < 10) {
+                            statusMessage = '여유';
+                            statusColor = Colors.green;
+                          } else if (gymUserCount >= 10 && gymUserCount < 20) {
+                            statusMessage = '혼잡';
+                            statusColor = Colors.yellow;
+                          } else {
+                            statusMessage = '포화';
+                            statusColor = Colors.red;
+                          }
 
-                      // 상태 메시지 설정
-                      if (gymUserCount < 10) {
-                        statusMessage = '여유';
-                        statusColor = Colors.green;
-                      } else if (gymUserCount >= 10 && gymUserCount < 20) {
-                        statusMessage = '혼잡';
-                        statusColor = Colors.yellow;
-                      } else {
-                        statusMessage = '포화';
-                        statusColor = Colors.red;
-                      }
-
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '$gymUserCount명  /', // 서버에서 가져온 이용자 수 표시
-                            style: const TextStyle(
-                              fontSize: 23,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: statusColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              statusMessage,
-                              style: const TextStyle(
-                                fontSize: 23,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '$gymUserCount명  /',
+                                style: const TextStyle(
+                                  fontSize: 23,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
+                              const SizedBox(width: 10),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: statusColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  statusMessage,
+                                  style: const TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Text('No data available');
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    Image.asset(
+                      'images/logo.png',
+                      height: 100,
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+              Positioned(
+                top: 50,
+                left: 125,
+                child: Image.asset(
+                  'images/icon.png',
+                  height: 190,
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(80.0),
+                  child: ElevatedButton(
+                    onPressed: () => _showQRCodeModal(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 88, 72, 90),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 15),
+                      textStyle: const TextStyle(fontSize: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 10,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(
+                          Icons.qr_code,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          '헬스장 입장',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      );
-                    } else {
-                      return Text('No data available');
-                    }
-                  },
-                ),
-                const SizedBox(height: 20),
-                Image.asset(
-                  'images/logo.png',
-                  height: 100,
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 50,
-            left: 125,
-            child: Image.asset(
-              'images/icon.png',
-              height: 190,
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(80.0),
-              child: ElevatedButton(
-                onPressed: () => _showQRCodeModal(context),
-                child: const Text(
-                  '헬스장 입장 (QR)',
-                  style: TextStyle(color: Colors.black),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 175, 159, 179),
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  textStyle: const TextStyle(fontSize: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          bottomNavigationBar: CustomBottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
 
-          if (index >= 0 && index < routes.length) {
-            Navigator.pushReplacementNamed(context, routes[index]);
-          }
-        },
-      ),
-    ));
+              if (index >= 0 && index < routes.length) {
+                Navigator.pushReplacementNamed(context, routes[index]);
+              }
+            },
+          ),
+        ));
   }
 }

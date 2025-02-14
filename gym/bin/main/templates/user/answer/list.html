@@ -1,0 +1,32 @@
+
+
+
+<th:block th:each="answer : ${answerList}">
+    <div class="answer-box" style="margin-bottom: 30px;" >
+        <div class="border" style="margin-top: 30px; margin-bottom: 20px;">
+            <input type="hidden" name="no" id="" th:value="${answer.no}">
+            <div class="inputbox1" style="display: flex; justify-content: space-between;">
+                <div>
+                    <label for="" style="margin-top: 10px; color: black; font-size: 30px;">A. </label>
+                    <input type="text" class="titleinput" name="title" th:value="${board.title}" style="background-color: white; border: none; font-weight: bold; color: black;" readonly disabled>
+                </div>
+            </div>
+                <div style="display: flex; justify-content: flex-end;">
+                <h3 style="color: black; margin-right: 60px;" class="answer-writer" th:text="${answer.name} + ' 트레이너'"></h3>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+                <textarea class="textareaInput" th:text="${answer.content}" style="font-weight: bold; font-size: 18px; color: black;" id="answer-content-${answer.no}" name="content" rows="5" cols="40" readonly disabled></textarea>
+              
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-right: 30px;">
+                <label style="color: black;" th:text="${#dates.format(answer.createdAt, 'yyyy년 MM월 dd일 HH시 mm분')}"></label>
+              </div>
+        </div>
+        <th:block sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_TRAINER')">
+        <div style="text-align: right;">
+            <button type="button" th:onclick="editAnswer(this, [[${answer.no}]]);" class="btnInput" style="margin-right: 10px;">수정</button>
+            <button type="button" th:onclick="remove([[${answer.no}]])" style="background-color: rgb(230, 61, 61);" class="btnInput">삭제</button>
+        </div>
+    </th:block>
+    </div>
+</th:block>

@@ -1,0 +1,79 @@
+body {
+    background-color: #252222;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    width: 1300px;
+    align-items: center; 
+    margin-top: 50px;
+    width: 1300px;
+}
+
+.btn-box{
+    display:  flex; 
+    justify-content: flex-end; 
+    margin-bottom: 10px; 
+    gap: 10px;
+}
+
+.btnInput{
+    padding: 3px 35px 3px 35px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+.container {
+    text-align: left; /* 부모의 텍스트 정렬 변경 */
+}
+
+
+h1 {
+    text-align: left;
+    margin-left: 0; /* 여백 제거 */
+    padding-left: 0; /* 패딩 제거 */
+}
+
+.btnInput:hover{
+    filter: brightness(90%);
+}
+
+.border{
+    padding-top: 10px; 
+    width: 880px;
+     height: 500px; 
+     border: 1px solid black; 
+     background-color: 
+     white; 
+     border-radius: 8px;
+}
+
+.inputbox1{
+    margin: 3px; 
+    margin-left: 62px; 
+    margin-top: 20px;
+}
+
+.titleinput{
+    font-size: 25px; 
+    height: 40px; width: 
+    430px; border-radius: 5px; 
+    background-color: rgb(183, 185, 187); 
+    border: none;
+}
+
+.textareaInput{
+    padding: 30px; 
+    font-size: 15px; 
+    width: 750px;
+     height: 330px; 
+     resize: none; 
+     border-radius: 10px; 
+}

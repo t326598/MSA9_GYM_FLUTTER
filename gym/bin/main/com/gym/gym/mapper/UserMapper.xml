@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gym.gym.mapper.UserMapper">
+
+
+    <!-- 회원, 권한 -->
+    <resultMap id="UserMap" type="com.gym.gym.domain.Users">
+        <id property="no" column="no"/>
+        <result property="id" column="id"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email" />
+        <result property="birth" column="birth"/>
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+
+
+
+
+        <collection property="authList" select="selectAuthList" column="no" javaType="list" ofType="com.car.ckauto.domain.users.UserAuth"></collection>
+    </resultMap>
+
+
+    <resultMap id="authMap" type="UserAuth">
+        <id property="no" column="auth_no"/>
+        <result property="user_no" column="user_no"/>
+        <result property="auth" column="auth" />
+
+    </resultMap>
+
+
+    <!-- 회원 조회 -->
+    <select id="selectId" resultMap="UserMap">
+        SELECT *
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="select" resultMap="UserMap">
+        SELECT *
+        FROM users
+        WHERE no = #{no}
+    </select>
+
+    <select id="selectCode" resultMap="UserMap">
+        SELECT *
+        FROM users
+        WHERE code = #{code}
+    </select>
+
+    <!-- 권한 조회 -->
+    <select id="selectAuthList" resultType="UserAuth">
+        SELECT *
+        FROM user_auth
+        WHERE user_no = #{no}
+    </select>
+
+    <select id="selectAuth" resultType="UserAuth">
+        SELECT *
+        FROM user_auth
+        WHERE user_no = #{no}
+    </select>
+
+    <!-- 회원 조회 -->
+<select id="list" resultMap="UserMap">
+    SELECT u.*, a.auth as userAuth, t.name AS trainerName
+    FROM users u
+    JOIN user_auth a ON u.no = a.user_no
+    LEFT JOIN trainer_profile t ON t.trainer_no = u.trainer_no
+    <where>
+        <if test="option.keyword != null and option.keyword != ''">
+            AND (
+            u.id LIKE CONCAT('%', #{option.keyword}, '%')
+            OR u.name LIKE CONCAT('%', #{option.keyword}, '%'))
+        </if>
+    </where>
+ 
+    <if test="option.orderCode == 0">
+        ORDER BY created_at DESC
+    </if>
+    LIMIT #{page.index}, #{page.rows}
+</select>
+
+
+
+
+
+    <!-- 회원가입 -->
+
+    <insert id="join" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO users ( id, password, name, phone, gender, email, birth, enabled, question, answer )
+        VALUES (#{id}, #{password}, #{name}, #{phone}, #{gender}, #{email},  #{birth},#{enabled}, #{question}, #{answer})
+    </insert>
+
+    <!-- 권한 부여 -->
+    <insert id="insertAuth">
+        INSERT INTO user_auth( user_no, auth )
+        VALUES ( #{userNo}, #{auth} )
+    </insert>
+
+    <!-- 회원 수정 -->
+    <update id="update">
+        UPDATE users
+        SET phone = #{phone}
+        ,email = #{email}
+        ,name = #{name}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 권한 수정 -->
+    <update id="updateAuth">
+        UPDATE user_auth
+        SET auth = #{auth}
+        WHERE user_no = #{userNo}
+    </update>
+    <!-- 회원 삭제 -->
+    <delete id="delete">
+        DELETE FROM users
+        WHERE no = #{no}
+    </delete>
+    <!-- 권한 삭제 -->
+    <delete id="deleteAuth">
+        DELETE FROM user_auth
+        WHERE user_no = #{userNo}
+    </delete>
+
+    <select id="findUserByDetails" resultType="Users">
+        SELECT *
+        FROM users
+        WHERE (TRIM(name) = TRIM(#{name}) AND TRIM(phone) = TRIM(#{phone})
+        AND TRIM(question) = TRIM(#{question}) AND TRIM(answer) = TRIM(#{answer}))
+    </select>
+
+    <select id="findUserByPassword" resultType="Users">
+        SELECT *
+        FROM users
+        WHERE (TRIM(name) = TRIM(#{name}) AND TRIM(phone) = TRIM(#{phone})
+        AND TRIM(question) = TRIM(#{question}) AND TRIM(answer) = TRIM(#{answer}) AND TRIM(id) = TRIM(#{id}))
+    </select>
+
+     <update id="codeInsert">
+        UPDATE users
+        SET code = #{code}
+      WHERE no = #{no}
+    </update>
+
+    <update id="passwordUpdate">
+        UPDATE users
+        SET password = #{password}
+        WHERE code = #{code}
+    </update>
+
+ <select id="count" resultType="int">
+    SELECT COUNT(*)
+    FROM users u
+    <where>
+        <if test="option.keyword != null and option.keyword != ''">
+            AND (
+                u.id LIKE CONCAT('%', #{option.keyword}, '%')
+                OR u.name LIKE CONCAT('%', #{option.keyword}, '%')
+            )
+        </if>
+    </where>
+</select>
+
+    <update id="updateTrainerNo">
+        UPDATE users
+        SET trainer_no = NULL
+        WHERE no = #{no}
+    </update>
+
+</mapper>

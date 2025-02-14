@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>트레이너 목록</title>
+    <!-- css -->
+    <link rel="stylesheet" href="/css/trainer/adminList.css">
+</head>
+
+<body>
+    <th:block th:replace="~{fragment/adminHeader::adminHeader}"></th:block>
+    <div class="container">
+        <th:block th:replace="~{fragment/adminSidebar::adminSidebar}"></th:block>
+        
+        <div class="main">
+            <div class="inner">
+                <div class="title">
+                    <h2>트레이너 목록</h2>
+                </div>
+
+                <div class="search-container">
+                    <form class="search" action="/admin/trainer/list" method="get" id="form">
+                        <input type="text" name="keyword" placeholder="등록명으로 검색" th:value="${param.keyword}" />
+                        <button type="submit">검색</button>
+                    </form>
+                </div>
+
+                <div class="list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>등록명</th>
+                                <th>이름(ID)</th>
+                                <th>소개</th>
+                                <th>관리중인 회원 수</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="trainer : ${trainerList}">
+                                <td th:text="${trainer.no}"></td>
+                                <td th:text="${trainer.name}"></td>
+                                <td th:text="${trainer.userName} + '(' + ${trainer.userId} + ')'"></td>
+                                <td th:text="${trainer.simpleInfo}"></td>
+                                <td th:text="${trainer.userCount}"></td>
+                                <td>
+                                    <a class="updateBtn" th:href="@{/admin/trainer/update(trainerNo=${trainer.no})}">수정</a>
+                                    <form action="/admin/trainer/delete" method="post" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                                        <input type="hidden" name="no" th:value="${trainer.no}" />
+                                        <button type="submit" class="deleteBtn">삭제</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <a th:href="@{${pageUrl}(page=${page.first})}" class="first">≪</a>
+                    <th:block th:if="${page.page != page.first}">
+                        <a th:href="@{${pageUrl}(page=${page.prev})}" class="prev">＜</a>
+                    </th:block>
+                    <th:block th:each="no : ${#numbers.sequence(page.start, page.end)}">
+                        <th:block th:if="${page.page == no}">
+                            <a class="active" th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                        <th:block th:if="${page.page != no}">
+                            <a th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                    </th:block>
+                    <th:block th:if="${page.page != page.last}">
+                        <a th:href="@{${pageUrl}(page=${page.next})}" class="next">＞</a>
+                    </th:block>
+                    <a th:href="@{${pageUrl}(page=${page.last})}" class="first">≫</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

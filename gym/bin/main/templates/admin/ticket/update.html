@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이용권 수정</title>
+    <!-- css -->
+    <link rel="stylesheet" href="/css/ticket/adminInsert.css">
+</head>
+
+<body>
+    <th:block th:replace="~{fragment/adminHeader::adminHeader}"></th:block>
+    <div class="container">
+        <th:block th:replace="~{fragment/adminSidebar::adminSidebar}"></th:block>
+
+        <div class="main">
+            <div class="inner">
+                <div class="main-title">
+                    <h2>이용권 수정</h2>
+                </div>
+
+                <div class="form">
+                    <form class="form-inner" action="/admin/ticket/update" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <input type="hidden" name="no" th:value="${ticket.no}">
+
+                        <!-- 미리보기 영역 -->
+                        <div class="preview">
+                            <h3 style="margin-bottom: 10px;">미리보기</h3>
+                            <div class="ticket-item">
+                                <div class="checkbox">
+                                    <input type="checkbox" class="ticket-checkbox" disabled>
+                                </div>
+                                <div class="ticket-content">
+                                    <span class="ticket-name" id="previewName"
+                                        th:text="${ticket.name ?: '상품명'}">상품명</span>
+                                    <span class="ticket-info" id="previewInfo" th:text="${ticket.info ?: '상세 소개'}">상세
+                                        소개</span>
+                                    <span class="ticket-price" id="previewPrice"
+                                        th:text="${ticket.price != null ? #numbers.formatInteger(ticket.price, 3, 'COMMA') + '원' : '가격'}">가격</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table>
+                            <tr>
+                                <th>상품명</th>
+                                <td>
+                                    <input type="text" name="name" placeholder="입력해 주세요." id="nameInput"
+                                        th:value="${ticket.name ?: ''}" oninput="updatePreview()">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>가격</th>
+                                <td>
+                                    <input type="number" name="price" placeholder="입력해 주세요." id="priceInput"
+                                        th:value="${ticket.price ?: ''}" oninput="updatePreview()">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>상세 소개</th>
+                                <td style="padding-top: 15px;">
+                                    <textarea name="info" rows="5" cols="40" placeholder="입력해 주세요." id="infoInput"
+                                        oninput="updatePreview()" th:text="${ticket.info ?: ''}"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>개월 수</th>
+                                <td style="width: 300px;">
+                                    <input type="number" id="customMonth" name="months" placeholder="직접 입력"
+                                        style="display:none; width: 100px; font-size: 14px;" onchange="monthsInput()" />
+                                    <select name="months" onchange="monthsInput()" id="monthsInput">
+                                        <option value="1" th:selected="${ticket.months == 1}">1개월</option>
+                                        <option value="2" th:selected="${ticket.months == 2}">2개월</option>
+                                        <option value="3" th:selected="${ticket.months == 3}">3개월</option>
+                                        <option value="4" th:selected="${ticket.months == 4}">4개월</option>
+                                        <option value="5" th:selected="${ticket.months == 5}">5개월</option>
+                                        <option value="6" th:selected="${ticket.months == 6}">6개월</option>
+                                        <option value="7" th:selected="${ticket.months == 7}">7개월</option>
+                                        <option value="8" th:selected="${ticket.months == 8}">8개월</option>
+                                        <option value="9" th:selected="${ticket.months == 9}">9개월</option>
+                                        <option value="10" th:selected="${ticket.months == 10}">10개월</option>
+                                        <option value="11" th:selected="${ticket.months == 11}">11개월</option>
+                                        <option value="12" th:selected="${ticket.months == 12}">12개월</option>
+                                        <option value="custom" th:selected="${ticket.months == 'custom'}">직접입력</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr style="display: flex; align-items: center; height: 55px;">
+                                <th>타입</th>
+                                <td style="width: 300px; display: flex; gap: 15px; align-items: center;">
+                                    <select name="type" id="typeInput" style="max-height: 30px;"
+                                        onchange="ptCountRow()">
+                                        <option value="일반" th:selected="${ticket.type == '일반'}">일반</option>
+                                        <option value="PT" th:selected="${ticket.type == 'PT'}">PT</option>
+                                    </select>
+
+                                    <!-- 횟수 항목을 타입 td 안에 배치 -->
+                                    <div id="ptCountRow" style="display: none;">
+                                        <select name="ptCount" onchange="ptCountInput()" id="ptCountInput"
+                                            style="margin-bottom: 14px;">
+                                            <option value="1" th:selected="${ticket.ptCount == 1}">1회</option>
+                                            <option value="3" th:selected="${ticket.ptCount == 3}">3회</option>
+                                            <option value="5" th:selected="${ticket.ptCount == 5}">5회</option>
+                                            <option value="7" th:selected="${ticket.ptCount == 7}">7회</option>
+                                            <option value="10" th:selected="${ticket.ptCount == 10}">10회</option>
+                                            <option value="15" th:selected="${ticket.ptCount == 15}">15회</option>
+                                            <option value="20" th:selected="${ticket.ptCount == 20}">20회</option>
+                                            <option value="25" th:selected="${ticket.ptCount == 25}">25회</option>
+                                            <option value="30" th:selected="${ticket.ptCount == 30}">30회</option>
+                                            <option value="35" th:selected="${ticket.ptCount == 35}">35회</option>
+                                            <option value="40" th:selected="${ticket.ptCount == 40}">40회</option>
+                                            <option value="45" th:selected="${ticket.ptCount == 45}">45회</option>
+                                            <option value="50" th:selected="${ticket.ptCount == 50}">50회</option>
+                                        </select>
+                                        <input type="number" id="customCount" name="ptCount" placeholder="직접 입력"
+                                            style="display:none; width: 100px; font-size: 14px; margin-left: 10px;"
+                                            onchange="ptCountInput()" />
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr style="display: flex; justify-content: end;">
+                                <td colspan="2">
+                                    <button type="submit">수정</button>
+                                </td>
+                            </tr>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 입력값을 미리보기 영역에 업데이트
+        function updatePreview() {
+            document.getElementById('previewName').innerText = document.getElementById('nameInput').value || "상품명";
+            document.getElementById('previewInfo').innerText = document.getElementById('infoInput').value || "상세 소개";
+            const priceInput = document.getElementById('priceInput').value;
+
+            // 가격 포맷팅
+            const formattedPrice = priceInput ?
+                `${Number(priceInput).toLocaleString()} 원` :
+                "가격";
+
+            document.getElementById('previewPrice').innerText = formattedPrice;
+        }
+
+        // 개월 수 직접입력
+        function monthsInput() {
+            const selectInput = document.getElementById('monthsInput');
+            const customInput = document.getElementById('customMonth');
+
+            if (selectInput.value === 'custom') {
+                customInput.style.display = 'inline'; // '직접입력'을 선택하면 입력란 보이기
+                const monthsValue = customInput.value;
+                document.querySelector('input[name="months"]').value = monthsValue; // 'months' 필드에 int 값 설정
+                console.log('months : ' + monthsValue)
+            } else {
+                customInput.style.display = 'none'; // '직접입력' 아니면 숨기기
+                const monthsValue = parseInt(selectInput.value, 10); // 선택된 값을 int로 변환
+                document.querySelector('input[name="months"]').value = monthsValue; // 'months' 필드에 int 값 설정
+                console.log('months : ' + monthsValue)
+            }
+        }
+
+
+        // PT 타입 일 때 횟수 선택
+        function ptCountRow() {
+            const typeInput = document.getElementById('typeInput');
+            const ptCountRow = document.getElementById('ptCountRow');
+            if (typeInput.value === 'PT') {
+                ptCountRow.style.display = 'table-row';
+            } else {
+                ptCountRow.style.display = 'none'; // 다른 타입 선택 시 숨기기
+            }
+        }
+
+        // 횟수 직접입력 표시
+        function ptCountInput() {
+            const ptCountInput = document.getElementById('ptCountInput');
+            const customCountInput = document.getElementById('customCount');
+
+            // '직접입력' 옵션 처리 ( 포기 )
+            if (ptCountInput.value === 'custom') {
+                customCountInput.style.display = 'inline'; // '직접입력' 선택 시 입력 필드 표시
+                // 직접 입력한 값이 있을 경우 그 값을 사용
+                const ptCountValue = customCountInput.value; // customCount에서 입력된 값을 가져오기
+                document.querySelector('input[name="ptCount"]').value = ptCountValue; // 'ptCount' 필드에 int 값 설정
+                console.log('ptCount : ' + ptCountValue);
+            } else {
+                customCountInput.style.display = 'none'; // '직접입력'이 아니면 숨기기
+                const ptCountValue = parseInt(ptCountInput.value, 10); // 선택된 값을 int로 변환
+                document.querySelector('input[name="ptCount"]').value = ptCountValue; // 'ptCount' 필드에 int 값 설정
+                console.log('ptCount : ' + ptCountValue);
+            }
+        }
+
+        // 페이지 로딩 시 초기화
+        window.onload = function () {
+            console.log('페이지 로드 완료'); // 디버깅 로그
+            monthsInput(); // 개월 수 입력 체크
+            ptCountInput(); // PT 타입 선택 체크
+            // 타입이 PT일 경우 ptCountRow 표시
+            const typeInput = document.getElementById('typeInput');
+            const ptCountRow = document.getElementById('ptCountRow');
+            if (typeInput.value === 'PT') {
+                ptCountRow.style.display = 'table-row';
+            }
+
+            // 이벤트 리스너 추가
+            document.getElementById('monthsInput').addEventListener('change', monthsInput);
+            document.getElementById('typeInput').addEventListener('change', ptCountInput);
+            document.getElementById('ptCountInput').addEventListener('change', ptCountInput);
+        };
+    </script>
+</body>
+
+</html>

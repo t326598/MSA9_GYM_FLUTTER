@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이용권 목록</title>
+    <!-- css -->
+    <link rel="stylesheet" href="/css/ticket/adminList.css">
+</head>
+
+<body>
+
+    <th:block th:replace="~{fragment/adminHeader::adminHeader}"></th:block>
+
+    <div class="container">
+
+        <th:block th:replace="~{fragment/adminSidebar::adminSidebar}"></th:block>
+
+        <div class="main">
+            <div class="inner">
+                <div class="title">
+                    <h2>이용권 목록</h2>
+                </div>
+
+                <div class="search-container">
+                    <form class="search" action="/admin/ticket/list" method="get" id="form">
+                        <input type="text" name="keyword" placeholder="검색어를 입력해주세요" th:value="${param.keyword}" />
+                        <button type="submit">검색</button>
+                    </form>
+                </div>
+
+                <div class="list">
+                    <div class="ticket">
+                        <div style="width: 100%; border-bottom: 1px solid #bbb;">
+                            <label for="" id="normal">일반 이용권</label>
+                        </div>
+                        <form action="/admin/ticket/delete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                            <div class="items">
+
+                                <div th:if="${ticketList.?[type == '일반']?.size() == 0}" style="text-align: center; line-height: 500px; color: #777;">
+                                    조회된 이용권이 없습니다.
+                                </div>
+                                
+                                <div th:each="ticket : ${ticketList}" th:if="${ticket.type == '일반'}">
+                                    <div class="ticket-item">
+                                        <div class="checkbox">
+                                            <input type="checkbox" class="ticket-checkbox" name="ticketNos" th:value="${ticket.no}">
+                                        </div>
+                                        <div class="ticket-content">
+                                            <span class="ticket-name" th:text="${ticket.name}"></span>
+                                            <span class="ticket-info" th:text="${ticket.info}"></span>
+                                            <span class="ticket-price" th:text="${#numbers.formatInteger(ticket.price, 3, 'COMMA') + '원'}"></span>
+                                        </div>
+                                        <div style="width: 69px;">
+                                            <a class="updateBtn" th:href="@{/admin/ticket/update(no=${ticket.no})}">수정</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="delete">
+                                <button type="submit" class="deleteBtn">삭제</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="ticket">
+                        <div style="width: 100%; border-bottom: 1px solid #bbb;">
+                            <label for="" id="pt">PT 이용권</label>
+                        </div>
+                        
+                        <form action="/admin/ticket/delete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                            <div class="items">
+
+                                <div th:if="${ticketList.?[type == 'PT']?.size() == 0}" style="text-align: center; line-height: 500px; color: #777;">
+                                    조회된 이용권이 없습니다.
+                                </div>
+                                
+                                <div th:each="ticket : ${ticketList}" th:if="${ticket.type == 'PT'}">
+                                    <div class="ticket-item">
+                                        <div class="checkbox">
+                                            <input type="checkbox" class="ticket-checkbox" name="ticketNos" th:value="${ticket.no}">
+                                        </div>
+                                        <div class="ticket-content">
+                                            <span class="ticket-name" th:text="${ticket.name}"></span>
+                                            <span class="ticket-info" th:text="${ticket.info}"></span>
+                                            <span class="ticket-price" th:text="${#numbers.formatInteger(ticket.price, 3, 'COMMA') + '원'}"></span>
+                                        </div>
+                                        <div style="width: 69px;">
+                                            <a class="updateBtn" th:href="@{/admin/ticket/update(no=${ticket.no})}">수정</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="delete">
+                                <button type="submit" class="deleteBtn">삭제</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    
+                </div>
+
+                <!-- <div class="pagination">
+                    <a th:href="@{${pageUrl}(page=${page.first})}" class="first">≪</a>
+                    <th:block th:if="${page.page != page.first}">
+                        <a th:href="@{${pageUrl}(page=${page.prev})}" class="prev">＜</a>
+                    </th:block>
+                    <th:block th:each="no : ${#numbers.sequence(page.start, page.end)}">
+                        <th:block th:if="${page.page == no}">
+                            <a class="active" th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                        <th:block th:if="${page.page != no}">
+                            <a th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                        </th:block>
+                    </th:block>
+                    <th:block th:if="${page.page != page.last}">
+                        <a th:href="@{${pageUrl}(page=${page.next})}" class="next">＞</a>
+                    </th:block>
+                    <a th:href="@{${pageUrl}(page=${page.last})}" class="first">≫</a>
+                </div> -->
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

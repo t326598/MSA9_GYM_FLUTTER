@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이용권 내역</title>
+    <link rel="stylesheet" href="/css/myPage/buyList.css">
+    <th:block th:replace="~{fragment/link::link}"></th:block>
+</head>
+<!-- 헤더 -->
+<th:block th:replace="~{fragment/header::header}"></th:block>
+
+<body class="fullBody" style="color: rgb(3, 3, 3); background-color: #252222;">
+    <div class="wrapper" style="margin-top: 80px;">
+        <main>
+            <div class="main-text1" style="color: #9FD0D5;">마이페이지</div>
+            <div class="button-group">
+                <button onclick="window.location.href='/user/myPage/info'">내 정보</button>
+                <button class="active" onclick="window.location.href='/user/myPage/buyList'">이용권 내역</button>
+                <button onclick="window.location.href='/user/myPage/ptList'">PT 이용 내역</button>
+                <button onclick="window.location.href='/user/myPage/myBoardList'">내 문의사항</button>
+            </div>
+
+
+            <main>
+                <div class="main-text" style="color: #ffffff;">보유중인 이용권</div>
+                <!-- 이용권 내역을 표시하는 부분 -->
+                <table class="info-table">
+                    <tr>
+                        <th style="color: rgb(255, 255, 255);">이용권</th>
+
+                        <td><span th:text="${#lists.size(ticketBuyList) > 0 ? ticketBuyList[#lists.size(ticketBuyList) - 1].ticketName : '없음'}"></span></td>
+                           
+                    </tr>
+                    <tr>
+                        <th style="color: rgb(255, 255, 255);">구매일시</th>
+                        <td> <span th:text="${oldestBuyList != null ? #dates.format(oldestBuyList.startDate, 'yyyy-MM-dd') + '&ensp;&ensp;' : '-'}"></span></td>
+                    </tr>
+                    <tr>
+                        <th style="color: rgb(255, 255, 255);">만료일시</th>
+                        <td>  <span th:text="${#lists.size(ticketBuyList) > 0 ? #dates.format(ticketBuyList[#lists.size(ticketBuyList) - 1].endDate, 'yyyy-MM-dd') : '-'}"></span></td>
+                    </tr>
+                </table>
+
+                    <div class="main-text" style="color: #ffffff; margin-top: 100px; ">이용권 내역</div>
+                      <table class="info-table2" border="1">
+                                <tr>
+                                    <th style="width: 15%; text-align: center;">번호</th>
+                                    <th style="width: 35% ; text-align: center;">이용권</th>
+                                    <th style="width: 20%; text-align: center;">가격</th>
+                                    <th style="width: 30%; text-align: center;">구매일시</th>
+                                </tr>
+                            <th:block th:each="buy:${buyList}">
+                                <tr>
+                                    <td th:text="${buy.no}"  style="text-align: center;"></td>
+                                    <td th:text="${buy.ticketName}" style="text-align: center;" ></td>
+                                    <!-- <span class="ticket-price" th:text="${#numbers.formatInteger(ticket.price, 3, 'COMMA') + '원'}"></span> -->
+                                    <td th:text="${#numbers.formatInteger(buy.ticketPrice, 3, 'COMMA') + ' 원'}" style="text-align: center;"></td>
+                                    <td th:text=" ${#dates.format(buy.buyDate, 'yyyy-MM-dd HH:mm:ss')}" style="text-align: center;" ></td>
+                                </tr>
+                            </th:block>
+                        </table>
+            </div>
+
+             <!-- 페이지네이션 -->
+             <div class="pagination">
+                <a th:href="@{${pageUrl}(page=${page.first})}" class="first">≪</a>
+                <th:block th:if="${page.page != page.first}">
+                    <a th:href="@{${pageUrl}(page=${page.prev})}" class="prev">＜</a>
+                </th:block>
+                <th:block th:each="no : ${#numbers.sequence(page.start, page.end)}">
+                    <th:block th:if="${page.page == no}">
+                        <a class="active" th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                    </th:block>
+                    <th:block th:if="${page.page != no}">
+                        <a th:href="@{${pageUrl}(page=${no})}" th:text="${no}"></a>
+                    </th:block>
+                </th:block>
+                <th:block th:if="${page.page != page.last}">
+                    <a th:href="@{${pageUrl}(page=${page.next})}" class="next">＞</a>
+                </th:block>
+                <a th:href="@{${pageUrl}(page=${page.last})}" class="first">≫</a>
+            </div>
+
+
+
+
+        </main>
+    </div>
+    <!-- 푸터 -->
+    <footer>
+        <th:block th:replace="~{fragment/footer::footer}"></th:block>
+    </footer>
+    <!-- 스크립트 -->
+    <th:block th:replace="~{fragment/script::script}"></th:block>
+    
+   <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const buttons = document.querySelectorAll('.button-group button');
+        const currentPage = window.location.pathname; // 현재 페이지 경로
+
+        // 버튼 클릭 시 active 클래스 설정
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active')); // 모든 버튼에서 active 클래스 제거
+                button.classList.add('active'); // 클릭된 버튼에 active 클래스 추가
+            });
+            
+            // 페이지 로드 시 버튼에 active 클래스 추가
+            if (currentPage.includes(button.innerText.trim())) {
+                button.classList.add('active');
+            } 
+        });
+    });
+</script>
+
+    
+</body>
+</html>
