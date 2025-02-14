@@ -16,6 +16,7 @@ import 'package:gym_app/screens/pay_screen.dart';
 import 'package:gym_app/screens/ptList_screen.dart';
 import 'package:gym_app/screens/ptTicket_screen.dart';
 import 'package:gym_app/screens/reservation_insert_screen.dart';
+import 'package:gym_app/screens/ticketList_screen.dart';
 import 'package:gym_app/screens/ticket_screen.dart';
 import 'package:gym_app/screens/trainer_screen.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +65,8 @@ class MyApp extends StatelessWidget {
         '/findPw': (context) => FindPwScreen(),
         '/changePw': (context) => Changepw(),
         '/myPage': (context) => MyPage(),
-        '/myPageInfo': (context) => MyPageInfo()
+        '/myPageInfo': (context) => MyPageInfo(),
+        '/ticketList' : (context) => TicketlistScreen()
       },
     );
   }

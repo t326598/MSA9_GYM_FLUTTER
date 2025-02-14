@@ -71,6 +71,7 @@ class UserService {
       String? jwt = await storage.read(key: "jwt");
       final response = await _dio.get('$host/user/info',
           options: Options(headers: {'Authorization': 'Bearer $jwt'}));
+ 
       if (response.statusCode == 200) {
         return response.data;
       } else {
@@ -100,7 +101,8 @@ class UserService {
       String? jwt = await storage.read(key: "jwt");
 
       final response = await _dio.put('$host/user',
-          data: userData, options: Options(headers: {'Authorization': 'Bearer $jwt'}));
+          data: userData,
+          options: Options(headers: {'Authorization': 'Bearer $jwt'}));
       if (response.statusCode == 200) {
         print("회원정보  수정");
         return true;
@@ -123,8 +125,10 @@ class UserService {
       final storage = const FlutterSecureStorage();
       String? jwt = await storage.read(key: "jwt");
       final response = await _dio.delete('$host/user/$no',
-          options: Options(
-              headers: {'Authorization': 'Bearer $jwt', 'Context-Type': 'application/json'}));
+          options: Options(headers: {
+            'Authorization': 'Bearer $jwt',
+            'Context-Type': 'application/json'
+          }));
       if (response.statusCode == 200) {
         print("회원 탈퇴 성공");
         return true;

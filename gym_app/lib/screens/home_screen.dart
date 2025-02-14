@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:provider/provider.dart';
 import '../widgets/bottom_sheet.dart';
-import '../provider/user_provider.dart'; // ✅ 추가
+import '../provider/user_provider.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
@@ -115,7 +115,7 @@ class _HomeContentState extends State<HomeContent> {
     });
   }
 
-  // SnackBar를 반환하는 함수
+  // 로그인 여부 체크
   SnackBar customSnackbar() {
     return const SnackBar(
       content: Row(
@@ -155,83 +155,89 @@ class _HomeContentState extends State<HomeContent> {
                 fit: BoxFit.cover,
               ),
             ),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    '실시간 헬스장 이용자 수',
-                    style: TextStyle(
+        Center(
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset(
+        'images/icon.png',
+        height: 100, // 아이콘 크기 조절
+      ),
+      const SizedBox(height: 10), // 간격 추가
+      const Text(
+        '실시간 헬스장 이용자 수',
+        style: TextStyle(
+          fontSize: 23,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      const SizedBox(height: 10),
+      FutureBuilder<int>(
+        future: fetchGymUserCount(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            int gymUserCount = snapshot.data ?? 0;
+            String statusMessage = '';
+            Color statusColor = Colors.transparent;
+
+            if (gymUserCount < 10) {
+              statusMessage = '여유';
+              statusColor = Colors.green;
+            } else if (gymUserCount < 20) {
+              statusMessage = '혼잡';
+              statusColor = Colors.yellow;
+            } else {
+              statusMessage = '포화';
+              statusColor = Colors.red;
+            }
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '$gymUserCount명  /',
+                  style: const TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: statusColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    statusMessage,
+                    style: const TextStyle(
                       fontSize: 23,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  FutureBuilder<int>(
-                    future: fetchGymUserCount(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        int gymUserCount = snapshot.data ?? 0;
-                        String statusMessage = '';
-                        Color statusColor = Colors.transparent;
+                ),
+              ],
+            );
+          }
+        },
+      ),
+      const SizedBox(height: 20),
+      Image.asset(
+        'images/logo.png',
+        height: 100,
+      ),
+    ],
+  ),
+),
 
-                        if (gymUserCount < 10) {
-                          statusMessage = '여유';
-                          statusColor = Colors.green;
-                        } else if (gymUserCount < 20) {
-                          statusMessage = '혼잡';
-                          statusColor = Colors.yellow;
-                        } else {
-                          statusMessage = '포화';
-                          statusColor = Colors.red;
-                        }
-
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '$gymUserCount명  /',
-                              style: const TextStyle(
-                                fontSize: 23,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: statusColor,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                statusMessage,
-                                style: const TextStyle(
-                                  fontSize: 23,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Image.asset(
-                    'images/logo.png',
-                    height: 100,
-                  ),
-                ],
-              ),
-            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
@@ -243,7 +249,7 @@ class _HomeContentState extends State<HomeContent> {
                         if (userProvider.isLogin) {
                           _showQRCodeModal(context);
                         } else {
-                          // SnackBar 알림을 띄우고 로그인 화면으로 이동
+                          // SnackBar 알림
                           ScaffoldMessenger.of(context)
                               .showSnackBar(customSnackbar());
                           Future.delayed(const Duration(seconds: 2), () {

@@ -65,6 +65,7 @@ class _MyPageState extends State<MyPage> {
               title: "이용권 내역",
               onPressed: () {
                 print("이용권 내역 클릭됨");
+                Navigator.pushNamed(context, "/ticketList");
               },
             ),
             const SizedBox(height: 20),
