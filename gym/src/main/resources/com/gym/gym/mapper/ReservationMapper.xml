@@ -77,8 +77,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       WHERE u.no = #{no} AND r.enabled = 2
     </select>
 
-    
-
     <!-- 예약 목록 전체 조회 -->
     <select id="list" resultType="Reservation">
       SELECT 
@@ -143,14 +141,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
       where no = #{no} and enabled = 1
     </update>
 
-    <!-- 예약 완료 -->
-    <!-- <update id="ptComplete">
-      update reservation
-      set enabled = 2,
-          canceled_at = DATE_ADD(rv_date, INTERVAL 1 HOUR)
-      where rv_date &lt; DATE_ADD(now(), INTERVAL 1 HOUR)
-    </update> -->
-
     <!-- 전체 카운트 -->
     <select id="count" resultType="int">
       select count(*)
@@ -171,18 +161,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             AND r.enabled = 0
           </if>
     </select>
-
-    <!-- 유저별 카운트 -->
-    <select id="countByUser" resultType="int">
-      select count(*)
-      from reservation r
-      join users user ON r.user_no = user.no
-      where user.no = #{no}
-    </select>
-    
-
-    <!-- 트레이너 예약 조회 -->
-    
 
     <!-- PlanController -->
     <!-- 사용자 예약 조회 -->
