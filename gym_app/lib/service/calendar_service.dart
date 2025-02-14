@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gym_app/models/calendar_response.dart';
+import 'package:gym_app/models/comment.dart';
 
 class CalendarService {
   final Dio _dio = Dio();
@@ -69,6 +71,42 @@ class CalendarService {
       }
     } catch (e) {
       print('getPlansByDate Error : $e');
+    }
+    return null;
+  }
+
+  Future<Comment?> getCommentByDate(DateTime selectedDate) async {
+    try {
+      final storage = const FlutterSecureStorage();
+      String? jwt = await storage.read(key: 'jwt');
+      if (jwt == null) {
+        return null;
+      }
+
+      final year = selectedDate.year;
+      final month = selectedDate.month;
+      final day = selectedDate.day;
+
+      print("selectedDate : $year/$month/$day");
+
+      final response = await _dio.get(
+        '$host/user/schedule/comment/$year/$month/$day',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $jwt',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        debugPrint('코멘트 날짜로 조회 성공!');
+        print(response.data);
+        return Comment.fromJson(response.data['comment']);
+        // return null;
+      }
+    } catch (e) {
+      print('getCommentByDate Error : $e');
     }
     return null;
   }

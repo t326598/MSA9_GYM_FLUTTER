@@ -90,7 +90,7 @@ class _PayScreenState extends State<PayScreen> {
                 decoration: const InputDecoration(
                   labelText: '결제금액(amount)',
                 ),
-                initialValue: '50000',
+                initialValue: '100',
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
                 onSaved: (String? value) {
@@ -119,6 +119,10 @@ class _PayScreenState extends State<PayScreen> {
               Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
                     onPressed: () async {
                       _form.currentState!.save();
                       PaymentData data = PaymentData(
@@ -135,6 +139,7 @@ class _PayScreenState extends State<PayScreen> {
                         fullscreenDialog: true,
                         arguments: data,
                       );
+                      print('result : $result');
                       if (result != null) {
                         Get.toNamed("/result", arguments: result);
                       }

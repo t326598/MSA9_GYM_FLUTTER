@@ -255,6 +255,44 @@ public class PlanController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PreAuthorize(" hasRole('ADMIN') or hasRole('USER') ")
+    @GetMapping("/comment/{year}/{month}/{day}")
+    public ResponseEntity<?> getCommentByDate(
+        @PathVariable("year") int year, 
+        @PathVariable("month") int month, 
+        @PathVariable("day") int day,
+        @AuthenticationPrincipal CustomUser userDetails
+    ) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month - 1, day); // 월은 0부터 시작하므로 -1 필요
+            Date date = calendar.getTime();
+            System.out.println("선택날짜(date): "+date);
+
+            Date commentDate = dateUtils.DayFirst(date);
+            System.out.println("선택날짜 0시0분(commentDate): " + commentDate);
+
+            int iNo;
+            iNo = userDetails.getNo().intValue();
+
+            System.out.println("iNo : " + iNo);
+            Comment comment = commentService.selectByDate(commentDate, iNo);
+            Map<String,Object> response = new HashMap<>();
+
+            if(comment == null){
+                comment = new Comment();
+                comment.setCommentDate(commentDate);
+                comment.setUserNo(iNo);
+            }
+
+            response.put("comment", comment);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     
     @PostMapping()
     @PreAuthorize(" hasRole('ADMIN') or hasRole('USER')")
