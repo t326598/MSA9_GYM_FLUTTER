@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:tosspayments_widget_sdk_flutter/model/tosspayments_result.dart';
 
@@ -6,6 +7,13 @@ import 'package:tosspayments_widget_sdk_flutter/model/tosspayments_result.dart';
 class ResultPage extends StatelessWidget {
   /// 기본 생성자입니다.
   const ResultPage({super.key});
+
+  void copyToClipboard(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('복사되었습니다!')),
+    );
+  }
 
   /// 주어진 title과 message를 이용하여 [Row]를 생성합니다.
   ///
@@ -51,9 +59,14 @@ class ResultPage extends StatelessWidget {
                       ],
                     )),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                  ),
                   onPressed: () {
                     // copyToClipboard 함수 구현 필요
-                    // copyToClipboard(result.toString());
+                    copyToClipboard(context, result.toString());
                   },
                   child: const Center(
                     child: Text(
@@ -126,15 +139,16 @@ class ResultPage extends StatelessWidget {
                 getContainer(result),
                 const SizedBox(height: 40),
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.home),
+                  icon: const Icon(Icons.home, color: Colors.white),
                   onPressed: () {
-                    Get.back();
+                    Get.toNamed('/home');
                   },
                   label: const Text(
                     '홈으로',
                     style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
                     elevation: 0,
                     shadowColor: Colors.transparent,
                   ),

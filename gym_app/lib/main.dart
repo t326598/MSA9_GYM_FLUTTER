@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gym_app/intro.dart';
 import 'package:gym_app/provider/user_provider.dart';
+import 'package:gym_app/result.dart';
 import 'package:gym_app/screens/calendar_screen.dart';
 import 'package:gym_app/screens/find_id_screen.dart';
 import 'package:gym_app/screens/find_pw_screen.dart';
@@ -10,12 +11,14 @@ import 'package:gym_app/screens/join.dart';
 import 'package:gym_app/screens/login.dart';
 import 'package:gym_app/screens/my_page.dart';
 import 'package:gym_app/screens/my_page_info.dart';
+import 'package:gym_app/screens/pay_screen.dart';
 import 'package:gym_app/screens/ptList_screen.dart';
 import 'package:gym_app/screens/ptTicket_screen.dart';
 import 'package:gym_app/screens/reservation_insert_screen.dart';
 import 'package:gym_app/screens/ticket_screen.dart';
 import 'package:gym_app/screens/trainer_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:tosspayments_widget_sdk_flutter/model/tosspayments_result.dart';
 
 //  메인 수정했을지도?
 void main() async {
@@ -43,9 +46,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/pay',
+      initialRoute: '/home',
       routes: {
-        '/pay': (context) => Intro(),
+        '/pay': (context) => PayScreen(),
+        '/result': (context) => ResultPage(),
         '/home': (context) => HomeContent(),
         '/ticket': (context) => TicketScreen(),
         '/trainer': (context) => TrainerScreen(),

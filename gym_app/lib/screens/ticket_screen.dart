@@ -133,7 +133,9 @@ class _TicketScreenState extends State<TicketScreen> {
             ]),
             tileColor: Colors.blueAccent,
             textColor: Colors.white,
-            onTap: () {}),
+            onTap: () {
+              Navigator.pushNamed(context, '/pay');
+            }),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         currentIndex: _currentIndex,
