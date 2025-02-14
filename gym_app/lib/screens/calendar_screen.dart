@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart';
 import 'package:gym_app/models/calendar_response.dart';
+import 'package:gym_app/models/comment.dart';
 import 'package:gym_app/service/calendar_service.dart';
 import 'package:gym_app/widgets/bottom_sheet.dart';
 import 'package:gym_app/widgets/event_cell_widget.dart';
 import 'package:gym_app/widgets/calendar_bottom_sheet.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class CalendarScreen extends StatefulWidget {
   // final ValueNotifier<ThemeMode> theme = ValueNotifier(ThemeMode.dark);
@@ -214,7 +216,131 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 backgroundColor: Colors.deepOrange,
                 foregroundColor: Colors.white,
                 label: '트레이너 코멘트',
-                onTap: () {},
+                onTap: () async {
+                  Comment? comment =
+                      await calendarService.getCommentByDate(_selectedDate!);
+                  showMaterialModalBottomSheet(
+                    backgroundColor: const Color.fromARGB(255, 49, 47, 47),
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(18.0)),
+                    ),
+                    builder: (context) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        "닫기",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Color.fromARGB(
+                                                255, 192, 191, 191)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "트레이너 코멘트",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+
+                            // ✅ 스크롤 가능한 부분 추가
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.date_range,
+                                            color: Colors.white),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          "${_selectedDate!.year}년 ${_selectedDate!.month}월 ${_selectedDate!.day}일",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white),
+                                        )
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Divider(
+                                        color:
+                                            Color.fromARGB(255, 192, 191, 191),
+                                        thickness: 0.3),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Icon(Icons.short_text,
+                                            color: Colors.white),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          // ✅ 긴 텍스트도 줄바꿈됨
+                                          child: Text(
+                                            comment?.ccontent ?? "",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Divider(
+                                        color:
+                                            Color.fromARGB(255, 192, 191, 191),
+                                        thickness: 0.3),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Icon(Icons.restaurant,
+                                            color: Colors.white),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          // ✅ 긴 텍스트도 줄바꿈됨
+                                          child: Text(
+                                            comment?.fcontent ?? "",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
               // SpeedDialChild(
               //   child: !rmicons ? const Icon(Icons.margin) : null,

@@ -18,11 +18,11 @@ class Comment {
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       no: json['no'],
-      commentDate: json['commentDate'],
-      trainerNo: json['trainerNo'],
-      userNo: json['userNo'],
-      ccontent: json['cContent'],
-      fcontent: json['fContent'],
+      commentDate: json['commentDate'] ?? 0,
+      trainerNo: json['trainerNo'] ?? 0,
+      userNo: json['userNo'] ?? 0,
+      ccontent: json['ccontent'] ?? '',
+      fcontent: json['fcontent'] ?? '',
     );
   }
 }

@@ -101,8 +101,8 @@ class CalendarService {
 
       if (response.statusCode == 200) {
         debugPrint('코멘트 날짜로 조회 성공!');
-        debugPrint(response.data);
-        return Comment.fromJson(response.data);
+        print(response.data);
+        return Comment.fromJson(response.data['comment']);
         // return null;
       }
     } catch (e) {
