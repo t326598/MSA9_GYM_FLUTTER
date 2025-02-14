@@ -21,8 +21,8 @@ class Comment {
       commentDate: json['commentDate'],
       trainerNo: json['trainerNo'],
       userNo: json['userNo'],
-      ccontent: json['ccontent'],
-      fcontent: json['fcontent'],
+      ccontent: json['cContent'],
+      fcontent: json['fContent'],
     );
   }
 }
