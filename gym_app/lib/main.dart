@@ -23,15 +23,16 @@ import 'package:provider/provider.dart';
 //  메인 수정했을지도?
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // ✅ 필수!
+  // 먼저 UserProvider 인스턴스를 생성한 후 autoLogin 호출
   final userProvider = UserProvider();
-  await userProvider.autoLogin();
+  await userProvider.autoLogin(); // autoLogin을 여기서 먼저 실행합니다.
 
-  runApp(ChangeNotifierProvider(
-    // Provider
-    // -ChangeNotifierProvider를 사용하여 UserProvider를 전역으로 사용
-    create: (context) => UserProvider(),
-    child: const MyApp(),
-  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => userProvider, // 생성한 userProvider를 Provider로 전달
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -64,7 +65,7 @@ class MyApp extends StatelessWidget {
         '/changePw': (context) => Changepw(),
         '/myPage': (context) => MyPage(),
         '/myPageInfo': (context) => MyPageInfo(),
-        '/ticketList' : (context) => TicketlistScreen()
+        '/ticketList': (context) => TicketlistScreen()
       },
     );
   }
