@@ -57,6 +57,13 @@ dependencies:
 
   shared_preferences: ^2.5.1
   provider: ^6.1.2
+
+
+  kakao_flutter_sdk: ^2.0.0  # 최신 버전으로 변경 가능
+
+  flutter_kakao_login: ^0.7.0 # 최신 버전 확인 후 추가
+
+
   # 결제
   get: ^4.6.0
   tosspayments_widget_sdk_flutter: ^2.1.0

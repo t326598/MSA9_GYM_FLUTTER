@@ -258,6 +258,26 @@ class _LoginState extends State<Login> {
                       style: TextStyle(fontSize: 24),
                     )),
                 const SizedBox(
+                  height: 20,
+                ),
+
+                // 소셜 로그인 버튼
+                ElevatedButton(
+                  onPressed: () {
+                    print("버튼 클릭됨!");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.zero, // 이미지 크기와 동일하게 설정
+                  ),
+                  child: Image.asset(
+                    'images/kakao.login.png', // 이미지 파일 경로
+                    width: 600, // 버튼 크기 조절
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+
+                const SizedBox(
                   height: 30,
                 ),
                 Container(
@@ -323,7 +343,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 const SizedBox(
-                  height: 178,
+                  height: 110,
                 ),
               ],
             ),

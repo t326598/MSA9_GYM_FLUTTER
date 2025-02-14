@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gym_app/models/user.dart';
 
 // 유저 서비스에요!
 class UserService {
@@ -30,6 +31,19 @@ class UserService {
     } catch (e) {
       print(e);
       return false;
+    }
+  }
+
+  Future<String?> findid(Map<String, dynamic> userData) async {
+    try {
+      final response = await _dio.post('$host/findId', data: userData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data;
+      }
+      return null;
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 

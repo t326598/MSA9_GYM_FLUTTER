@@ -229,7 +229,7 @@ public class UserController {
             return new ResponseEntity<>(foundUser.getId(), HttpStatus.OK);
         } else {
        log.info("사용자를 찾을 수 없습니다.");
-            return new ResponseEntity<>("FAIL", HttpStatus.CREATED);
+            return new ResponseEntity<>("NULL", HttpStatus.CREATED);
         }
     }
 
