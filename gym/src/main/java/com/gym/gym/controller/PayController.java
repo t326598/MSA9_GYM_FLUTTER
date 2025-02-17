@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,10 +48,10 @@ public class PayController {
     private UserService userService;
 
     // 이용권 선택 (REST API)
-    @GetMapping("/ticketDate")
-    public ResponseEntity<Map<String, Object>> ticketDate(@AuthenticationPrincipal CustomUser userDetails) throws Exception {
+    @GetMapping("/ticketDate/{userNo}")
+    public ResponseEntity<Map<String, Object>> ticketDate(@PathVariable("userNo") Long userNo) throws Exception {
 
-        Long no = userDetails != null ? userDetails.getNo() : 0L;
+        Long no = userNo != null ? userNo : 0L;
         List<BuyList> buyList = buyListService.ticketByUser(no);
 
         // 최근 구매내역 전달
@@ -74,33 +75,7 @@ public class PayController {
         
         return ResponseEntity.ok(response);
     }
-    // 이용권 선택 (REST API)
-    @GetMapping("/ticketDateTEST")
-    public ResponseEntity<Map<String, Object>> ticketDateTES(@RequestParam("userNo") Long no) throws Exception {
-
-        List<BuyList> buyList = buyListService.ticketByUser(no);
-
-        // 최근 구매내역 전달
-        BuyList lastBuy = buyListService.lastBuyList(no);
-        Date startDate = new Date();
-        if (lastBuy != null && !"만료".equals(lastBuy.getStatus())) {
-            startDate = lastBuy.getEndDate(); // 마지막 구매 날짜
-            startDate = addDays(startDate, 1); // 1일 추가
-        }
-        
-        // 정상이면서 제일 오래된 이용권
-        List<BuyList> filteredList = buyList.stream()
-        .sorted(Comparator.comparing(BuyList::getStartDate))
-        .collect(Collectors.toList());
-        BuyList oldTicket = filteredList.isEmpty() ? null : filteredList.get(0);
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("buyList", buyList);
-        response.put("startDate", startDate);
-        response.put("oldTicket", oldTicket);
-        
-        return ResponseEntity.ok(response);
-    }
+    
 
     // 트레이너 목록 (REST API)
     @GetMapping("/ticket/trainerList")

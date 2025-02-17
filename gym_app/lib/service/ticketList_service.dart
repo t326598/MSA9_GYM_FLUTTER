@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 
 class TicketListService {
   final String baseUrl = 'http://10.0.2.2:8080'; // 기본 서버 URL 설정
@@ -16,10 +14,9 @@ class TicketListService {
     }
   }
 
-  Future<Map<String, dynamic>> getTicketDate() async {
-    final response = await _dio.get('$baseUrl/user/ticketDate');
-    print(response.data);
-    print('response.date : ${response.data}');
+  Future<Map<String, dynamic>> getTicketDate(int userNo) async {
+    final response = await _dio.get('$baseUrl/user/ticketDate/$userNo');
+    print('이용권 내역 : ${response.data}');
     if (response.statusCode == 200) {
       return response.data; // 응답 바디를 Map으로 파싱
     } else {
