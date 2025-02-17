@@ -1,3 +1,5 @@
+import 'dart:ffi' as ffi;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -42,12 +44,15 @@ class _PayScreenState extends State<PayScreen> {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is List<Map<String, dynamic>>) {
       selectedTickets = args;
+      print('selectedTickets : $selectedTickets');
       // selectedTickets에서 결제 금액 계산
       amount = selectedTickets
           .fold(0, (sum, ticket) => sum + ticket['price'] as int)
           .toString();
+      setState(() {}); // 데이터 로드 후 화면 갱신
     } else {
       selectedTickets = [];
+      setState(() {}); // 빈 리스트로 초기화 후 화면 갱신
     }
   }
 
@@ -93,17 +98,21 @@ class _PayScreenState extends State<PayScreen> {
     if (_user == null) return; // _user가 null일 경우 처리
 
     TicketListService ticketListService = TicketListService();
+    int userNo = _user!.no!;
     try {
       // getTicketDate 메서드 호출 시 괄호 추가
-      final response = await ticketListService.getTicketDate();
-      final buyList = response['buyList']; // 구매 리스트
+      final response = await ticketListService.getTicketDate(userNo);
+
+      // 데이터를 변환하여 명확한 타입 지정
+      final List<Map<String, dynamic>> buyList =
+          List<Map<String, dynamic>>.from(response['buyList']);
+
       final startDate = response['startDate']; // 티켓 시작 날짜
       final oldTicket = response['oldTicket']; // 가장 오래된 티켓
 
       // 상태 업데이트
       setState(() {
         selectedTickets = buyList; // 구매 리스트 업데이트
-        // startDate와 oldTicket도 필요한 경우 상태에 저장할 수 있습니다.
       });
     } catch (e) {
       print('이용권 정보 조회 중 오류 : $e');
@@ -219,15 +228,18 @@ class _PayScreenState extends State<PayScreen> {
                     print('result : $result');
                     if (result != null) {
                       // 'months' 값을 selectedTickets[0]['months']에서 가져옴
-                      int months = selectedTickets[0]['months'];
+                      int months = selectedTickets[0]['months'] ?? 1;
+                      print('months : $months');
 
                       // startDate를 ISO 형식으로 변환
                       final start =
                           DateTime.parse(selectedTickets[0]['start_date']);
+                      print('start : $start');
 
                       // endDate를 계산
                       DateTime endDate =
                           DateTime(start.year, start.month + months, start.day);
+                      print('endDate : $endDate');
 
                       // 구매 내역 저장 로직
                       Map<String, dynamic> buyData = {
