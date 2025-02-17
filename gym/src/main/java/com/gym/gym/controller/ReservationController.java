@@ -68,6 +68,7 @@ public class ReservationController {
             @PathVariable("no") Long no,
             Page page) {
         try {
+            log.info("플러터 userNo : " + no);
             Map<String, Object> result = reservationService.getMyReservation(no, page);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (Exception e) {

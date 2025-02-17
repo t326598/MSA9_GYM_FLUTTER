@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gym_app/models/reservation.dart';
+import 'package:gym_app/service/reservation_service.dart';
 
 class PtlistScreen extends StatefulWidget {
   const PtlistScreen({super.key});
@@ -9,15 +10,26 @@ class PtlistScreen extends StatefulWidget {
 }
 
 class _PtlistScreenState extends State<PtlistScreen> {
-  final List<Map<String, String>> reservations = [
-    {'trainer': '조한욱 트레이너', 'date': '2024-12-16 10:00', 'status': '예약됨'},
-    {'trainer': '조한욱 트레이너', 'date': '2024-12-21 21:00', 'status': '예약됨'},
-    {'trainer': '조한욱 트레이너', 'date': '2024-12-22 12:00', 'status': '완료'},
-    {'trainer': '홍성운 트레이너', 'date': '2025-01-19 13:00', 'status': '취소됨'},
-  ];
-
   int completedPT = 6;
   int remainingPT = 24;
+
+  List<Reservation> reservations = [];
+  ReservationService reservationService = ReservationService();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchReservations();
+  }
+
+  void _fetchReservations() async {
+    final response = await reservationService.getReservationsList();
+    if (response != null) {
+      setState(() {
+        reservations = response;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,36 +92,20 @@ class _PtlistScreenState extends State<PtlistScreen> {
               itemCount: reservations.length,
               itemBuilder: (context, index) {
                 final reservation = reservations[index];
-                return Slidable(
-                  endActionPane: ActionPane(
-                    motion: const ScrollMotion(),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) {},
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
-                        label: '삭제',
-                        flex: 4,
-                      ),
-                    ],
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 4,
-                    child: ListTile(
-                      title: Text(reservation['trainer']!, style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text(reservation['date']!),
-                      trailing: Text(
-                        reservation['status']!,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: reservation['status'] == '완료' ? Colors.green :
-                                 reservation['status'] == '취소됨' ? Colors.red : Colors.orange,
-                        ),
+                  elevation: 4,
+                  child: ListTile(
+                    title: Text(reservation.trainerName ?? '알 수 없음', style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(reservation.createdAt?.toLocal().toString() ?? '날짜 없음'),
+                    trailing: Text(
+                      reservation.enabled == true ? '예약됨' : '취소됨',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: reservation.enabled == true ? Colors.orange : Colors.red,
                       ),
                     ),
                   ),
