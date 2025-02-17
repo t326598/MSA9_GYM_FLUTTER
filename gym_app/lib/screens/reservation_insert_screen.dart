@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:booking_calendar/booking_calendar.dart';
+import 'package:gym_app/widgets/bottom_sheet.dart';
 
 class ReservationInsertScreen extends StatefulWidget {
   const ReservationInsertScreen({super.key});
@@ -9,6 +10,15 @@ class ReservationInsertScreen extends StatefulWidget {
 }
 
 class _ReservationInsertScreenState extends State<ReservationInsertScreen> {
+  int _currentIndex = 2;
+  final List<String> routes = [
+    '/home',
+    '/ticket',
+    '/reservationInsert',
+    '/calendar',
+    '/myPage'
+  ];
+
   final now = DateTime.now();
 
   Future<List<DateTimeRange>> getBookings({required DateTime start, required DateTime end}) async {
@@ -49,7 +59,6 @@ class _ReservationInsertScreenState extends State<ReservationInsertScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('PT 예약')),
       body: Column(
         children: [
           // 트레이너 정보 섹션
@@ -99,6 +108,18 @@ class _ReservationInsertScreenState extends State<ReservationInsertScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+
+              if (index >= 0 && index < routes.length) {
+                Navigator.pushNamed(context, routes[index]);
+              }
+            },
+          ),
     );
   }
 }
