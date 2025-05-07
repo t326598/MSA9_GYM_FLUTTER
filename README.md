@@ -57,6 +57,7 @@
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white">
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white">
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black">
+  <img src="https://img.shields.io/badge/Dart-0175C2?style=flat-square&logo=dart&logoColor=white">
 </p>
 <p>백엔드</p>
 <p>
@@ -77,26 +78,43 @@
   <img src="https://img.shields.io/badge/Figma-F24E1E?style=flat-square&logo=figma&logoColor=white">
 </p>
 
-### :bulb: 예약 기능 화면
+### :bulb: 회원 기능
 
-- 예약 신청
+- 로그인 및 회원가입
+![image (8)](https://github.com/user-attachments/assets/c8d98712-32cf-41b0-bd03-2c90a4e2cd8d)
 
-![image](https://github.com/user-attachments/assets/cc8ac9a2-0d75-4bb6-b9e1-161839823efe)
+- JWT 토큰 사용
+![image (7)](https://github.com/user-attachments/assets/18015ee8-d0e1-48b4-a490-7bf9036128c0)
 
+![image (6)](https://github.com/user-attachments/assets/3442cd50-29fd-48cc-a6ef-b3e28851a31e)
 
-- 사용자 예약 확인
-
-![image](https://github.com/user-attachments/assets/60266b86-be57-4f7d-98aa-abf2db0dadc5)
-
-
-- 예약 관리
-
-![image](https://github.com/user-attachments/assets/ecd83685-cbbc-445d-abd5-8c3f9602cfdb)
+함수 형으로 구현하여 상태를 생성해 로딩시 데이터가 전달받은 이후에 페이지가 로드되도록 설계
 
 
-- 예약 관리 - 캘린더
+- 아이디 및 비밀번호 찾기
 
-![image](https://github.com/user-attachments/assets/951364d3-af84-4267-b9a5-c42761c1f629)
+![image (5)](https://github.com/user-attachments/assets/9a4e7b85-f2c0-41e2-b328-80503c3f3300)
+
+
+- 마이페이지(내정보)
+
+![image (4)](https://github.com/user-attachments/assets/e86c040b-4a58-4cfc-a618-4d8d58ebcd9f)
+
+
+- 관리자 페이지(회원)
+  
+![image (3)](https://github.com/user-attachments/assets/aae25a3e-ec29-4ec0-9b6c-96af0621e315)
+
+
+- 문의사항 C.R.U.D
+
+![image (2)](https://github.com/user-attachments/assets/056240fd-a1da-486a-902e-fd6805965459)
+
+![image (1)](https://github.com/user-attachments/assets/36f8cc1d-b6f0-4317-830a-6ae2e8bedbee)
+
+
+- 마이페이지(문의내역)
+![image](https://github.com/user-attachments/assets/6007fc3f-9f14-48a8-8214-8117bb6a8e1a)
 
 ---
 
