@@ -82,6 +82,7 @@
 
 - 로그인 및 회원가입
 ![image (8)](https://github.com/user-attachments/assets/c8d98712-32cf-41b0-bd03-2c90a4e2cd8d)
+![bandicam 2025-05-08 00-36-52-564](https://github.com/user-attachments/assets/dfa8ef8e-b5f7-4f9d-87f7-57fd7eae1d30)
 
 - JWT 토큰 사용
 ![image (7)](https://github.com/user-attachments/assets/18015ee8-d0e1-48b4-a490-7bf9036128c0)
@@ -99,6 +100,8 @@
 - 마이페이지(내정보)
 
 ![image (4)](https://github.com/user-attachments/assets/e86c040b-4a58-4cfc-a618-4d8d58ebcd9f)
+![bandicam 2025-05-08 00-38-45-972](https://github.com/user-attachments/assets/5290d080-2783-4751-a9f8-eb3e678bfffb)
+![bandicam 2025-05-08 00-38-42-954](https://github.com/user-attachments/assets/5ae4b994-1edc-4651-9bf5-2a86ac99b362)
 
 
 - 관리자 페이지(회원)
