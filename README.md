@@ -33,7 +33,10 @@
 ### :bulb: 프로젝트 기간
 - 2025-02-03 ~ 2024-02-19
 
-https://youtube.com/shorts/MbYQpegluQg 
+[![Watch the video](https://youtube.com/shorts/MbYQpegluQg )]([https://www.youtube.com/watch?v=영상ID](https://youtube.com/shorts/MbYQpegluQg ))
+
+
+
 
 ### :bulb: 담당 개발기능 및 구현
 - **회원 기능** : **회원 CRUD**
