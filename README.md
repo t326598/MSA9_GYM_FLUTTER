@@ -33,7 +33,7 @@
 ### :bulb: 프로젝트 기간
 - 2025-02-03 ~ 2024-02-19
 
-[![Watch the video](https://img.youtube.com/vi/MbYQpegluQg/0.jpg)](https://www.youtube.com/watch?v=MbYQpegluQg)
+[![모바일 시연 영상](https://img.youtube.com/vi/MbYQpegluQg/0.jpg)](https://www.youtube.com/watch?v=MbYQpegluQg)
 
 
 
