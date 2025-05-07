@@ -100,8 +100,8 @@
 - 마이페이지(내정보)
 
 ![image (4)](https://github.com/user-attachments/assets/e86c040b-4a58-4cfc-a618-4d8d58ebcd9f)
-![bandicam 2025-05-08 00-38-45-972](https://github.com/user-attachments/assets/5290d080-2783-4751-a9f8-eb3e678bfffb)
-![bandicam 2025-05-08 00-38-42-954](https://github.com/user-attachments/assets/5ae4b994-1edc-4651-9bf5-2a86ac99b362)
+![bandicam 2025-05-08 00-38-45-972](https://github.com/user-attachments/assets/5290d080-2783-4751-a9f8-eb3e678bfffb)![bandicam 2025-05-08 00-38-42-954](https://github.com/user-attachments/assets/5ae4b994-1edc-4651-9bf5-2a86ac99b362)
+
 
 
 - 관리자 페이지(회원)
