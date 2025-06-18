@@ -3,9 +3,9 @@
 
 <h3>기존 MVC 패턴의 스프링부트 프로젝트에 Flutter + REST API 설계 전환 작업한 프로젝트입니다.</h3>
 
-## [FIT NEXUS (Spring Boot MVC패턴 프로젝트) 바로가기](https://github.com/LimeYun/MSA9_GYM)
+## [FIT NEXUS (Spring Boot MVC패턴 프로젝트) 바로가기](https://github.com/t326598/MSA_9-Project)
 
-## [FIT NEXUS(REACT + REST API 프로젝트) 바로가기](https://github.com/LimeYun/MSA9_GYM_REST)
+## [FIT NEXUS(REACT + REST API 프로젝트) 바로가기](https://github.com/t326598/MSA9_GYM_REST)
 
 
 
